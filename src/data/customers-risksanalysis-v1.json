@@ -1,0 +1,2574 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Customers - riskanalysis (Proxy Apigee:customers-risksanalysis-v1)",
+    "description": "API de criação e recuperação de análise de risco para clientes e/ou prospects, para operações diversas, incluindo análise de crédito.   <table> \n<thead> \n  <tr> \n    <th>Versão</th> \n    <th>Elaborado por</th> \n    <th>Data</th> \n    <th>Alterações</th> \n  </tr> \n</thead> \n  <tbody>\n    <tr> \n      <td>1.0.0</td>\n      <td>Bruno Nascimento</td> \n      <td>2021-01-26</td> \n      <td>[Projeto de Unificação dos Sistemas de Crédito] - Versão inicial</td> \n    </tr>\n    <tr> \n      <td>1.0.1</td>\n      <td>Marcos Vieira</td> \n      <td>2021-10-21</td> \n      <td>[Projeto de Unificação dos Sistemas de Crédito] - Inclusão de Campos</td> \n    </tr>\n    <tr> \n      <td>1.0.2</td>\n      <td>Brunno Davi</td> \n      <td>2021-10-22</td> \n      <td>[Projeto de Unificação dos Sistemas de Crédito] - Inclusão método GET</td> \n    </tr>\n    <tr> \n      <td>1.0.3</td>\n      <td>Julia Lamouche</td> \n      <td>2022-08-05</td> \n      <td>[Projeto de Unificação dos Sistemas de Crédito] - Adição de Oneof no Resquest POST </td> \n    </tr>\n    <tr> \n      <td>1.0.4</td>\n      <td>Julia Lamouche</td> \n      <td>2022-09-29</td> \n      <td>[Projeto de Unificação dos Sistemas de Crédito] - Adição de novo cenário de Response GET </td> \n    </tr>\n    \n  </tbody> \n</table>",
+    "version": "1;2022-09-29",
+    "x-claro-domains": [
+      "Customer"
+    ],
+    "contact": {
+      "name": "(CC-Integração) - Julia Lamouche",
+      "email": "coee.api.integracao@claro.com.br"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.claro.com.br/customers/v1",
+      "description": "Sandbox (SaaS)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/customers/v1",
+      "description": "Test (SaaS)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/customers/v1",
+      "description": "Test (OPDK)"
+    },
+    {
+      "url": "https://api.claro.com.br/customers/v1",
+      "description": "Production (SaaS)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/customers/v1",
+      "description": "Production (OPDK DC Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/customers/v1",
+      "description": "Production (OPDK DC Lapa)"
+    }
+  ],
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/risks/analysis": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "API de análise de risco para clientes e/ou prospects, para operações diversas, incluindo análise de crédito. \n Backend: PCO",
+        "x-claro-backends": [
+          "PCO"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "description": "API de análise de risco para clientes e/ou prospects, para operações diversas, incluindo análise de crédito.",
+        "operationId": "risksanalysisRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/risksanalysisRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/risksanalysisRequestAddresses"
+                  }
+                ]
+              },
+              "examples": {
+                "risksanalysisRequest": {
+                  "description": "Exemplo de requisição utilizando um único endereço para consulta.",
+                  "value": {
+                    "data": {
+                      "correlationId": "5511997",
+                      "correlationIdType": "PROTOCOLOUNICO",
+                      "sentDateTime": "2018-12-10T13:45:00.000Z",
+                      "sourceSystem": "URA",
+                      "sourceSystemId": "tbd",
+                      "host": "172.17.250.9",
+                      "operation": "VENDACLIENTEPROSPECT",
+                      "analysisType": "PREANALISE",
+                      "pesquisaCadastral": "SIM",
+                      "userId": "z34234",
+                      "cpf": "82534681732",
+                      "user": "z2323",
+                      "companyId": "00a",
+                      "idPontoAtendimento": "t4",
+                      "chanel": "SITE",
+                      "businessUnit": "CLFI",
+                      "customer": {
+                        "cpf": "82534681732",
+                        "rg": "34654767",
+                        "name": "joao silva",
+                        "birthDate": "",
+                        "motherName": "Maria Silva",
+                        "gender": "M"
+                      },
+                      "address": {
+                        "description": "PRINCIPAL",
+                        "addressType": "LOGRADOURO",
+                        "prefix": "RUA",
+                        "streetName": "augusta",
+                        "zipCode": "02243677"
+                      },
+                      "products": [
+                        {
+                          "code": "000",
+                          "name": "produto",
+                          "class": "MOVEL",
+                          "modality": "PREPAGO",
+                          "category": [
+                            {
+                              "name": "TLFFIXA"
+                            }
+                          ],
+                          "telephoneNumber": "999999999"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "risksanalysisRequestAddresses": {
+                  "description": "Exemplo de requisição utilizando uma lista de endereços para consulta.",
+                  "value": {
+                    "data": {
+                      "correlationId": "5511997",
+                      "correlationIdType": "PROTOCOLOUNICO",
+                      "sentDateTime": "2018-12-10T13:45:00.000Z",
+                      "sourceSystem": "ODIN",
+                      "sourceSystemId": "URA",
+                      "host": "172.17.250.9",
+                      "operation": "VENDACLIENTEPROSPECT",
+                      "analysisType": "PREANALISE",
+                      "registrationResearch": "SIM",
+                      "userId": "z34234",
+                      "cpf": "82534681732",
+                      "user": "z2323",
+                      "companyId": "00a",
+                      "servicePointId": "t4",
+                      "chanel": "SITE",
+                      "businessUnit": "CLFI",
+                      "requestBatchId": "ID_List",
+                      "commercialJustification": "Compra de um imóvel",
+                      "saleResponsible": "ROBERTO",
+                      "solicitationResponsible": "SANDRA",
+                      "emailAddress": "mail@mail.com",
+                      "campaignCode": "002Natal",
+                      "biddingMode": "Concorrência",
+                      "projectType": "Internacional",
+                      "equipmentPaymentMethod": "Fatura",
+                      "paymentMethod": "Fatura",
+                      "channelId": "GRANDEVAREJO",
+                      "requestRaisedFlag": "S",
+                      "riskFlag": "S",
+                      "telephoneNumber": "11985673521",
+                      "customer": {
+                        "cpf": "82534681732",
+                        "rg": "34654767",
+                        "name": "joao silva",
+                        "birthDate": "20020802",
+                        "motherName": "Maria Silva",
+                        "gender": "M",
+                        "partyIdentificationType": "CPF",
+                        "partyIdentificationNumber": "12399944483",
+                        "foundationDate": "19800101",
+                        "emailAddress": "mail@mail.com",
+                        "companyName": "INDUSTRIAS ACME",
+                        "registerDate": "19900525",
+                        "criticalRatingCode": "5",
+                        "customerSegmentCode": "Corporativo",
+                        "customerSizeCode": "TOP",
+                        "regionalSalesCode": "35",
+                        "diretorySalesCode": "06",
+                        "creditCardType": "VISA",
+                        "initialCreditCardNumber": "9999",
+                        "finalCreditCardNumber": "9999",
+                        "descriptionActivity": "Fabricação de produtos",
+                        "economicGroupCode": "123",
+                        "legalCode": "Sociedade LTDA",
+                        "cnae": "1234567",
+                        "lineStatus": "BloqParcialPorCobranca",
+                        "statusDateSuspension": "19900525",
+                        "lastDateActivation": "19900525",
+                        "lastDateDeactivation": "19900525",
+                        "recentMigrationDate": "19900525",
+                        "partners": [
+                          {
+                            "partnerIdentificationType": "CPF",
+                            "partnerIdentificationNumber": "12398875487"
+                          }
+                        ]
+                      },
+                      "addresses": [
+                        {
+                          "description": "PRINCIPAL",
+                          "addressType": "LOGRADOURO",
+                          "prefix": "RUA",
+                          "streetName": "augusta",
+                          "zipCode": "02243677",
+                          "streetNrFirst": "50",
+                          "complementaryAddress": "casa 5",
+                          "neighborhood": "Centro",
+                          "regionCode": "1234",
+                          "cityName": "Rio de Janeiro",
+                          "stateAbbreviation": "RJ",
+                          "countryName": "Brasil",
+                          "contactType": "TELEFONE",
+                          "customerRelationship": "MÃE",
+                          "contactName": "MARCIA",
+                          "areaCode": "21",
+                          "telephoneNumber": "11985673521"
+                        }
+                      ],
+                      "opportunity": {
+                        "origin": "LOJA FÍSICA",
+                        "productName": "PRÉ-PAGO",
+                        "productAbbreviation": "PRPG",
+                        "platform": "CONECTIVIDADE",
+                        "quantityProductItem": "1",
+                        "contractExpiration": "12",
+                        "lineQuantity": "2",
+                        "circuitQuantity": "3",
+                        "lineExtensionQuantity": "4",
+                        "postcode": "12345678",
+                        "installationValue": "100,00",
+                        "serviceValue": "150,00",
+                        "discountValue": "200,00",
+                        "opportunityValue": "250,00",
+                        "monthValue": "89,90"
+                      },
+                      "products": [
+                        {
+                          "code": "000",
+                          "name": "produto",
+                          "productFamily": "MOVEL",
+                          "modality": "PREPAGO",
+                          "listValue": "100,00",
+                          "saleValue": "150,00",
+                          "discountValue": "50,00",
+                          "telephoneNumber": "11985673521",
+                          "categories": [
+                            {
+                              "name": "TLFFIXA"
+                            }
+                          ]
+                        }
+                      ],
+                      "portability": {
+                        "spidCode": "0115 - Vivo",
+                        "portability": "S",
+                        "assignorDocType": "CPF",
+                        "assignorDocNumber": "12345678901",
+                        "assigneeDocType": "CNPJ",
+                        "assigneeDocNumber": "12345678901234",
+                        "assignorName": "Carlos",
+                        "assigneeBirthDate": "19800101"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/risksanalysisResponse"
+                },
+                "examples": {
+                  "risksanalysisResponse": {
+                    "value": {
+                      "apiVersion": "1;2021-01-26",
+                      "transactionId": "9b7d1f23-f9d4-4bbf-80f8-326b36e65aa1",
+                      "data": {
+                        "result": "SUCESSO",
+                        "error": [
+                          {
+                            "message": "CPF não encontrado Base Brasil",
+                            "errorCode": "MP14"
+                          },
+                          {
+                            "message": "CPF não encontrado BVC",
+                            "errorCode": "MP15"
+                          },
+                          {
+                            "message": "SEM INF NASC CREDILINK",
+                            "errorCode": "MP22"
+                          }
+                        ],
+                        "analysisNumber": "000000000107573",
+                        "dateTime": "2021-10-20T16:51:42",
+                        "code": "IMPEDIDO",
+                        "message": "SITUACAO_CADASTRAL_INVALIDA",
+                        "description": "CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro",
+                        "returnCode": "AEPREIMP05",
+                        "limitResult": "123456789",
+                        "decisionExpiryDate": "20-02-2010",
+                        "pointResult": "50",
+                        "scoreResult": "100",
+                        "rankingResult": "200",
+                        "creditLimit": "1234,50",
+                        "proposedQueue": "AGUARDANDO_CREIDTO_N1",
+                        "groupTypeId": "Grupo responsável pela análise",
+                        "customer": {
+                          "profile": "CONTRATANTE",
+                          "cpf": "52494985820",
+                          "rg": "12345678901",
+                          "name": "Indica o nome completo da pessoa, sendo nome mais sobrenome.",
+                          "birthDate": "19800101",
+                          "motherName": "Indica o nome completo da mãe da pessoa",
+                          "gender": "M",
+                          "status": "0",
+                          "categories": [
+                            {
+                              "categoryId": "TRIPLE_A"
+                            },
+                            {
+                              "categoryId": "VIP"
+                            }
+                          ]
+                        },
+                        "contact": {
+                          "type": "RESIDENCIAL",
+                          "contact": "EMAIL",
+                          "description": "mail@mail.com"
+                        },
+                        "address": [
+                          {
+                            "description": "RESIDENCIAL",
+                            "addressType": "LOGRADOURO",
+                            "prefix": "TRAV",
+                            "streetName": "LAGO SALTO CAXIAS",
+                            "zipCode": "03416000",
+                            "number": "25",
+                            "addressComplement": "Complemento do endereço",
+                            "neighborhood": "PALMITAL",
+                            "mailbox": "NNNNNNNNNNN",
+                            "city": "COLOMBO",
+                            "stateAbbreviation": "PR",
+                            "ibgeCityId": "4105805",
+                            "ibgeUfId": "Código da UF para o IBGE",
+                            "ddd": "041",
+                            "ruralArea": "N",
+                            "postOfficesPattern": "S",
+                            "claroRegistered": "S",
+                            "sourceSystemId": "CLFI"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "risksanalysisResponseErro": {
+                    "value": {
+                      "apiVersion": "1;2021-01-26",
+                      "transactionId": "01ab9e09-7af7-4f6e-b337-54c4e93a981c",
+                      "data": {
+                        "result": "SUCESSO",
+                        "error": [
+                          {
+                            "message": "Telef. não informado/inválido",
+                            "errorCode": "TE05"
+                          },
+                          {
+                            "message": "E999",
+                            "errorCode": "Retorno invalido"
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          },
+                          {
+                            "message": "",
+                            "errorCode": ""
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-400"
+          },
+          "401": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-401"
+          },
+          "403": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-403"
+          },
+          "404": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-404"
+          },
+          "405": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-405"
+          },
+          "406": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-406"
+          },
+          "415": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-415"
+          },
+          "422": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-422"
+          },
+          "429": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-429"
+          },
+          "500": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-500"
+          },
+          "503": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-503"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "summary": "API que faz a recuperação de uma analise de credito/risco, com informações complementares sobre a análise solicitada. \n Backend: PCO",
+        "x-claro-backends": [
+          "PCO"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "description": "API que faz a recuperação de uma analise de credito/risco.",
+        "parameters": [
+          {
+            "name": "X-QueryString",
+            "in": "header",
+            "description": "Header query string (LGPD compliant) onde são informados os campos de identificação da pessoa.\n  * partyIdentificationNumber - é o valor da identificação propriamente, de acordo com o tipo informado.\n\nA string resultante são campos com nome/valor. Exemplos de preenchimento do X-QueryStrig:\n  * 'partyIdentificationNumber=12345678900'",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "partyIdentificationNumber=12345678900"
+            }
+          },
+          {
+            "name": "solicitationDate",
+            "in": "query",
+            "description": "Data e hora da solicitação",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "2022-05-17T10:56:12"
+            }
+          },
+          {
+            "name": "sourceSystem",
+            "in": "query",
+            "description": "Sigla sistema de origem - A lista representa algumas das opção, porém não são restritas a ela - URA, FEA, PS8, WA, SVC (Ativação Simplificada).",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "PCO"
+            }
+          },
+          {
+            "name": "sourceSystemId",
+            "in": "query",
+            "description": "Id do sistema de origem",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "URA"
+            }
+          },
+          {
+            "name": "host",
+            "in": "query",
+            "description": "Nome ou IP do servidor da aplicação que originou a chamada ao serviço.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "CAMPINAS"
+            }
+          },
+          {
+            "name": "partyIdentificationType",
+            "in": "query",
+            "description": "tipo de documento.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "CPF"
+            }
+          },
+          {
+            "name": "correlationId",
+            "in": "query",
+            "description": "Código de identificação da transação de análise de crédito.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "ID_PGV"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/risksanalysisResponseGET"
+                    },
+                    {
+                      "$ref": "#/components/schemas/risksanalysisResponseGETErro"
+                    }
+                  ]
+                },
+                "examples": {
+                  "risksanalysisResponseGET": {
+                    "value": {
+                      "apiversion": "1; 2020-06-11",
+                      "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                      "data": {
+                        "customer": {
+                          "partyIdentificationType": "CPF",
+                          "partyIdentificationNumber": "12345678901"
+                        },
+                        "creditAnalysis": [
+                          {
+                            "analysisNumber": "000000000107573",
+                            "dateTime": "2021-10-20T16:51:42",
+                            "code": "IMPEDIDO",
+                            "message": "SITUACAO_CADASTRAL_INVALIDA",
+                            "description": "CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro",
+                            "returnCode": "AEPREIMP05",
+                            "limitResult": "1234,50",
+                            "decisionExperyDate": "20-01-2010",
+                            "pointResult": "50",
+                            "scoreResult": "100",
+                            "rankingResult": "200",
+                            "creditLimit": "1234,50",
+                            "operation": "VENDACLIENTEPROSPECT",
+                            "lastDateDecision": 20211010,
+                            "productName": "PRÉ-PAGO",
+                            "productAbbreviation": "PRPG",
+                            "contractExpiration": "12",
+                            "lineQuantity": "5",
+                            "lineExtensionQuantity": "6",
+                            "installationValue": "100,00",
+                            "serviceValue": "150,00",
+                            "discountValue": "200,00",
+                            "opportunityValue": "250,00",
+                            "monthValue": "89,90"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "risksanalysisResponseGETErro": {
+                    "value": {
+                      "apiversion": "1; 2020-06-11",
+                      "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                      "data": {
+                        "message": "Documento informado não possui propostas APROVADAS e dentro da Validade"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-400-GET"
+          },
+          "401": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-401"
+          },
+          "403": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-403"
+          },
+          "404": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-404"
+          },
+          "405": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-405"
+          },
+          "406": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-406"
+          },
+          "422": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-422"
+          },
+          "429": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-429"
+          },
+          "500": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-500"
+          },
+          "503": {
+            "$ref": "#/components/responses/API-RISKSANALYSIS-503"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "responses": {
+      "API-RISKSANALYSIS-400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-RISKSANALYSIS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Bad Request",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "ParametroInvalido": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-RISKSANALYSIS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "ParametroInvalido",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "401",
+                "errorCode": "API-RISKSANALYSIS-401",
+                "message": "Unauthorized",
+                "detailedMessage": "Unauthorized user.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-RISKSANALYSIS-403",
+                "message": "Forbidden",
+                "detailedMessage": "Access denied.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-RISKSANALYSIS-404",
+                "message": "Not found",
+                "detailedMessage": "Resource not found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-RISKSANALYSIS-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Method Not Allowed",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-RISKSANALYSIS-406",
+                "message": "Not Acceptable",
+                "detailedMessage": "Not Acceptable",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-415": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "415",
+                "errorCode": "API-RISKSANALYSIS-415",
+                "message": "Unsupported Media Type",
+                "detailedMessage": "Unsupported Media Type",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-RISKSANALYSIS-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "Consumer requests exceeded policies.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "InternalServerError": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-RISKSANALYSIS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "FalhaTecnica": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-RISKSANALYSIS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "FalhaTecnica",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-RISKSANALYSIS-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-422": {
+        "description": "Unprocessable Entity - Identifica erros de negócio",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2020-06-11",
+              "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "422",
+                "errorCode": "API-RISKSANALYSIS-422",
+                "message": "Unprocessable Entity.",
+                "detailedMessage": "Business fault occurred.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "API-RISKSANALYSIS-400-GET": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-RISKSANALYSIS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Bad Request",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "RetornoInvalido": {
+                "value": {
+                  "apiVersion": "1;2020-06-11",
+                  "transactionId": "e6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-RISKSANALYSIS-999",
+                    "message": "Retorno invalido",
+                    "detailedMessage": "Retorno invalido",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          },
+          "application/javascript": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "risksanalysisRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "correlationId",
+              "correlationIdType",
+              "sentDateTime",
+              "sourceSystem",
+              "sourceSystemId",
+              "host",
+              "operation",
+              "userId",
+              "chanel"
+            ],
+            "properties": {
+              "correlationId": {
+                "type": "string",
+                "description": "Identificação de correlação da transação do sistema requisitante da chamada ao sistema de Credito/Risco (ex: ID do protocolo único, ID do case, ID da ordem de venda/proposta/oportundiade, etc)",
+                "example": "5511997"
+              },
+              "correlationIdType": {
+                "type": "string",
+                "description": "Identifica qual o tipo do ID de Correlação",
+                "example": "PROTOCOLOUNICO"
+              },
+              "sentDateTime": {
+                "type": "string",
+                "description": "Data e hora em que a chamada ao serviço foi originada",
+                "format": "date-time",
+                "example": "2018-12-10T13:45:00.000Z"
+              },
+              "sourceSystem": {
+                "type": "string",
+                "description": "Identificação do sistema requisitante da chamada ao sistema de Credito/Risco",
+                "example": "URA"
+              },
+              "sourceSystemId": {
+                "type": "string",
+                "description": "Identificação da aplicação (sub modulo ou sub divisao do Sistema Origem)que originou a chamada ao sistema de Credito/Risco",
+                "example": "tbd"
+              },
+              "host": {
+                "type": "string",
+                "description": "Nome ou IP do servidor da aplicação que originou a chamada ao serviço",
+                "example": "172.17.250.9"
+              },
+              "operation": {
+                "type": "string",
+                "description": "Indicação de qual processo ou operação de negócio esta sendo executada pelo sistema requisitante da chamada a integração do sistema de Credito/Risco. Para URA pode ser por exemplo o  script-id.",
+                "example": "VENDACLIENTEPROSPECT"
+              },
+              "analysisType": {
+                "type": "string",
+                "description": "PREANALISE ANALISECOMPLETA",
+                "example": "PREANALISE"
+              },
+              "pesquisaCadastral": {
+                "type": "string",
+                "description": "Indica se deve ser realizada a pesquisa.",
+                "example": "SIM"
+              },
+              "userId": {
+                "type": "string",
+                "description": "Código de identificação do usuário final autenticado/logado no sistema/aplicação de origem Identificação do Usuário do Sistema Origem (Operador de Call Center, Operadores e Agentes Autorizados, Operador de Loja, Vendedor, etc)",
+                "example": "z34234"
+              },
+              "cpf": {
+                "type": "string",
+                "description": "CPF do usuário  final autenticado/logado no sistema/aplicação de origem",
+                "example": "82534681732"
+              },
+              "user": {
+                "type": "string",
+                "description": "Nome do usuário  final autenticado/logado no sistema/aplicação de origem",
+                "example": "z2323"
+              },
+              "companyId": {
+                "type": "string",
+                "description": "Identificação da empresa (parceira da Claro ou empresas do Grupo Claro) para qual o usuário responsável pela operação trabalha (no caso de operações de vendas pode representar o Código do agente de venda).",
+                "example": "00a"
+              },
+              "idPontoAtendimento": {
+                "type": "string",
+                "description": "Código de identificação dos pontos de venda/atendimento de onde o usuário está realizando a operação.",
+                "example": "t4"
+              },
+              "chanel": {
+                "type": "string",
+                "description": "Canal em que a chamada foi originada: SITE, URA, LOJA, RCV, ETC",
+                "example": "SITE"
+              },
+              "businessUnit": {
+                "type": "string",
+                "description": "Unidade ou Diretoria de Negócios do grupo Claro/AMX responsável pela solicitação ao sistema de Credito/Risco. Informação pode ser usada para fins de rastreabilidade e contabilização de uso, bem como repasse de custos.",
+                "example": "CLFI"
+              },
+              "customer": {
+                "type": "object",
+                "required": [
+                  "cpf",
+                  "birthDate"
+                ],
+                "properties": {
+                  "cpf": {
+                    "type": "string",
+                    "description": "CPF da Pessoa Fisica",
+                    "example": "82534681732"
+                  },
+                  "rg": {
+                    "type": "string",
+                    "description": "RG da Pessoa Fisica",
+                    "example": "34654767"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Indica o nome completo da pessoa, sendo nome mais sobrenome.",
+                    "example": "joao silva"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "Indica a data de nascimento da pessoa fisica.",
+                    "example": ""
+                  },
+                  "motherName": {
+                    "type": "string",
+                    "description": "Indica o nome completo da mãe da pessoa.",
+                    "example": "Maria Silva"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Sexo da pessoa.",
+                    "example": "M"
+                  }
+                }
+              },
+              "address": {
+                "type": "object",
+                "required": [
+                  "zipCode"
+                ],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "Função de um endereço representa o objetivo do endereço. ",
+                    "example": "PRINCIPAL"
+                  },
+                  "addressType": {
+                    "type": "string",
+                    "description": "Tipo de endereço segundo critério dos Correios. ",
+                    "example": "LOGRADOURO"
+                  },
+                  "prefix": {
+                    "type": "string",
+                    "description": "Tipo do logradouro do endereço",
+                    "example": "RUA"
+                  },
+                  "streetName": {
+                    "type": "string",
+                    "description": "Logradouro do Endereço",
+                    "example": "augusta"
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "description": "CEP do Endereço",
+                    "example": "02243677"
+                  }
+                }
+              },
+              "products": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/product"
+                }
+              }
+            }
+          }
+        }
+      },
+      "risksanalysisRequestAddresses": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "correlationId",
+              "correlationIdType",
+              "sentDateTime",
+              "sourceSystem",
+              "sourceSystemId",
+              "host",
+              "operation",
+              "userId",
+              "chanel"
+            ],
+            "properties": {
+              "correlationId": {
+                "type": "string",
+                "description": "Identificação de correlação da transação do sistema requisitante da chamada ao sistema de Credito/Risco (ex: ID do protocolo único, ID do case, ID da ordem de venda/proposta/oportundiade, etc)",
+                "example": "5511997"
+              },
+              "correlationIdType": {
+                "type": "string",
+                "description": "Identifica qual o tipo do ID de Correlação",
+                "example": "PROTOCOLOUNICO"
+              },
+              "sentDateTime": {
+                "type": "string",
+                "description": "Data e hora em que a chamada ao serviço foi originada",
+                "format": "date-time",
+                "example": "2018-12-10T13:45:00.000Z"
+              },
+              "sourceSystem": {
+                "type": "string",
+                "description": "Identificação do sistema requisitante da chamada ao sistema de Credito/Risco",
+                "example": "ODIN"
+              },
+              "sourceSystemId": {
+                "type": "string",
+                "description": "Identificação da aplicação (sub modulo ou sub divisao do Sistema Origem)que originou a chamada ao sistema de Credito/Risco",
+                "example": "URA"
+              },
+              "host": {
+                "type": "string",
+                "description": "Nome ou IP do servidor da aplicação que originou a chamada ao serviço",
+                "example": "172.17.250.9"
+              },
+              "operation": {
+                "type": "string",
+                "description": "Indicação de qual processo ou operação de negócio esta sendo executada pelo sistema requisitante da chamada a integração do sistema de Credito/Risco. Para URA pode ser por exemplo o  script-id.",
+                "example": "VENDACLIENTEPROSPECT"
+              },
+              "analysisType": {
+                "type": "string",
+                "description": "PREANALISE ANALISECOMPLETA",
+                "example": "PREANALISE"
+              },
+              "registrationResearch": {
+                "type": "string",
+                "description": "Indica se deve ser realizada a pesquisa.",
+                "example": "SIM"
+              },
+              "userId": {
+                "type": "string",
+                "description": "Código de identificação do usuário final autenticado/logado no sistema/aplicação de origem Identificação do Usuário do Sistema Origem (Operador de Call Center, Operadores e Agentes Autorizados, Operador de Loja, Vendedor, etc)",
+                "example": "z34234"
+              },
+              "cpf": {
+                "type": "string",
+                "description": "CPF do usuário  final autenticado/logado no sistema/aplicação de origem",
+                "example": "82534681732"
+              },
+              "user": {
+                "type": "string",
+                "description": "Nome do usuário  final autenticado/logado no sistema/aplicação de origem",
+                "example": "z2323"
+              },
+              "companyId": {
+                "type": "string",
+                "description": "Identificação da empresa (parceira da Claro ou empresas do Grupo Claro) para qual o usuário responsável pela operação trabalha (no caso de operações de vendas pode representar o Código do agente de venda).",
+                "example": "00a"
+              },
+              "servicePointId": {
+                "type": "string",
+                "description": "Código de identificação dos pontos de venda/atendimento de onde o usuário está realizando a operação.",
+                "example": "t4"
+              },
+              "chanel": {
+                "type": "string",
+                "description": "Canal em que a chamada foi originada: SITE, URA, LOJA, RCV, ETC",
+                "example": "SITE"
+              },
+              "businessUnit": {
+                "type": "string",
+                "description": "Unidade ou Diretoria de Negócios do grupo Claro/AMX responsável pela solicitação ao sistema de Credito/Risco. Informação pode ser usada para fins de rastreabilidade e contabilização de uso, bem como repasse de custos.",
+                "example": "CLFI"
+              },
+              "requestBatchId": {
+                "type": "string",
+                "description": "",
+                "example": "ID_List"
+              },
+              "commercialJustification": {
+                "type": "string",
+                "description": "É um texto explicativo que justifique a necessidade da análise em lote.",
+                "example": "Compra de um imóvel"
+              },
+              "saleResponsible": {
+                "type": "string",
+                "description": "Responsavel pela Venda",
+                "example": "ROBERTO"
+              },
+              "solicitationResponsible": {
+                "type": "string",
+                "description": "Responsável pela solicitação",
+                "example": "SANDRA"
+              },
+              "emailAddress": {
+                "type": "string",
+                "description": "Email do usuário da venda",
+                "example": "mail@mail.com"
+              },
+              "campaignCode": {
+                "type": "string",
+                "description": "",
+                "example": "002Natal"
+              },
+              "biddingMode": {
+                "type": "string",
+                "description": "",
+                "example": "Concorrência"
+              },
+              "projectType": {
+                "type": "string",
+                "description": "",
+                "example": "Internacional"
+              },
+              "equipmentPaymentMethod": {
+                "type": "string",
+                "description": "",
+                "example": "Fatura"
+              },
+              "paymentMethod": {
+                "type": "string",
+                "description": "",
+                "example": "Fatura"
+              },
+              "channelId": {
+                "type": "string",
+                "description": "",
+                "example": "GRANDEVAREJO"
+              },
+              "requestRaisedFlag": {
+                "type": "string",
+                "description": "",
+                "example": "S"
+              },
+              "riskFlag": {
+                "type": "string",
+                "description": "",
+                "example": "S"
+              },
+              "telephoneNumber": {
+                "type": "string",
+                "description": "número de telefone",
+                "example": "11985673521"
+              },
+              "customer": {
+                "type": "object",
+                "required": [
+                  "cpf",
+                  "birthDate"
+                ],
+                "properties": {
+                  "cpf": {
+                    "type": "string",
+                    "description": "CPF da Pessoa Fisica",
+                    "example": "82534681732"
+                  },
+                  "rg": {
+                    "type": "string",
+                    "description": "RG da Pessoa Fisica",
+                    "example": "34654767"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Indica o nome completo da pessoa, sendo nome mais sobrenome.",
+                    "example": "joao silva"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "Indica a data de nascimento da pessoa fisica.",
+                    "example": "20020802"
+                  },
+                  "motherName": {
+                    "type": "string",
+                    "description": "Indica o nome completo da mãe da pessoa.",
+                    "example": "Maria Silva"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Sexo da pessoa.",
+                    "example": "M"
+                  },
+                  "partyIdentificationType": {
+                    "type": "string",
+                    "description": "Tipo de documento do cliente",
+                    "example": "CPF"
+                  },
+                  "partyIdentificationNumber": {
+                    "type": "string",
+                    "description": "Número do documento do cliente",
+                    "example": 12399944483
+                  },
+                  "foundationDate": {
+                    "type": "string",
+                    "description": "Data de fundação da empresa",
+                    "example": 19800101
+                  },
+                  "emailAddress": {
+                    "type": "string",
+                    "description": "Email do cliente",
+                    "example": "mail@mail.com"
+                  },
+                  "companyName": {
+                    "type": "string",
+                    "description": "Prencher com a Razão do Cliente PJ",
+                    "example": "INDUSTRIAS ACME"
+                  },
+                  "registerDate": {
+                    "type": "string",
+                    "description": "Data do Cadastro",
+                    "example": "19900525"
+                  },
+                  "criticalRatingCode": {
+                    "type": "string",
+                    "description": "Classificação do Cliente crítico",
+                    "example": "5"
+                  },
+                  "customerSegmentCode": {
+                    "type": "string",
+                    "description": "Código Segmento do cliente",
+                    "example": "Corporativo"
+                  },
+                  "customerSizeCode": {
+                    "type": "string",
+                    "description": "Código de Porte do cliente",
+                    "example": "TOP"
+                  },
+                  "regionalSalesCode": {
+                    "type": "string",
+                    "description": "Código da Regional de Vendas",
+                    "example": "35"
+                  },
+                  "diretorySalesCode": {
+                    "type": "string",
+                    "description": "Código diretório de vendas",
+                    "example": "06"
+                  },
+                  "creditCardType": {
+                    "type": "string",
+                    "description": "Bandeira do cartão",
+                    "example": "VISA"
+                  },
+                  "initialCreditCardNumber": {
+                    "type": "string",
+                    "description": "números iniciais do cartão de crédito",
+                    "example": "9999"
+                  },
+                  "finalCreditCardNumber": {
+                    "type": "string",
+                    "description": "numeros finais do cartão de crédito",
+                    "example": "9999"
+                  },
+                  "descriptionActivity": {
+                    "type": "string",
+                    "description": "Ramo da Atividade da Empresa.",
+                    "example": "Fabricação de produtos"
+                  },
+                  "economicGroupCode": {
+                    "type": "string",
+                    "description": "Código grupo Economico",
+                    "example": "123"
+                  },
+                  "legalCode": {
+                    "type": "string",
+                    "description": "Código Natureza Juridica",
+                    "example": "Sociedade LTDA"
+                  },
+                  "cnae": {
+                    "type": "string",
+                    "description": "codigo CNAE",
+                    "example": "1234567"
+                  },
+                  "lineStatus": {
+                    "type": "string",
+                    "description": "Status da linha do cliente",
+                    "example": "BloqParcialPorCobranca"
+                  },
+                  "statusDateSuspension": {
+                    "type": "string",
+                    "description": "Data do Status da Suspensão",
+                    "example": "19900525"
+                  },
+                  "lastDateActivation": {
+                    "type": "string",
+                    "description": "Data da última Ativação",
+                    "example": "19900525"
+                  },
+                  "lastDateDeactivation": {
+                    "type": "string",
+                    "description": "Data da última Desativação",
+                    "example": "19900525"
+                  },
+                  "recentMigrationDate": {
+                    "type": "string",
+                    "description": "Data da migração de Plano mais recente",
+                    "example": "19900525"
+                  },
+                  "partners": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/partners"
+                    }
+                  }
+                }
+              },
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/addresses"
+                }
+              },
+              "products": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/productAddresses"
+                }
+              },
+              "portability": {
+                "type": "object",
+                "description": "()",
+                "required": [
+                  "preencher"
+                ],
+                "properties": {
+                  "spidCode": {
+                    "type": "string",
+                    "description": "Código Spid",
+                    "example": "0115 - Vivo"
+                  },
+                  "portability": {
+                    "type": "string",
+                    "description": "Indicação da portabilidade",
+                    "example": "S"
+                  },
+                  "assignorDocType": {
+                    "type": "string",
+                    "description": "Indicação do tipo de documento do cliente cedente",
+                    "example": "CPF"
+                  },
+                  "assignorDocNumber": {
+                    "type": "string",
+                    "description": "Numero do documento do cliente cedente",
+                    "example": "12345678901"
+                  },
+                  "assigneeDocType": {
+                    "type": "string",
+                    "description": "Indicação do tipo de documento do cliente cessionário",
+                    "example": "CNPJ"
+                  },
+                  "assigneeDocNumber": {
+                    "type": "string",
+                    "description": "numero do documento do cliente cessionário",
+                    "example": "12345678901234"
+                  },
+                  "assignorName": {
+                    "type": "string",
+                    "description": "Nome do cliente cedente",
+                    "example": "Carlos"
+                  },
+                  "assigneeBirthDate": {
+                    "type": "string",
+                    "description": "Data de nascimento do cliente cessionário",
+                    "example": "19800101"
+                  }
+                }
+              },
+              "opportunity": {
+                "type": "object",
+                "description": "()",
+                "properties": {
+                  "origin": {
+                    "type": "string",
+                    "description": "Origem da Oportunidade",
+                    "example": "LOJA FÍSICA"
+                  },
+                  "productName": {
+                    "type": "string",
+                    "description": "Nome do produto que está sendo adquirido",
+                    "example": "PRÉ-PAGO"
+                  },
+                  "productAbbreviation": {
+                    "type": "string",
+                    "description": "Sigla do produto",
+                    "example": "PRPG"
+                  },
+                  "platform": {
+                    "type": "string",
+                    "description": "",
+                    "example": "CONECTIVIDADE"
+                  },
+                  "quantityProductItem": {
+                    "type": "string",
+                    "description": "Quantidade do produto",
+                    "example": "1"
+                  },
+                  "contractExpiration": {
+                    "type": "string",
+                    "description": "Prazo contratual",
+                    "example": "12"
+                  },
+                  "lineQuantity": {
+                    "type": "string",
+                    "description": "Quantidade de linhas",
+                    "example": "2"
+                  },
+                  "circuitQuantity": {
+                    "type": "string",
+                    "description": "Quantidade de circuítos",
+                    "example": "3"
+                  },
+                  "lineExtensionQuantity": {
+                    "type": "string",
+                    "description": "Informa a quantidade de E1 do contrato (1 E1 = 30 ramais).",
+                    "example": "4"
+                  },
+                  "postcode": {
+                    "type": "string",
+                    "description": "CEP de instalação",
+                    "example": "12345678"
+                  },
+                  "installationValue": {
+                    "type": "string",
+                    "description": "Valor total da instalação",
+                    "example": "100,00"
+                  },
+                  "serviceValue": {
+                    "type": "string",
+                    "description": "Valor do Serviço",
+                    "example": "150,00"
+                  },
+                  "discountValue": {
+                    "type": "string",
+                    "description": "Valor do desconto",
+                    "example": "200,00"
+                  },
+                  "opportunityValue": {
+                    "type": "string",
+                    "description": "Valor da oportunidade",
+                    "example": "250,00"
+                  },
+                  "monthValue": {
+                    "type": "string",
+                    "description": "Valor da mensalidade",
+                    "example": "89,90"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "partners": {
+        "type": "object",
+        "description": "Tipo e documento dos sócios",
+        "properties": {
+          "partnerIdentificationType": {
+            "type": "string",
+            "description": "Tipo de documento do Sócio",
+            "example": "CPF"
+          },
+          "partnerIdentificationNumber": {
+            "type": "string",
+            "description": "Número de documento do sócio",
+            "example": "12398875487"
+          }
+        }
+      },
+      "addresses": {
+        "type": "object",
+        "description": "Endereço do Cliente",
+        "required": [
+          "zipCode"
+        ],
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Função de um endereço representa o objetivo do endereço. ",
+            "example": "PRINCIPAL"
+          },
+          "addressType": {
+            "type": "string",
+            "description": "Tipo de endereço segundo critério dos Correios. ",
+            "example": "LOGRADOURO"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Tipo do logradouro do endereço",
+            "example": "RUA"
+          },
+          "streetName": {
+            "type": "string",
+            "description": "Logradouro do Endereço",
+            "example": "augusta"
+          },
+          "zipCode": {
+            "type": "string",
+            "description": "CEP do Endereço",
+            "example": "02243677"
+          },
+          "streetNrFirst": {
+            "type": "string",
+            "description": "Número",
+            "example": "50"
+          },
+          "complementaryAddress": {
+            "type": "string",
+            "description": "Complemento do endereço",
+            "example": "casa 5"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Bairro",
+            "example": "Centro"
+          },
+          "regionCode": {
+            "type": "string",
+            "description": "",
+            "example": "1234"
+          },
+          "cityName": {
+            "type": "string",
+            "description": "Cidade",
+            "example": "Rio de Janeiro"
+          },
+          "stateAbbreviation": {
+            "type": "string",
+            "description": "Estado",
+            "example": "RJ"
+          },
+          "countryName": {
+            "type": "string",
+            "description": "País",
+            "example": "Brasil"
+          },
+          "contactType": {
+            "type": "string",
+            "description": "Indicação do Tipo de Contato",
+            "example": "TELEFONE"
+          },
+          "customerRelationship": {
+            "type": "string",
+            "description": "Relacionamento do contato com o Cliente",
+            "example": "MÃE"
+          },
+          "contactName": {
+            "type": "string",
+            "description": "Nome da pessoa de contato ou referência",
+            "example": "MARCIA"
+          },
+          "areaCode": {
+            "type": "string",
+            "description": "Código de Area",
+            "example": "21"
+          },
+          "telephoneNumber": {
+            "type": "string",
+            "description": "Número do Telefone",
+            "example": "11985673521"
+          }
+        }
+      },
+      "product": {
+        "type": "object",
+        "description": "(lista de produtos que estão sendo contratados, permite multiplos registros)",
+        "required": [
+          "modality",
+          "telephoneNumber",
+          "category",
+          "class"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Código de Identificação do item de produto que esta sendo contratado pelo cliente",
+            "example": "000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do Produto",
+            "example": "produto"
+          },
+          "class": {
+            "type": "string",
+            "description": "Família do Produto",
+            "example": "MOVEL"
+          },
+          "modality": {
+            "type": "string",
+            "description": "Modalidade do Produto",
+            "example": "PREPAGO"
+          },
+          "category": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/category"
+            }
+          },
+          "telephoneNumber": {
+            "type": "string",
+            "description": "Número de telefone do assinante adquirido pelo cliente. Número da Identificação do serviço contratado (MSISDN, etc)",
+            "example": "999999999"
+          }
+        }
+      },
+      "productAddresses": {
+        "type": "object",
+        "description": "(lista de produtos que estão sendo contratados, permite multiplos registros)",
+        "required": [
+          "modality",
+          "telephoneNumber",
+          "category",
+          "productFamily"
+        ],
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Código de Identificação do item de produto que esta sendo contratado pelo cliente",
+            "example": "000"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome do Produto",
+            "example": "produto"
+          },
+          "productFamily": {
+            "type": "string",
+            "description": "Família do Produto",
+            "example": "MOVEL"
+          },
+          "modality": {
+            "type": "string",
+            "description": "Modalidade do Produto",
+            "example": "PREPAGO"
+          },
+          "listValue": {
+            "type": "string",
+            "description": "Preço de Lista item produto",
+            "example": "100,00"
+          },
+          "saleValue": {
+            "type": "string",
+            "description": "Preço de venda do item produto",
+            "example": "150,00"
+          },
+          "discountValue": {
+            "type": "string",
+            "description": "valor do desconto",
+            "example": "50,00"
+          },
+          "telephoneNumber": {
+            "type": "string",
+            "description": "Número de telefone do assinante adquirido pelo cliente. Número da Identificação do serviço contratado (MSISDN, etc)",
+            "example": "11985673521"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/categoryAddresses"
+            }
+          }
+        }
+      },
+      "category": {
+        "type": "object",
+        "description": "Lista de categorias de Serviço do Produto contratado. Podem ser enviadas mais de uma categoria visto que alguns produtos são combos de serviços.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da Categoria de Serviço do Produto contratado.",
+            "example": "TLFFIXA"
+          }
+        }
+      },
+      "categoryAddresses": {
+        "type": "object",
+        "description": "Lista de categorias de Serviço do Produto contratado. Podem ser enviadas mais de uma categoria visto que alguns produtos são combos de serviços.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome da Categoria de Serviço do Produto contratado.",
+            "example": "TLFFIXA"
+          }
+        }
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "httpCode": {
+            "type": "string",
+            "description": "Código de erro HTTP"
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "'Código de erro interno da API no formato.<br/>Ex.: API-3566.<br/>Esse código poderá ser utilizado internamente pelo cliente para mapeamento customizado da mensagem de erro.'"
+          },
+          "message": {
+            "type": "string",
+            "description": "Mensagem de erro resumida"
+          },
+          "link": {
+            "type": "object",
+            "description": "Objeto para conter o link para a página com a documentação detalhada dos códigos e descrições dos erros no API Portal",
+            "properties": {
+              "rel": {
+                "type": "string",
+                "enum": [
+                  "related"
+                ],
+                "description": "Para referenciar a página de erros do API portal será utilizada a semântica \"related\" nesse cenário"
+              },
+              "href": {
+                "type": "string",
+                "description": "URL completa do recurso"
+              }
+            }
+          }
+        }
+      },
+      "risksanalysisResponse": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiversion": {
+            "type": "string",
+            "description": "Versão API.",
+            "example": "1; 2020-06-11"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Identificador de rastreabilidade gerado pela API.",
+            "example": "e6e4e0f4-089d-4194-845e-78f45426f7c7"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "codResult": {
+                "type": "string",
+                "description": "Código que representa o resultado da chamada à Integração",
+                "example": "SUCESSO"
+              },
+              "error": {
+                "type": "array",
+                "description": "Lista de Erros da chamada à integração, podem ser retornados inúmeros erros podendo ser erros técnicos, ou de validação de campos obrigatórios para a execução da integração.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem descritiva do erro",
+                      "example": "CPF não encontrado BVC"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Código do Erro ocorrido",
+                      "example": "E020"
+                    }
+                  }
+                }
+              },
+              "analysisNumber": {
+                "type": "string",
+                "description": "Número da proposta gerado pelo PCO",
+                "example": "2345"
+              },
+              "dateTime": {
+                "type": "string",
+                "description": "Data em que o PCO gerou o resultado da análise da proposta",
+                "example": ""
+              },
+              "code": {
+                "type": "string",
+                "description": "Código que identifica o resultado da análise de risco. Possiveis valores para o pré pago: \"PERMITIDO\" - O parecer da avaliação é de que a ação em questão avaliada pode prosseguir. \"IMPEDIDO\" - O parecer da avaliação é de que a ação em questão avaliada não pode prosseguir. \"INCONCLUSIVO\" - Não foi possível obter um parecer que aponte para permitido ou impedido. Este resultado ocorre quando o sistema de análise de risco não consegue obter as informações suficientes das fontes de dados pesquisadas, de forma que não tem subsídios para determinar ou não o impedimento.",
+                "example": "PERMITIDO"
+              },
+              "message": {
+                "type": "string",
+                "description": "Código que identifica o motivo do resultado da análise de risco. Este parâmetro deve ser preenchido quando o resultado da avaliação (campo code) retornar os valores IMPEDIDO ou INCONCLUSIVO.  Para o resultado IMPEDIDO, os valores possíveis para o motivo são:  SITUACAO_CADASTRAL_INVALIDA - A situação cadastral do cliente é considerada inválida.  LIMITE_ASSINANTES_EXCEDIDO - O limite de assinantes associados ao CPF do cliente foi excedido. SUSPEITA_FRAUDE - Foi detectada suspeita de fraude para o cliente. OBITO - foi identificado óbito pelo CRIVO CPF_NAO_LOCALIZADO - CPF não localizado nas Bases da BVC CEP_NAO_LOCALIZADO - CEP não localizado nas Bases da BVC === Processo de Verificação de Inspeção de Documentos de Venda INSPECAO_NAO_ENCONTRADA - Não há uma inspeção vigente para os dados de venda informados. Necessário verificar se houve o processo de digitalização e inspeção dos documentos de venda. DOC_ID_COM_RISCO - O documento de identificação inspecionado possui risco de fraude. DOC_ID_AUSENTE - O documento de identificação não foi encontrado na inspeção. DOC_ID_INCOMPLETO - O documento de identificação está incompleto. DOC_ID_ILEGIVEL - O documento de identificação está ilegível. DOC_ID_NAO_PASSIVEL_ANALISE - O documento de identificação apresentado não é passível de análise. Para o resultado INCONCLUSIVO, os valores possíveis para o motivo são: CLIENTE_NAO_ENCONTRADO - O cliente não foi encontrado nas bases pesquisadas, o que torna inviável o parecer sobre o risco.Para o resultado IMPEDIDO, os valores possíveis para o motivo são: SITUACAO_CADASTRAL_INVALIDA - A situação cadastral do cliente é considerada inválida. LIMITE_ASSINANTES_EXCEDIDO - O limite de assinantes associados ao CPF do cliente foi excedido. SUSPEITA_FRAUDE - Foi detectada suspeita de fraude para o cliente. OBITO - foi identificado óbito pelo CRIVO CPF_NAO_LOCALIZADO - CPF não localizado nas Bases da BVC CEP_NAO_LOCALIZADO - CEP não localizado nas Bases da BVC    === Processo de Verificação de Inspeção de Documentos de Venda INSPECAO_NAO_ENCONTRADA - Não há uma inspeção vigente para os dados de venda informados. Necessário verificar se houve o processo de digitalização e inspeção dos documentos de venda. DOC_ID_COM_RISCO - O documento de identificação inspecionado possui risco de fraude. DOC_ID_AUSENTE - O documento de identificação não foi encontrado na inspeção. DOC_ID_INCOMPLETO - O documento de identificação está incompleto. DOC_ID_ILEGIVEL - O documento de identificação está ilegível. DOC_ID_NAO_PASSIVEL_ANALISE - O documento de identificação apresentado não é passível de análise.",
+                "example": "SITUACAO_CADASTRAL_INVALIDA"
+              },
+              "description": {
+                "type": "string",
+                "description": "Descrição do motivo do resultado da avaliação de risco. Este campo recebe a mensagem resultante da analise segundo analise CodResultadoAnalise x CodMotivoResultadoAnalise: RESULTADO-ID x MOTIVO-ID = FRASE da area usuaria a ser utilizada nos sistemas  (IMPEDIDO, CEP_NAO_LOCALIZADO) = 'Não é possível concluir o cadastro. Cliente deve informar um CEP válido para realizar o cadastro'  (IMPEDIDO, CLIENTE_OBITO) = 'Não é possível concluir o cadastro. Cliente deve informar um CPF válido para realizar o cadastro'  (IMPEDIDO, LIMITE_ASSINANTE_EXCEDIDO) = 'CPF excedeu limite de linhas ativas. Cliente deve informar um novo CPF para realizar o cadastro' (IMPEDIDO, SITUACAO_CADASTRAL_INVALIDA) = 'CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro' (IMPEDIDO, CLIENTE_NAO_ENCONTRADO) = 'CPF não localizado nas bases de pesquisa. Cliente deve informar um novo CPF para realizar o cadastro' (IMPEDIDO, SUSPEITA_FRAUDE ) = 'Não é possível concluir o cadastro. Cliente deve informar um CPF válido para realizar o cadastro'",
+                "example": "CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro"
+              },
+              "returnCode": {
+                "type": "string",
+                "description": "Código de resposta",
+                "example": "AEPREIMP05"
+              },
+              "limitResult": {
+                "type": "string",
+                "description": "Resultado Limite",
+                "example": "123456789"
+              },
+              "decisionExpiryDate": {
+                "type": "string",
+                "description": "Data de Validade da decisão",
+                "example": "20-01-2010"
+              },
+              "pointResult": {
+                "type": "string",
+                "description": "Resultado em Pontos",
+                "example": "50"
+              },
+              "scoreResult": {
+                "type": "string",
+                "description": "Resultado em Score",
+                "example": "100"
+              },
+              "rankingResult": {
+                "type": "string",
+                "description": "Resultado da posição do Ranking",
+                "example": "200"
+              },
+              "creditLimit": {
+                "type": "string",
+                "description": "Limite Disponível",
+                "example": "1234,50"
+              },
+              "proposedQueue": {
+                "type": "string",
+                "description": "Fila da Proposta",
+                "example": "AGUARDANDO_CREIDTO_N1"
+              },
+              "groupTypeId": {
+                "type": "string",
+                "description": "Grupo responsável pela análise",
+                "example": "RADAR"
+              },
+              "customer": {
+                "type": "object",
+                "description": "Estrutura de Cliente",
+                "properties": {
+                  "profile": {
+                    "type": "string",
+                    "description": "Indica titularidade: Contratante ou Titular atual",
+                    "example": "CONTRATANTE"
+                  },
+                  "cpf": {
+                    "type": "string",
+                    "description": "CPF da Pessoa Fisica",
+                    "example": "90876512346571"
+                  },
+                  "rg": {
+                    "type": "string",
+                    "description": "RG da Pessoa Fisica",
+                    "example": "76768"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Indica o nome completo da pessoa, sendo nome mais sobrenome.",
+                    "example": "Joao Silva"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "Indica a data de nascimento da pessoa fisica.",
+                    "example": ""
+                  },
+                  "motherName": {
+                    "type": "string",
+                    "description": "Indica o nome completo da mãe da pessoa.",
+                    "example": "Maria Silva"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Sexo da pessoa.",
+                    "example": "M"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "Situação cadastral da pessoa no sistema BVC (Base de Validação. Cadastral da Embratel que armazena dados da receita federal).",
+                    "example": "0"
+                  },
+                  "categoryId": {
+                    "type": "array",
+                    "description": "Representa um array de categorias de valor agregado de um cliente na Claro",
+                    "items": {
+                      "enum": [
+                        "TRIPLE_A",
+                        "VIP"
+                      ]
+                    }
+                  }
+                }
+              },
+              "contact": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "Tipo  de contato do cliente.",
+                    "example": "RESIDENCIAL"
+                  },
+                  "contact": {
+                    "type": "string",
+                    "description": "Indica o meio de contato.",
+                    "example": "CELULAR"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "O Contato propriamente dito.",
+                    "example": "11999999999"
+                  }
+                }
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "description": "Função de um endereço representa o objetivo do endereço. ",
+                    "example": "PRINCIPAL"
+                  },
+                  "addressType": {
+                    "type": "string",
+                    "description": "Tipo de endereço segundo critério dos Correios. ",
+                    "example": "LOGRADOURO"
+                  },
+                  "prefix": {
+                    "type": "string",
+                    "description": "Tipo do logradouro do endereço",
+                    "example": "RUA"
+                  },
+                  "streetName": {
+                    "type": "string",
+                    "description": "Logradouro do Endereço",
+                    "example": "augusta"
+                  },
+                  "zipCode": {
+                    "type": "string",
+                    "description": "CEP do Endereço",
+                    "example": "07731488"
+                  },
+                  "number": {
+                    "type": "string",
+                    "description": "numero do endereço",
+                    "example": "74"
+                  },
+                  "addressComplement": {
+                    "type": "string",
+                    "description": "complemento do endereço",
+                    "example": "apto 12"
+                  },
+                  "neighborhood": {
+                    "type": "string",
+                    "description": "bairro do endereço",
+                    "example": "jardins"
+                  },
+                  "mailbox": {
+                    "type": "string",
+                    "description": "caixa postal",
+                    "example": "9999"
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "cidade",
+                    "example": "sao paulo"
+                  },
+                  "stateAbbreviation": {
+                    "type": "string",
+                    "description": "Código da UF",
+                    "example": "sp"
+                  },
+                  "ibgeCityId": {
+                    "type": "string",
+                    "description": "Código do município para o IBGE",
+                    "example": "sp"
+                  },
+                  "ibgeUfId": {
+                    "type": "string",
+                    "description": "Código da UF para o IBGE",
+                    "example": "sp"
+                  },
+                  "ddd": {
+                    "type": "string",
+                    "description": "Código de área (DDD) relacionado ao município;",
+                    "example": "11"
+                  },
+                  "ruralArea": {
+                    "type": "string",
+                    "description": "Indica se o endereço é área rural",
+                    "example": "N"
+                  },
+                  "postOfficesPattern": {
+                    "type": "string",
+                    "description": "Indica se o Endereço está no padrão dos correios",
+                    "example": "S"
+                  },
+                  "claroRegistered": {
+                    "type": "string",
+                    "description": "Indica se o endereço já foi cadastrado nos sistemas da claro",
+                    "example": "S"
+                  },
+                  "sourceSystemId": {
+                    "type": "string",
+                    "description": "Sistema/Base Origem do Endereço é o código de identificação do sistema de origem cadastral do endereço retornado.",
+                    "example": "CLFI"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "risksanalysisResponseGET": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiversion": {
+            "type": "string",
+            "description": "Versão API.",
+            "example": "1; 2020-06-11"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Identificador de rastreabilidade gerado pela API.",
+            "example": "e6e4e0f4-089d-4194-845e-78f45426f7c7"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "customer": {
+                "type": "object",
+                "required": [
+                  "partyIdentificationType",
+                  "partyIdentificationNumber"
+                ],
+                "properties": {
+                  "partyIdentificationType": {
+                    "type": "string",
+                    "description": "Identificador do tipo de documento do cliente. CPF, CNPJ, Passaporte, Consulado ou Outros",
+                    "example": "CPF"
+                  },
+                  "partyIdentificationNumber": {
+                    "type": "string",
+                    "description": "Número do documento.",
+                    "example": "12345678901"
+                  }
+                }
+              },
+              "creditAnalysis": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "returnCode",
+                    "limitResult",
+                    "operation",
+                    "contractExpiration"
+                  ],
+                  "properties": {
+                    "analysisNumber": {
+                      "type": "string",
+                      "description": "Número da proposta gerado pelo PCO.",
+                      "example": "000000000107573"
+                    },
+                    "dateTime": {
+                      "type": "string",
+                      "description": "Data em que o PCO gerou o resultado da análise da proposta.",
+                      "example": "2021-10-20T16:51:42"
+                    },
+                    "code": {
+                      "type": "string",
+                      "description": "Código que identifica o resultado da análise de risco. Possiveis valores:\"PERMITIDO\" - O parecer da avaliação é de que a ação em questão avaliada pode prosseguir.\"IMPEDIDO\" - O parecer da avaliação é de que a ação em questão avaliada não pode prosseguir.\"INCONCLUSIVO\" - Não foi possível obter um parecer que aponte para permitido ou impedido. Este resultado ocorre quando o sistema de análise de risco não consegue obter as informações suficientes das fontes de dados pesquisadas, de forma que não tem subsídios para determinar ou não o impedimento.",
+                      "example": "IMPEDIDO"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Código que identifica o motivo do resultado da análise de risco. Este parâmetro deve ser preenchido quando o resultado da avaliação (campo code) retornar os valores IMPEDIDO ou INCONCLUSIVO. Para o resultado IMPEDIDO, os valores possíveis para o motivo são: SITUACAO_CADASTRAL_INVALIDA - A situação cadastral do cliente é considerada inválida. LIMITE_ASSINANTES_EXCEDIDO - O limite de assinantes associados ao CPF do cliente foi excedido. SUSPEITA_FRAUDE - Foi detectada suspeita de fraude para o cliente. OBITO - foi identificado óbito pelo CRIVO CPF_NAO_LOCALIZADO - CPF não localizado nas Bases da BVC CEP_NAO_LOCALIZADO - CEP não localizado nas Bases da BVC === Processo de Verificação de Inspeção de Documentos de Venda INSPECAO_NAO_ENCONTRADA - Não há uma inspeção vigente para os dados de venda informados. Necessário verificar se houve o processo de digitalização e inspeção dos documentos de venda. DOC_ID_COM_RISCO - O documento de identificação inspecionado possui risco de fraude. DOC_ID_AUSENTE - O documento de identificação não foi encontrado na inspeção. DOC_ID_INCOMPLETO - O documento de identificação está incompleto. DOC_ID_ILEGIVEL - O documento de identificação está ilegível. DOC_ID_NAO_PASSIVEL_ANALISE - O documento de identificação apresentado não é passível de análise. Para o resultado INCONCLUSIVO, os valores possíveis para o motivo são: CLIENTE_NAO_ENCONTRADO - O cliente não foi encontrado nas bases pesquisadas, o que torna inviável o parecer sobre o risco.Para o resultado IMPEDIDO, os valores possíveis para o motivo são: SITUACAO_CADASTRAL_INVALIDA - A situação cadastral do cliente é considerada inválida. LIMITE_ASSINANTES_EXCEDIDO - O limite de assinantes associados ao CPF do cliente foi excedido. SUSPEITA_FRAUDE - Foi detectada suspeita de fraude para o cliente. OBITO - foi identificado óbito pelo CRIVO CPF_NAO_LOCALIZADO - CPF não localizado nas Bases da BVC CEP_NAO_LOCALIZADO - CEP não localizado nas Bases da BVC === Processo de Verificação de Inspeção de Documentos de Venda INSPECAO_NAO_ENCONTRADA - Não há uma inspeção vigente para os dados de venda informados. Necessário verificar se houve o processo de digitalização e inspeção dos documentos de vend . DOC_ID_COM_RISCO - O documento de identificação inspecionado possui risco de fraude. DOC_ID_AUSENTE - O documento de identificação não foi encontrado na inspeção. DOC_ID_INCOMPLETO - O documento de identificação está incompleto. DOC_ID_ILEGIVEL - O documento de identificação está ilegível. DOC_ID_NAO_PASSIVEL_ANALISE - O documento de identificação apresentado não é passível de análise.",
+                      "example": "SITUACAO_CADASTRAL_INVALIDA"
+                    },
+                    "description": {
+                      "type": "string",
+                      "description": "Descrição do motivo do resultado da análise de crédito. === Processo de Verificação de Inspeção de Documentos de Venda Descrição do motivo do resultado da avaliação de risco. Este campo recebe a mensagem resultante da análise segundo análise Code x message: RESULTADO-ID x MOTIVO-ID = FRASE da area usuaria a ser utilizada nos sistemas (IMPEDIDO, CEP_NAO_LOCALIZADO) = 'Não é possível concluir o cadastro. Cliente deve informar um CEP válido para realizar o cadastro' (IMPEDIDO, CLIENTE_OBITO) = 'Não é possível concluir o cadastro. Cliente deve informar um CPF válido para realizar o cadastro' (IMPEDIDO, LIMITE_ASSINANTE_EXCEDIDO) = 'CPF excedeu limite de linhas ativas. Cliente deve informar um novo CPF para realizar o cadastro' (IMPEDIDO, SITUACAO_CADASTRAL_INVALIDA) = 'CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro' (IMPEDIDO, CLIENTE_NAO_ENCONTRADO) = 'CPF não localizado nas bases de pesquisa. Cliente deve informar um novo CPF para realizar o cadastro' (IMPEDIDO, SUSPEITA_FRAUDE ) = 'Não é possível concluir o cadastro. Cliente deve informar um CPF válido para realizar o cadastro'",
+                      "example": "CPF inválido na Receita Federal. Cliente deve informar um CPF válido para realizar o cadastro"
+                    },
+                    "returnCode": {
+                      "type": "string",
+                      "description": "Código de resposta",
+                      "example": "AEPREIMP05"
+                    },
+                    "limitResult": {
+                      "type": "string",
+                      "description": "Valor de limite disponibilizado para a proposta.",
+                      "example": "1234,50"
+                    },
+                    "decisionExperyDate": {
+                      "type": "string",
+                      "description": "Período de validade em data que a decisão do motor de crédito decidiu.",
+                      "example": "20-01-2010"
+                    },
+                    "pointResult": {
+                      "type": "string",
+                      "description": "Este campo é para receber a resposta do sistema de crédito a pontuação cliente.",
+                      "example": "50"
+                    },
+                    "scoreResult": {
+                      "type": "string",
+                      "description": "Este campo é para receber a resposta do sistema de crédito o score cliente.",
+                      "example": "100"
+                    },
+                    "rankingResult": {
+                      "type": "string",
+                      "description": "Classificação score do cliente.",
+                      "example": "200"
+                    },
+                    "creditLimit": {
+                      "type": "string",
+                      "description": "A resposta do sistema de crédito o limite de credito do cliente",
+                      "example": "1234,50"
+                    },
+                    "operation": {
+                      "type": "string",
+                      "description": "Indicação de qual processo ou operação de negócio esta sendo executada pelo sistema requisitante da chamada a integração do sistema de Credito/Risco. Para URA pode ser por exemplo o  script-id. 'VENDACLIENTEPROSPECT'; 'VENDACLIENTEBASE' (upgrade, downgrade, produtos adicionais, etc); 'TROCATITULARIDADE'; 'MUDANCAENDERECO'; 'CADASTROCLIENTE' (somente para Móvel Pré Pago)",
+                      "example": "VENDACLIENTEPROSPECT"
+                    },
+                    "lastDateDecision": {
+                      "type": "string",
+                      "description": "Data da última decisão.",
+                      "example": 20211010
+                    },
+                    "productName": {
+                      "type": "string",
+                      "description": "Nome do produto que está sendo adquirido.",
+                      "example": "PRÉ-PAGO"
+                    },
+                    "productAbbreviation": {
+                      "type": "string",
+                      "description": "Sigla do produto.",
+                      "example": "PRPG"
+                    },
+                    "contractExpiration": {
+                      "type": "string",
+                      "description": "Prazo do contrato em meses.",
+                      "example": "12"
+                    },
+                    "lineQuantity": {
+                      "type": "string",
+                      "description": "Quantidade de linhas.",
+                      "example": "5"
+                    },
+                    "lineExtensionQuantity": {
+                      "type": "string",
+                      "description": "Informa a quantidade de E1 do contrato (1 E1 = 30 ramais).",
+                      "example": "6"
+                    },
+                    "installationValue": {
+                      "type": "string",
+                      "description": "valor total da instalação.",
+                      "example": "100,00"
+                    },
+                    "serviceValue": {
+                      "type": "string",
+                      "description": "Valor total da taxa de serviço.",
+                      "example": "150,00"
+                    },
+                    "discountValue": {
+                      "type": "string",
+                      "description": "Valor do desconto.",
+                      "example": "200,00"
+                    },
+                    "opportunityValue": {
+                      "type": "string",
+                      "description": "valor da oportunidade.",
+                      "example": "250,00"
+                    },
+                    "monthValue": {
+                      "type": "string",
+                      "description": "Valor da mensalidade.",
+                      "example": "89,90"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "risksanalysisResponseGETErro": {
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiversion": {
+            "type": "string",
+            "description": "Versão API.",
+            "example": "1; 2020-06-11"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Identificador de rastreabilidade gerado pela API.",
+            "example": "e6e4e0f4-089d-4194-845e-78f45426f7c7"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida.",
+                "example": "Documento informado não possui propostas APROVADAS e dentro da Validade"
+              }
+            }
+          }
+        }
+      },
+      "apiversion": {
+        "type": "string",
+        "description": "Versão API.",
+        "example": "1; 2020-06-11"
+      },
+      "transactionId": {
+        "type": "string",
+        "description": "Identificador de rastreabilidade gerado pela API.",
+        "example": "e6e4e0f4-089d-4194-845e-78f45426f7c7"
+      }
+    },
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Client-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    }
+  }
+}

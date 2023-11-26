@@ -1,0 +1,1886 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Party - Parties (Proxy Apigee: party-parties-v1)",
+    "description": "<table>\n  <thead>\n    <tr>\n      <th>Versão</th>\n      <th>Elaborado por</th>\n      <th>Revisado por</th>\n      <th>Data</th>\n      <th>Alterações</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.0.0</td>\n      <td>Stefan Ritter</td>\n      <td>Yuri Kerges</td>\n      <td>2021-06-28</td>\n      <td>[LGPD - Integrações Seguras de APIs] - Versão inicial.</td>\n    </tr>\n <tr>\n      <td>1.0.1</td>\n      <td>Bruno Nascimento</td>\n      <td></td>\n      <td>2022-06-06</td>\n      <td>[SOLAR - Vendas] - Inclusão de consulta ao BW.</td>\n    </tr>\n    <tr>\n      <td>1.0.2</td>\n      <td>Matheus Alves</td>\n      <td></td>\n      <td>2023-05-04</td>\n      <td>[NEW STACK] - Inclusão de consulta por CPF na base do BW.</td>\n    </tr>\n </tbody>\n</table>\n\n\n## Objetivo\n\n \n\nAPI que permite gerenciar informações de cadastro e endereço de uma pessoa em geral.\n## Público-Alvo\nAté a data desta especificação o potencial consumidor é o Solar.    \n## Provedores\nOs backend provedores da API são o SOA MOBILE e BW.\n## Contexto em que a API se Insere\n  \nEsta API está inserida no conjunto de APIs de domínio mobile. Os principais elementos desse sistema são:\n * Gerenciar informações de cadastro e endereço de uma pessoa em geral..\n",
+    "version": "1;2022-06-06",
+    "contact": {
+      "name": "Stefan Ritter",
+      "email": "COEE.API.Integracao@claro.com.br"
+    },
+    "x-claro-domains": [
+      "Party"
+    ]
+  },
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/parties": {
+      "get": {
+        "summary": "Método que permite recuperar informações de cadastro e endereço de uma pessoa em geral. Backend: SOA Móvel ListarDadosPessoav1 ou BW serviço 1149",
+        "description": "Método que permite recuperar informações de cadastro e endereço de uma pessoa em geral.",
+        "x-claro-backend": [
+          "soaEsbMobile",
+          "bw"
+        ],
+        "tags": [
+          "Consultar Pessoas (Get Parties)"
+        ],
+        "parameters": [
+          {
+            "name": "X-QueryString",
+            "in": "header",
+            "description": "Header query string (LGPD compliant) onde são informados os campos de identificação da pessoa. A identificação é composta de dois campos:\n\n  * identificationType - é o tipo da identificação. Os valores devem ser:\n    * CPF\n    * CNPJ\n    \n  * identificationId - é o valor da identificação propriamente, de acordo com o tipo informado.\n\nA string resultante são campos com nome/valor separados pelo símbolo \"&\". Exemplos de preenchimento do X-QueryStrig:\n  * 'identificationType=CPF&identificationId=31242354678'\n  * 'identificationType=CNPJ&identificationId=06032456000134'",
+            "required": true,
+            "example": "identificationType=CPF&identificationId=31242354678",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "systemId",
+            "in": "query",
+            "description": "Representa o código da aplicação que originou a chamada do serviço. Possíveis valores de entrada:\n\n  * FLEX - plataforma digital do cliente Claro Brasil",
+            "required": true,
+            "example": "FLEX",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "repositoryType",
+            "in": "query",
+            "description": "Define para qual sistema provedor dos dados será direcionado o fluxo de execução da API. Caso o atributo seja configurado no app do consumidor, este terá precedência em relação ao atributo informado via query parameter. Possíveis valores de entrada:\n\n  * REPLICA_BASE_UNIFICADA\n  * ONLINE\n  * BW",
+            "required": true,
+            "example": "REPLICA_BASE_UNIFICADA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/getIndividual"
+                    },
+                    {
+                      "$ref": "#/components/schemas/getOrganization"
+                    },
+                    {
+                      "$ref": "#/components/schemas/getIndividualBW"
+                    },
+                    {
+                      "$ref": "#/components/schemas/getOrganizationBW"
+                    }
+                  ]
+                },
+                "examples": {
+                  "PESSOA_FISICA": {
+                    "value": {
+                      "apiVersion": "1;2021-06-28",
+                      "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                      "data": {
+                        "individual": {
+                          "name": "JOSE DA SILVA",
+                          "birthDate": "1970-10-20",
+                          "motherName": "MARIA DA SILVA",
+                          "gender": "M",
+                          "identifications": [
+                            {
+                              "identificationType": "CPF",
+                              "identificationId": "31242354678"
+                            },
+                            {
+                              "identificationType": "RG",
+                              "identificationId": "1234567890",
+                              "issuingAuthority": "SSP"
+                            }
+                          ],
+                          "phoneType": "RESIDENCIAL",
+                          "phoneNumber": "1122334455",
+                          "phoneExtensionNumber": "1234",
+                          "emailAddress": "joao.silva@email.com.br",
+                          "maritalStatus": "CASADO",
+                          "registrationStatus": "0",
+                          "addresses": [
+                            {
+                              "addressType": "RESIDENCIAL",
+                              "streetNamePrefix": "RUA",
+                              "streetName": "FLORIDA",
+                              "streetNr": "1970",
+                              "complement": "4º ANDAR",
+                              "neighborhood": "VL MONÇÕES",
+                              "cityName": "SÃO PAULO",
+                              "stateAbbreviation": "SP",
+                              "postCode": "1239553",
+                              "ibgeCityId": "3550308",
+                              "ibgeStateId": "45454",
+                              "areaCode": "11"
+                            }
+                          ],
+                          "registrationDate": "2012-01-12T12:10:30-03:00",
+                          "registrationDetailsLastChangeDate": "2012-01-12T12:10:30-03:00",
+                          "segmentationId": "CLFI"
+                        }
+                      }
+                    }
+                  },
+                  "PESSOA_JURIDICA": {
+                    "value": {
+                      "apiVersion": "1;2021-06-28",
+                      "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                      "data": {
+                        "organization": {
+                          "name": "INDUSTRIAS ACME",
+                          "tradingName": "ACME S/A",
+                          "identifications": [
+                            {
+                              "identificationType": "CNPJ",
+                              "identificationId": "06032456000134",
+                              "registrationStatus": "ATIVA"
+                            },
+                            {
+                              "identificationType": "INCRICAO_ESTADUAL",
+                              "identificationId": "1234567890",
+                              "registrationStatus": "HABILITADA"
+                            },
+                            {
+                              "identificationType": "CODIGO_SUFRAMA",
+                              "identificationId": "1234567890",
+                              "registrationStatus": "HABILITADA"
+                            }
+                          ],
+                          "phoneNumber": "1122334455",
+                          "characteristics": [
+                            {
+                              "type": "CNAE_PRIMARIO",
+                              "value": "2543-8/00"
+                            },
+                            {
+                              "type": "CNAE_SECUNDARIO",
+                              "value": "2543-8/00"
+                            }
+                          ],
+                          "addresses": [
+                            {
+                              "streetNamePrefix": "RUA",
+                              "streetName": "FLORIDA",
+                              "streetNr": "1970",
+                              "complement": "4º ANDAR",
+                              "neighborhood": "VL MONÇÕES",
+                              "cityName": "SÃO PAULO",
+                              "stateAbbreviation": "SP",
+                              "postCode": "1239553",
+                              "ibgeCityId": "3550308"
+                            }
+                          ],
+                          "registrationDate": "2012-01-12T12:10:30-03:00",
+                          "registrationDetailsLastChangeDate": "2012-01-12T12:10:30-03:00",
+                          "segmentationId": "CLFI"
+                        }
+                      }
+                    }
+                  },
+                  "PESSOA_FISICA_BW": {
+                    "value": {
+                      "apiVersion": "1;2021-06-28",
+                      "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                      "data": {
+                        "individual": {
+                          "name": "JOSE DA SILVA",
+                          "birthDate": "1970-10-20",
+                          "motherName": "MARIA DA SILVA",
+                          "gender": "M",
+                          "identifications": [
+                            {
+                              "identificationType": "CPF",
+                              "identificationId": "31242354678"
+                            }
+                          ],
+                          "registrationStatus": "0",
+                          "addresses": [
+                            {
+                              "streetNamePrefix": "RUA",
+                              "streetName": "FLORIDA",
+                              "streetNr": "1970",
+                              "complement": "4º ANDAR",
+                              "neighborhood": "VL MONÇÕES",
+                              "cityName": "SÃO PAULO",
+                              "stateAbbreviation": "SP",
+                              "postCode": "1239553",
+                              "countryId": "45454",
+                              "ibgeCityId": "3550308",
+                              "tomCityId": "11"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "PESSOA_JURIDICA_BW": {
+                    "value": {
+                      "apiVersion": "1;2021-06-28",
+                      "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                      "data": {
+                        "organization": {
+                          "tradingName": "TRANSPORTADORA MINUANO LTDA",
+                          "id": "1",
+                          "consumptionClass": "10",
+                          "class": "01",
+                          "customerType": "1",
+                          "type": "2",
+                          "foreignCountryId": "",
+                          "foreignCountryName": "",
+                          "legalNature": "2062",
+                          "shareCapital": "0",
+                          "simplifiedTaxActivationDate": "20220917",
+                          "simplifiedTaxCancellationDate": "20220918",
+                          "openingDate": "20120112",
+                          "identifications": [
+                            {
+                              "identificationType": "CNPJ",
+                              "identificationId": "87183570001386",
+                              "registrationStatus": "ATIVA",
+                              "registrationStatusDate": "20220921"
+                            },
+                            {
+                              "identificationType": "INCRICAO_ESTADUAL",
+                              "identificationId": "9018536061",
+                              "registrationStatus": "1",
+                              "registrationStatusDate": "20220921"
+                            }
+                          ],
+                          "phoneNumber": "22334455",
+                          "areaCode": "11",
+                          "characteristics": [
+                            {
+                              "name": "CNAE_PRIMARIO",
+                              "value": "4930202"
+                            },
+                            {
+                              "name": "CNAE_SECUNDARIO",
+                              "value": "4930201"
+                            }
+                          ],
+                          "address": {
+                            "addressType": "1",
+                            "streetNamePrefix": "R",
+                            "streetName": "ANTONIO MORO",
+                            "streetNr": "290",
+                            "complement": "TERREO",
+                            "neighborhood": "COSTEIRA",
+                            "cityName": "SAO JOSE DOS PINHAIS",
+                            "stateAbbreviation": "PR",
+                            "postCode": "83010300",
+                            "ibgeCityId": "4125506",
+                            "ibgeStateId": "45",
+                            "tomCityId": "7885",
+                            "countryId": "0"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.claro.com.br/party/v1",
+      "description": "Sandbox (SaaS)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/party/v1",
+      "description": "Test (on-premises)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/party/v1",
+      "description": "Test (SaaS)"
+    },
+    {
+      "url": "https://api.claro.com.br/party/v1",
+      "description": "Production (SaaS)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/party/v1",
+      "description": "Production (on-premises DC Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/party/v1",
+      "description": "Production (on-premises DC Lapa)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "getIndividual": {
+        "description": "Interface para listar os dados de uma pessoa física através do seu número de CPF.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "data": {
+            "description": "Objeto de negócio contendo os dados de uma pessoa física.",
+            "type": "object",
+            "required": [
+              "individual"
+            ],
+            "properties": {
+              "individual": {
+                "description": "Objeto responsável por representar uma pessoa física.",
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome completo da pessoa.",
+                    "example": "JOSE DA SILVA"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "Data de nascimento da pessoa.",
+                    "format": "date",
+                    "example": "1970-10-20"
+                  },
+                  "motherName": {
+                    "type": "string",
+                    "description": "Nome da mãe da pessoa.",
+                    "example": "MARIA DA SILVA"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gênero da pessoa. Os valores possíveis são:\n  * M - Masculino;\n  * F - Feminino.",
+                    "enum": [
+                      "M",
+                      "F"
+                    ],
+                    "example": "M"
+                  },
+                  "identifications": {
+                    "type": "array",
+                    "description": "Documentos de identificação da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/individualIdentification"
+                    }
+                  },
+                  "phoneType": {
+                    "type": "string",
+                    "description": "Tipo do número de telefone da pessoa. Valores válidos:\n  * RESIDENCIAL\n  * COMERCIAL\n  * CELULAR\n  * FAX",
+                    "enum": [
+                      "RESIDENCIAL",
+                      "COMERCIAL",
+                      "CELULAR",
+                      "FAX"
+                    ],
+                    "example": "RESIDENCIAL"
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "Número do telefone da pessoa.",
+                    "example": "1122334455"
+                  },
+                  "phoneExtensionNumber": {
+                    "type": "string",
+                    "description": "Ramal da pessoa.",
+                    "example": "1234"
+                  },
+                  "emailAddress": {
+                    "type": "string",
+                    "description": "E-mail da pessoa.",
+                    "example": "joao.silva@email.com.br"
+                  },
+                  "maritalStatus": {
+                    "type": "string",
+                    "description": "Estado civil da pessoa.",
+                    "example": "CASADO"
+                  },
+                  "registrationStatus": {
+                    "type": "string",
+                    "description": "Situação cadastral da pessoa no sistema BVC. Os valores possíveis são:\n  * 0 – Regular;\n  * 1 – Cancelada por Encerramento de Espólio;\n  * 2 – Suspensa;\n  * 3 – Cancelada por Óbito sem Espolio;\n  * 4 – Pendente de Regularização;\n  * 5 – Cancelada por Multiplicidade;\n  * 8 – Nula;\n  * 9 – Cancelada de Ofício.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "8",
+                      "9"
+                    ],
+                    "example": "0"
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "Endereços da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/address"
+                    }
+                  },
+                  "registrationDate": {
+                    "type": "string",
+                    "description": "Data do cadastro da pessoa no sistema de origem cadastral.",
+                    "format": "date-time",
+                    "example": "2012-01-12T12:10:30-03:00"
+                  },
+                  "registrationDetailsLastChangeDate": {
+                    "type": "string",
+                    "description": "Data da última atualização dos dados cadastrais da pessoa.",
+                    "format": "date-time",
+                    "example": "2012-01-12T12:10:30-03:00"
+                  },
+                  "segmentationId": {
+                    "type": "string",
+                    "description": "Sistema que contém os dados cadastrais apresentados pela pessoa em questão. Além de indicar quais empresas do Grupo América Móvil prestam serviços ao cliente em questão, os segmentos determinam as divisões de negócio específicas de uma ou mais empresas do grupo que atuam neste cliente. Os valores possíveis para esse parâmetro são:\n  * CLFI - Claro Fixo, pertencente à ViaEmbratel;\n  * CLTV - Claro TV, pertencente à ViaEmbratel;\n  * ENET - Segmento genérico da NET;\n  * CLAR - Segmento genérico da Claro;\n  * BVC - Base de Validação Cadastral.",
+                    "enum": [
+                      "CLFI",
+                      "CLTV",
+                      "ENET",
+                      "CLAR",
+                      "BVC"
+                    ],
+                    "example": "CLFI"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "getOrganization": {
+        "description": "Interface para listar os dados de uma pessoa jurídica através do seu número de CNPJ.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "data": {
+            "description": "Objeto de negócio contendo os dados de uma pessoa jurídica.",
+            "type": "object",
+            "required": [
+              "organization"
+            ],
+            "properties": {
+              "organization": {
+                "description": "Objeto responsável por representar uma pessoa jurídica.",
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome da razão social da pessoa jurídica.",
+                    "example": "INDUSTRIAS ACME"
+                  },
+                  "tradingName": {
+                    "type": "string",
+                    "description": "Nome-fantasia da pessoa jurídica.",
+                    "example": "ACME S/A"
+                  },
+                  "identifications": {
+                    "type": "array",
+                    "description": "Documentos de identificação da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/organizationIdentification"
+                    }
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "Número do telefone da pessoa.",
+                    "example": "1122334455"
+                  },
+                  "characteristics": {
+                    "type": "array",
+                    "description": "Características da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/characteristic"
+                    }
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "Endereços da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/address"
+                    }
+                  },
+                  "registrationDate": {
+                    "type": "string",
+                    "description": "Data do cadastro da pessoa no sistema de origem cadastral.",
+                    "format": "date-time",
+                    "example": "2012-01-12T12:10:30-03:00"
+                  },
+                  "registrationDetailsLastChangeDate": {
+                    "type": "string",
+                    "description": "Data da última atualização dos dados cadastrais da pessoa.",
+                    "format": "date-time",
+                    "example": "2012-01-12T12:10:30-03:00"
+                  },
+                  "segmentationId": {
+                    "type": "string",
+                    "description": "Sistema que contém os dados cadastrais apresentados pelo pessoa em questão. Além de indicar quais empresas do Grupo América Móvil prestam serviços ao cliente em questão, os segmentos determinam as divisões de negócio específicas de uma ou mais empresas do grupo que atuam neste cliente. Os valores possíveis para esse parâmetro são:\n  * CLFI - Claro Fixo, pertencente à ViaEmbratel;\n  * CLTV - Claro TV, pertencente à ViaEmbratel;\n  * ENET - Segmento genérico da NET;\n  * CLAR - Segmento genérico da Claro;\n  * BVC - Base de Validação Cadastral.",
+                    "enum": [
+                      "CLFI",
+                      "CLTV",
+                      "ENET",
+                      "CLAR",
+                      "BVC"
+                    ],
+                    "example": "CLFI"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "getIndividualBW": {
+        "description": "Interface para listar os dados de uma pessoa física através do seu número de CPF.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "data": {
+            "description": "Objeto de negócio contendo os dados de uma pessoa física.",
+            "type": "object",
+            "required": [
+              "individual"
+            ],
+            "properties": {
+              "individual": {
+                "description": "Objeto responsável por representar uma pessoa física.",
+                "type": "object",
+                "required": [
+                  "name",
+                  "registrationStatus",
+                  "identifications"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Nome completo da pessoa.",
+                    "example": "JOSE DA SILVA"
+                  },
+                  "birthDate": {
+                    "type": "string",
+                    "description": "Data de nascimento da pessoa.",
+                    "format": "date",
+                    "example": "1970-10-20"
+                  },
+                  "motherName": {
+                    "type": "string",
+                    "description": "Nome da mãe da pessoa.",
+                    "example": "MARIA DA SILVA"
+                  },
+                  "gender": {
+                    "type": "string",
+                    "description": "Gênero da pessoa. Os valores possíveis são:\n  * M - Masculino;\n  * F - Feminino.",
+                    "enum": [
+                      "M",
+                      "F"
+                    ],
+                    "example": "M"
+                  },
+                  "identifications": {
+                    "type": "array",
+                    "description": "Documentos de identificação da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/individualIdentification"
+                    }
+                  },
+                  "registrationStatus": {
+                    "type": "string",
+                    "description": "Situação cadastral da pessoa no sistema BVC. Os valores possíveis são:\n  * 0 – Regular;\n  * 1 – Cancelada por Encerramento de Espólio;\n  * 2 – Suspensa;\n  * 3 – Cancelada por Óbito sem Espolio;\n  * 4 – Pendente de Regularização;\n  * 5 – Cancelada por Multiplicidade;\n  * 8 – Nula;\n  * 9 – Cancelada de Ofício.",
+                    "enum": [
+                      "0",
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "8",
+                      "9"
+                    ],
+                    "example": "0"
+                  },
+                  "addresses": {
+                    "type": "array",
+                    "description": "Endereços da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/addressBW"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "getOrganizationBW": {
+        "description": "Interface para listar os dados de uma pessoa jurídica através do seu número de CNPJ.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "data": {
+            "description": "Objeto de negócio contendo os dados de uma pessoa jurídica.",
+            "type": "object",
+            "required": [
+              "organization"
+            ],
+            "properties": {
+              "organization": {
+                "description": "Objeto responsável por representar uma pessoa jurídica.",
+                "type": "object",
+                "properties": {
+                  "tradingName": {
+                    "type": "string",
+                    "description": "Nome-fantasia da pessoa jurídica.",
+                    "example": "ACME S/A"
+                  },
+                  "id": {
+                    "type": "string",
+                    "description": "Identificação do assinante. 1 - Comercial / Industrial\n2 - Poder Público\n3 - Residencial / Pessoa Física\n4 - Público\n5 - Semi público\n6 - Outros",
+                    "example": "1"
+                  },
+                  "consumptionClass": {
+                    "type": "string",
+                    "description": "Campo obrigatório para faturamento gerado pelas filiais de PE para atender a SEF II.10 - Comercial/serviços/industrial\n21 - Poder público estadual  isento\n30 - Residencial/pessoa fisica\n60 - Outros tipos de consumo\n61 - Serviço consular isento",
+                    "example": "10"
+                  },
+                  "class": {
+                    "type": "string",
+                    "description": "Campo obrigatório para o SPED Contábil 01 - Pessoa Física\n02 - Cooperativa\n03 - Empresa Pública\n04 - Empresa Privada\n05 - Cooperativa de Transporte\n06 - Sociedade Profissional\n07 - Imune\n08 - Regime de Estimativa\n09 - Depósito/Decisão Judicial\n10 - Isento\n11 - Exig. Suspensa/Proced Adm.",
+                    "example": "01"
+                  },
+                  "customerType": {
+                    "type": "string",
+                    "description": "Identificação do cliente. 1 - Comercial.\n2 - Industrial.\n3 - Residencial / Pessoa Física.\n4 - Produtor Rural.\n5 - Órgão da administração pública estadual  direta e suas fundações e autarquias, quando mantidas pelo poder público estadual e regidas por normas de direito público, nos Termos do Convênio ICMS 107/95.\n 6 - Prestador de serviço de telecomunicação responsável pelo recolhimento do imposto incidente sobre a cessão dos meios de rede do prestador do serviço ao usuário final, nos termos do Convênio ICMS 17/13.\n7 - Missões Diplomáticas, Repartições Consulares e Organismos Internacionais, nos termos do Convênio ICMS 158/94.\n8 - Igrejas e Templos de qualquer natureza.\n 99 - Outros não especificados anteriormente.",
+                    "example": "1"
+                  },
+                  "type": {
+                    "type": "string",
+                    "description": "Indicador de matriz/filial, retornado na pesquisa. 1 – Matriz e 2 – Filial",
+                    "example": "2"
+                  },
+                  "foreignCountryId": {
+                    "type": "string",
+                    "description": "Código do pais, caso o estabelecimento consultado for estabelecido no exterior, retornada na pesquisa",
+                    "example": ""
+                  },
+                  "foreignCountryName": {
+                    "type": "string",
+                    "description": "Nome do pais, caso o estabelecimento consultado for estabelecido no exterior, retornada na pesquisa",
+                    "example": ""
+                  },
+                  "legalNature": {
+                    "type": "string",
+                    "description": "Código da natureza jurídica do estabelecimento, retornado na pesquisa",
+                    "example": "2062"
+                  },
+                  "shareCapital": {
+                    "type": "string",
+                    "description": "Valor do capital social da empresa, retornado na pesquisa",
+                    "example": "0"
+                  },
+                  "simplifiedTaxActivationDate": {
+                    "type": "string",
+                    "description": "Data em que a empresa fez sua opção pelo Simples, retornada na pesquisa",
+                    "example": "20220917"
+                  },
+                  "simplifiedTaxCancellationDate": {
+                    "type": "string",
+                    "description": "Data em que a empresa foi excluída do Simples, retornada na pesquisa",
+                    "example": "20220918"
+                  },
+                  "identifications": {
+                    "type": "array",
+                    "description": "Documentos de identificação da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/organizationIdentification"
+                    }
+                  },
+                  "phoneNumber": {
+                    "type": "string",
+                    "description": "Número do telefone da pessoa.",
+                    "example": "22334455"
+                  },
+                  "areaCode": {
+                    "type": "string",
+                    "description": "DDD do telefone do estabelecimento, retornado na pesquisa",
+                    "example": "11"
+                  },
+                  "characteristics": {
+                    "type": "array",
+                    "description": "Características da pessoa.",
+                    "items": {
+                      "$ref": "#/components/schemas/characteristic"
+                    }
+                  },
+                  "address": {
+                    "type": "object",
+                    "description": "Endereços da pessoa.",
+                    "$ref": "#/components/schemas/addressBW"
+                  },
+                  "openingDate": {
+                    "type": "string",
+                    "description": "Data de abertura do estabelecimento, retornada na pesquisa. AAAAMMDD",
+                    "example": "20120112"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "individualIdentification": {
+        "description": "Objeto que representa um documento de identificação de uma pessoa física.",
+        "type": "object",
+        "required": [
+          "identificationType",
+          "identificationId"
+        ],
+        "properties": {
+          "identificationType": {
+            "type": "string",
+            "description": "Tipo do documento. Valores válidos:\n  * CPF - CADASTRO DE PESSOA FÍSICA;\n  * RG - REGISTRO GERAL.",
+            "enum": [
+              "CPF",
+              "RG"
+            ],
+            "example": "CPF"
+          },
+          "identificationId": {
+            "type": "string",
+            "description": "Número do documento.",
+            "example": "31242354678"
+          },
+          "issuingAuthority": {
+            "type": "string",
+            "description": "Órgão emissor do documento.",
+            "example": "SSP"
+          }
+        }
+      },
+      "individualIdentificationBW": {
+        "description": "Objeto que representa um documento de identificação de uma pessoa física.",
+        "type": "object",
+        "required": [
+          "identificationType",
+          "identificationId"
+        ],
+        "properties": {
+          "identificationType": {
+            "type": "string",
+            "description": "Tipo do documento. Valores válidos:\n  * CPF - CADASTRO DE PESSOA FÍSICA.",
+            "enum": [
+              "CPF"
+            ],
+            "example": "CPF"
+          },
+          "identificationId": {
+            "type": "string",
+            "description": "Número do documento.",
+            "example": "31242354678"
+          }
+        }
+      },
+      "organizationIdentification": {
+        "description": "Objeto que representa um documento de identificação de uma pessoa jurídica.",
+        "type": "object",
+        "required": [
+          "identificationType",
+          "identificationId"
+        ],
+        "properties": {
+          "identificationType": {
+            "type": "string",
+            "description": "Tipo do documento. Valores válidos:\n  * CNPJ - CADASTRO NACIONAL DE PESSOA FÍSICA;\n  * INSCRICAO_ESTADUAL;\n  * CODIGO_SUFRAMA.",
+            "enum": [
+              "CNPJ",
+              "INSCRICAO_ESTADUAL",
+              "CODIGO_SUFRAMA"
+            ],
+            "example": "CNPJ"
+          },
+          "identificationId": {
+            "type": "string",
+            "description": "Número do documento.",
+            "example": "06032456000134"
+          },
+          "registrationStatus": {
+            "type": "string",
+            "description": "Situação cadastral da pessoa jurídica no respectivo órgão. Os valores possíveis são:\n  * Caso \"type\" = CNPJ:\n    * NULA\n    * ATIVA\n    * SUSPENSA\n    * INAPTA\n    * BAIXADA\n  * Caso \"type\" = INSCRICAO_ESTADUAL:\n    * HABILITADA\n    * HABILITADA_COM_RESTRICOES\n    * NAO_HABILITADA\n    * INDEFERIMENTO_DE_BAIXA\n    * INDISPONIVEL\n    * INEXISTENTE\n    * PARALISACAO_DE_ATIVIDADE\n    * BAIXADA\n    * CANCELADA\n  * Caso \"type\" = CODIGO_SUFRAMA:\n    * BLOQUEADA\n    * CANCELADA\n    * HABILITADA\n    * INATIVA\n    * NAO_HABILITADA\n    * INEXISTENTE",
+            "example": "ATIVA"
+          },
+          "registrationStatusDate": {
+            "type": "string",
+            "description": "Data da situação cadastral da empresa, retornada na pesquisa. AAAAMMDD",
+            "example": "20220921"
+          }
+        }
+      },
+      "characteristic": {
+        "description": "Objeto responsável por representar as características da pessoa.",
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tipo da característica. Valores válidos:\n  * CNAE_PRIMARIO - Código Nacional de Atividade Econômica primário;\n  * CNAE_SECUNDARIO - Código Nacional de Atividade Econômica secundário.",
+            "enum": [
+              "CNAE_PRIMARIO",
+              "CNAE_SECUNDARIO"
+            ],
+            "example": "CNAE_PRIMARIO"
+          },
+          "value": {
+            "type": "string",
+            "description": "Valor da característica.",
+            "example": "2543-8/00"
+          }
+        }
+      },
+      "address": {
+        "description": "Dados de endereço.",
+        "type": "object",
+        "properties": {
+          "addressType": {
+            "type": "string",
+            "description": "Tipo de endereço. Valores válidos:\n  * PRINCIPAL\n  * ENTREGA\n  * MALA_DIRETA\n  * INSTALACAO\n  * COBRANCA\n  * RESIDENCIAL",
+            "enum": [
+              "PRINCIPAL",
+              "ENTREGA",
+              "MALA_DIRETA",
+              "INSTALACAO",
+              "COBRANCA",
+              "RESIDENCIAL"
+            ],
+            "example": "RESIDENCIAL"
+          },
+          "streetNamePrefix": {
+            "type": "string",
+            "description": "Prefixo do logradouro.",
+            "example": "RUA"
+          },
+          "streetName": {
+            "type": "string",
+            "description": "Nome do logradouro.",
+            "example": "FLORIDA"
+          },
+          "streetNr": {
+            "type": "string",
+            "description": "Número do logradouro.",
+            "example": "1970"
+          },
+          "complement": {
+            "type": "string",
+            "description": "Informações complementares do logradouro.",
+            "example": "4º ANDAR"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Bairro onde se localiza o endereço.",
+            "example": "VL MONÇÕES"
+          },
+          "cityName": {
+            "type": "string",
+            "description": "Cidade em que se localiza o endereço.",
+            "example": "SÃO PAULO"
+          },
+          "stateAbbreviation": {
+            "type": "string",
+            "description": "Sigla da unidade da federeção (UF) em que se localiza o endereço.",
+            "example": "SP"
+          },
+          "postCode": {
+            "type": "string",
+            "description": "Código de endereçamento postal (CEP) do endereço.",
+            "example": "1239553"
+          },
+          "ibgeCityId": {
+            "type": "string",
+            "description": "Código do município no IBGE.",
+            "example": "3550308"
+          },
+          "ibgeStateId": {
+            "type": "string",
+            "description": "Código da unidade de federeção no IBGE.",
+            "example": "3550308"
+          },
+          "areaCode": {
+            "type": "string",
+            "description": "Código de área (DDD) ao qual o endereço pertence.",
+            "example": "11"
+          },
+          "tomCityId": {
+            "type": "string",
+            "description": "Código do município, conforme tabela TOM",
+            "example": "7885"
+          },
+          "countryId": {
+            "type": "string",
+            "description": "Código do pais referente ao endereço, conforme tabela BACEN (não retornado no WS do Serpro)",
+            "example": "0"
+          }
+        }
+      },
+      "addressBW": {
+        "description": "Dados de endereço.",
+        "type": "object",
+        "properties": {
+          "addressType": {
+            "type": "string",
+            "description": "Tipo de endereço. Valores válidos:\n  * PRINCIPAL\n  * ENTREGA\n  * MALA_DIRETA\n  * INSTALACAO\n  * COBRANCA\n  * RESIDENCIAL",
+            "enum": [
+              "PRINCIPAL",
+              "ENTREGA",
+              "MALA_DIRETA",
+              "INSTALACAO",
+              "COBRANCA",
+              "RESIDENCIAL"
+            ],
+            "example": "RESIDENCIAL"
+          },
+          "streetNamePrefix": {
+            "type": "string",
+            "description": "Prefixo do logradouro.",
+            "example": "RUA"
+          },
+          "streetName": {
+            "type": "string",
+            "description": "Nome do logradouro.",
+            "example": "FLORIDA"
+          },
+          "streetNr": {
+            "type": "string",
+            "description": "Número do logradouro.",
+            "example": "1970"
+          },
+          "complement": {
+            "type": "string",
+            "description": "Informações complementares do logradouro.",
+            "example": "4º ANDAR"
+          },
+          "neighborhood": {
+            "type": "string",
+            "description": "Bairro onde se localiza o endereço.",
+            "example": "VL MONÇÕES"
+          },
+          "cityName": {
+            "type": "string",
+            "description": "Cidade em que se localiza o endereço.",
+            "example": "SÃO PAULO"
+          },
+          "stateAbbreviation": {
+            "type": "string",
+            "description": "Sigla da unidade da federeção (UF) em que se localiza o endereço.",
+            "example": "SP"
+          },
+          "postCode": {
+            "type": "string",
+            "description": "Código de endereçamento postal (CEP) do endereço.",
+            "example": "1239553"
+          },
+          "countryId": {
+            "type": "string",
+            "description": "Código do pais referente ao endereço, conforme tabela BACEN (não retornado no WS do Serpro)",
+            "example": "0"
+          },
+          "ibgeCityId": {
+            "type": "string",
+            "description": "Código do município no IBGE.",
+            "example": "3550308"
+          },
+          "tomCityId": {
+            "type": "string",
+            "description": "Código do município, conforme tabela TOM",
+            "example": "7885"
+          }
+        }
+      },
+      "error": {
+        "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx).",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "httpCode": {
+                "type": "string",
+                "description": "Código de erro HTTP."
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Código de erro interno da API no formato. Ex.: API-3566. Esse código poderá ser utilizado internamente pelo cliente para mapeamento customizado da mensagem de erro."
+              },
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida."
+              },
+              "detailedMessage": {
+                "type": "string",
+                "description": "Mensagem de erro detalhada."
+              },
+              "link": {
+                "type": "object",
+                "description": "Objeto para conter o link para a página com a documentação detalhada dos códigos e descrições dos erros no API portal.",
+                "properties": {
+                  "rel": {
+                    "type": "string",
+                    "enum": [
+                      "related"
+                    ],
+                    "description": "Para referenciar a página de erros do API portal será utilizada a semântica \"related\" nesse cenário."
+                  },
+                  "href": {
+                    "type": "string",
+                    "description": "URL completa do recurso."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "apiVersion": {
+        "type": "string",
+        "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: \"apiVersion: 2;2015-08-12\". Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+        "example": "1;2021-06-28"
+      },
+      "transactionId": {
+        "type": "string",
+        "description": "Retorna o identificador de rastreabilidade de transação gerado pela API.",
+        "example": "dc00ef54-7104-4c92-9b11-639285569aa6"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "API-PARTIES-400": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Invalid Request for operation.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-1": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo identificationType é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-2": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo identificationId é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-3": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo systemId é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-4": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo repositoryType é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-5-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "CAMPOS OBRIGATORIOS NAO INFORMADOS.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-6-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "ERRO AO REALIZAR A CONSULTA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-7-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "LISTA DE CNPJ'S VAZIA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-8-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "RAZAO SOCIAL PRECISA TER NO MINIMO 6 CARACTERES.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-9-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "NOME FANTASIA PRECISA TER NO MINIMO 6 CARACTERES.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-10-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "SAO NECESSARIOS OBRIGATORIAMENTE 8 CARACTERES PARA ESTE TIPO DE CONSULTA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-11-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "SAO NECESSARIOS OBRIGATORIAMENTE 14 CARACTERES PARA ESTE TIPO DE CONSULTA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-400-12-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-PARTIES-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "SAO NECESSARIOS OBRIGATORIAMENTE 11 CARACTERES PARA ESTE TIPO DE CONSULTA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "401",
+                "errorCode": "API-PARTIES-401",
+                "message": "Unauthorized",
+                "detailedMessage": "Unauthorized user.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-PARTIES-403",
+                "message": "Forbidden",
+                "detailedMessage": "Access denied.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-PARTIES-404",
+                "message": "Not found",
+                "detailedMessage": "Resource not found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-PARTIES-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Unavailable HTTP method.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-PARTIES-406",
+                "message": "Request Not Acceptable",
+                "detailedMessage": "Requested content type not acceptable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "410": {
+        "description": "Gone",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "410",
+                "errorCode": "API-PARTIES-410",
+                "message": "Resource Unavailable",
+                "detailedMessage": "The resource is no longer available.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "415": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "415",
+                "errorCode": "API-PARTIES-415",
+                "message": "Unsupported Media Type",
+                "detailedMessage": "Unsupported request media type.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "API-PARTIES-422": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Unprocessable Entity.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-1-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "CNPJ NAO ENCONTRADO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-2-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "CPF NAO ENCONTRADO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-3-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "RAZAO SOCIAL NAO ENCONTRADA.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-4-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "NOME FANTASIA NAO ENCONTRADO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-5-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "USUARIO SEM ACESSO PARA PESQUISA POR CPF.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-6-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "USUARIO SEM ACESSO PARA PESQUISA POR CNPJ.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-7-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "DOCUMENTO NAO ENCONTRADO NO FORNECEDOR EXTERNO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-8-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "DOCUMENTO NAO ENCONTRADO NO SERPRO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-9-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "NAO FOI POSSIVEL OBTER O CODIGO IBGE RETORNADO PELO MPE.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-422-10-BW": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-PARTIES-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "NAO FOI POSSIVEL ATRIBUIR O NIVEL DE SELECAO.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-PARTIES-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "Consumer requests exceeded policies.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "451": {
+        "description": "Unavailable For Legal Reasons",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "451",
+                "errorCode": "API-PARTIES-451",
+                "message": "Unavailable For Legal Reasons",
+                "detailedMessage": "Unavailable For Legal Reasons.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "API-PARTIES-500": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-PARTIES-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "API-PARTIES-500-1": {
+                "value": {
+                  "apiVersion": "1;2021-06-28",
+                  "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-PARTIES-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Ocorreu uma falha técnica não esperada",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-06-28",
+              "transactionId": "dc00ef54-7104-4c92-9b11-639285569aa6",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-PARTIES-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,704 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Party - Employees Work Historicals (Proxy Apigee: party-employeesworkhistoricals-v1)",
+    "description": "<table><thead><tr><th>Version</th><th>Author</th><th>Date</th><th>Changes</th></tr></thead><tbody><tr><td>1.0.0</td><td>Bruno Henrique Ferronato</td><td>2023-06-02</td><td>[Projeto Subsídios Trabalhistas Terceiros] Versão inicial</td></tr></tbody></table>\n\n## Objetivo\nAPI responsável por consultar os registros históricos de trabalho de colaboradores ou ex-colaboradores.\n\n## Público-Alvo\n Até a data desta especificação os potenciais consumidores são os sistemas que precisam consultar os registros de trabalho de colaboradores ou ex-colaboradores. \n## Provedores\nO backend provedor da API é o sistema RH Evolution.\n\n## Contexto em que a API se Insere\nEsta API está inserida no conjunto de APIs que serão utilizadas pelo STT - STT Subsídios Trabalhistas Terceiros) para consultar o histórico de trabalho dos colaboradores da Claro/Nextel/Embratel/NET.. com a finalidade de verificar se a pessoa envolvida no processo trabalhista, trabalhou como colaborador na Claro.\n* Consultar o histórico registros de trabalho de colaboradores e ex-colaboradores.",
+    "version": "1;2023-06-02",
+    "contact": {
+      "name": "(CC-Integração) - Bruno Henrique Ferronato",
+      "email": "coee.api.integracao@claro.com.br"
+    },
+    "x-claro-domains": [
+      "Party"
+    ]
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.claro.com.br/party/v1",
+      "description": "Sandbox (SaaS)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/party/v1",
+      "description": "Test (on-premises)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/party/v1",
+      "description": "Test (SaaS)"
+    },
+    {
+      "url": "https://api.claro.com.br/party/v1",
+      "description": "Production (SaaS)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/party/v1",
+      "description": "Production (on-premises DC Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/party/v1",
+      "description": "Production (on-premises DC Lapa)"
+    }
+  ],
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/employees/workhistoricals": {
+      "get": {
+        "summary": "Esta operação permite realizar a consulta de dados históricos de trabalho de colaboradores ou ex-colaboradores da Claro. Backend: 'RH Evolution'",
+        "description": "## Cenário - Consultar um Colaborador por CPF \n\n| Obrigatoriedade | Tipo Parâmetro | Parâmetro  | \n  |---|---|---| \n  | Obrigatório | X-QueryString | identificationType |  \n |Obrigatório | X-QueryString | identificationId | \n ",
+        "tags": [
+          "Consulta Registros Colaborador"
+        ],
+        "parameters": [
+          {
+            "name": "X-QueryString",
+            "in": "header",
+            "description": "Header query string (LGPD compliant) onde são informados os campos no formato: chave=valor&chave=valor. \n\n Neste contexto os parâmetros são: \n\n * identificationType - Tipo de identificação. Os valores devem ser:\n\n    * CPF \n\n * identificationId - Valor de identificação sem pontuação, de acordo com o tipo informado no parâmetro _identificationType_.",
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "examples": {
+              "Busca_CPF": {
+                "summary": "Consultar um Colaborador por CPF",
+                "value": "identificationType=CPF&identificationId=12312312399"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/employeesWorkHistoricalsResponse"
+                },
+                "example": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "5963d53d-8726-421b-af13-8c8294445a5e",
+                  "data": {
+                    "records": [
+                      {
+                        "individualIdentifications": [
+                          {
+                            "type": "CPF",
+                            "identificationId": "12312312399"
+                          }
+                        ],
+                        "name": "Maria da Silva",
+                        "jobTitle": "Analista",
+                        "companyName": "CLARO S.A.",
+                        "startDate": "2015-02-23",
+                        "endDate": "2019-07-30"
+                      },
+                      {
+                        "individualIdentifications": [
+                          {
+                            "type": "CPF",
+                            "identificationId": "12312312399"
+                          }
+                        ],
+                        "name": "Maria da Silva",
+                        "jobTitle": "Gerente",
+                        "companyName": "CLARO S.A.",
+                        "startDate": "2019-08-01",
+                        "endDate": "2020-09-30"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "employeesWorkHistoricalsResponse": {
+        "description": "Objeto de negócio contendo os dados de histórico de trabalho do colaborador.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "records"
+            ],
+            "description": "Objeto de negócio contendo os dados de histórico de trabalho do colaborador.",
+            "properties": {
+              "records": {
+                "type": "array",
+                "description": "Lista contendo os registros históricos de trabalho do colaborador.",
+                "items": {
+                  "$ref": "#/components/schemas/recordObjectSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "individualIdentificationsObjectSchema": {
+        "description": "Objeto de documentos de identifição colaborador.",
+        "type": "object",
+        "required": [
+          "type",
+          "identificationId"
+        ],
+        "properties": {
+          "type": {
+            "description": "Tipo do documento de identificação. \n\n Valores válidos: * CPF - Cadastro de Pessoa Física.",
+            "type": "string",
+            "example": "CPF",
+            "enum": [
+              "CPF"
+            ]
+          },
+          "identificationId": {
+            "description": "Número do documento de identificação.",
+            "type": "string",
+            "example": "12312312399"
+          }
+        }
+      },
+      "recordObjectSchema": {
+        "description": "Registro histórico de trabalho do colaborador.",
+        "required": [
+          "individualIdentifications",
+          "name",
+          "jobTitle",
+          "companyName",
+          "startDate"
+        ],
+        "properties": {
+          "individualIdentifications": {
+            "description": "Lista contendo os documentos de identificação do colaborador",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/individualIdentificationsObjectSchema"
+            }
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome completo do colaborador.",
+            "example": "Maria da Silva"
+          },
+          "jobTitle": {
+            "description": "Cargo do colaborador.",
+            "type": "string",
+            "example": "Gerente"
+          },
+          "companyName": {
+            "description": "Nome da empresa.",
+            "type": "string",
+            "example": "CLARO S.A."
+          },
+          "startDate": {
+            "description": "Data de início do contrato de trabalho do colaborador.",
+            "type": "string",
+            "format": "date(YYYY-MM-DD)",
+            "example": "2019-08-31"
+          },
+          "endDate": {
+            "description": "Data de término do contrato de trabalho do colaborador.",
+            "type": "string",
+            "format": "date(YYYY-MM-DD)",
+            "example": "2020-09-30"
+          }
+        }
+      },
+      "apiVersion": {
+        "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: \"apiVersion: 1;2023-06-02\". Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+        "type": "string",
+        "example": "1;2023-06-02"
+      },
+      "transactionId": {
+        "description": "Retorna o identificador de rastreabilidade de transação gerado pela API. Caso o identificador seja fornecido pelo cliente, este será ecoado sem alteração.",
+        "type": "string",
+        "example": "5963d53d-8726-421b-af13-8c8294445a5e"
+      },
+      "error": {
+        "description": "Object returned when an error occurs (4xx/5xx)",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: \"apiVersion: 1;2023-01-26\". Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+            "type": "string",
+            "example": "1;2023-06-02"
+          },
+          "transactionId": {
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pela API. Caso o identificador seja fornecido pelo cliente, este será ecoado sem alteração.",
+            "type": "string",
+            "example": "5963d53d-8726-421b-af13-8c8294445a5e"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "httpCode": {
+                "type": "string",
+                "description": "HTTP error code"
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Internal API error code. Ex.: API-3566. This code can be used by consumer to map its error message."
+              },
+              "message": {
+                "type": "string",
+                "description": "Error Message."
+              },
+              "detailedMessage": {
+                "type": "string",
+                "description": "Detailed error message."
+              },
+              "link": {
+                "type": "object",
+                "description": "Object containing page link to errors detailed documentation on API Portal.",
+                "properties": {
+                  "rel": {
+                    "type": "string",
+                    "enum": [
+                      "related"
+                    ],
+                    "description": "To reference the API portal error page is used the “related” semantics in this scenario."
+                  },
+                  "href": {
+                    "type": "string",
+                    "description": "Resource URL"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "summary": "Bad Request",
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Bad Request",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "ParametroAusente": {
+                "summary": "Parâmetro Ausente",
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O Parâmetro [identificationType] é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "ParametrosAusentes": {
+                "summary": "Parâmetros Ausentes",
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Os Parâmetros [identificationType,identificationId] são obrigatórios.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "IdentificationTypeInvalido": {
+                "summary": "Valor IdentificationType Invalido",
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O valor do parâmetro [identificationType] é inválido.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "Unauthorized": {
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "401",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-401",
+                    "message": "Unauthorized",
+                    "detailedMessage": "Unauthorized.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "UnauthorizedBackend": {
+                "summary": "Backend Error: Código de identificação não encontrado.",
+                "value": {
+                  "apiVersion": "1;2023-06-02",
+                  "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+                  "error": {
+                    "httpCode": "401",
+                    "errorCode": "API-EMPLOYEESWORKHISTORICALS-401",
+                    "message": "Unauthorized",
+                    "detailedMessage": "Backend Error: Código de identificação do serviço não encontrado.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-403",
+                "message": "Forbidden",
+                "detailedMessage": "Client authorization failed.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-404",
+                "message": "Not Found",
+                "detailedMessage": "Resource Not Found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Unavailable HTTP method.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-406",
+                "message": "Request Not Acceptable",
+                "detailedMessage": "Requested content type not acceptable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unprocessable Entity - Identify business errors that can be detailed according to backend system rules.\n\nThe possible values are: \n  * API-EMPLOYEESWORKHISTORICALS-001: Colaborador não encontrado no cadastro CLARO.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "422",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-001",
+                "message": "Unprocessable Entity.",
+                "detailedMessage": "Colaborador não encontrado no cadastro CLARO.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "The maximum request limit has been exceeded.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "451": {
+        "description": "Unavailable For Legal Reasons",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "451",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-451",
+                "message": "Unavailable For Legal Reasons",
+                "detailedMessage": "Unavailable For Legal Reasons.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "500",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-500",
+                "message": "Internal Server Error",
+                "detailedMessage": "Internal Server Error.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2023-06-02",
+              "transactionId": "E6e4e0f4-089d-4194-845e-78f45426f7c7",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-EMPLOYEESWORKHISTORICALS-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

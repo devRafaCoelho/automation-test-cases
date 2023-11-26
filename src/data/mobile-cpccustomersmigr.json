@@ -1,0 +1,639 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mobile - Cpc Customers Migrations \n(Proxy Apigee: mobile-cpccustomersmigrations-v1)",
+    "description": "<table>\n  <thead>\n    <tr>\n      <th>Versão</th>\n      <th>Elaborado por</th>\n      <th>Data</th>\n      <th>Alterações</th>\n    </tr>\n  </thead>  \n  <tbody>\n    <tr>\n      <td>1.0.0</td>\n      <td>Rodrigo Prado</td>\n      <td>2022-06-12</td>\n      <td>[5G NSA] - Versão inicial</td> \n    </tr> \n  </tbody>\n</table>\n\n\n## Objetivo\n\n  API responsável por verificar a situação de migração do assinante através do número de telefone do assinante (MSISDN)\n\n## Público-Alvo\n\n  Os potenciais consumidores dessa API são processos que necessitem verificar situação de migração CPC. \n  \n## Provedores\n\nO Backend provedor da API é Fachada Soa Corporativo.\n\n## Contexto em que a API se Insere\nEsta API está inserida no conjunto de APIs de domínio mobile. \nOs principais elementos desse sistema são:\n* Interface para verificar situação de migração CPC.",
+    "version": "1;2022-06-12",
+    "contact": {
+      "name": "(CC-Integração) - Rodrigo Prado",
+      "email": "coee.api.integracao@claro.com.br"
+    },
+    "x-claro-domains": [
+      "Customer"
+    ]
+  },
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/cpc/customers/migrations/status": {
+      "get": {
+        "summary": "Com base nos parametros passados a API irá obter status de migração do assinante. Backend: VerificarSituacaoMigracaoCPC",
+        "x-claro-backends": [
+          "VerificarSituacaoMigracaoCPC"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "operationId": "SearchEMTA",
+        "description": "<b>Como degustar esta API em sandbox:</b><br>Os seguintes cenários de retorno podem ser simulados, conforme o <b>telephoneNumber</b> informado:</p><br>Retorno de sucesso (HTTP 200):<br>telephoneNumber  = 9999999200",
+        "parameters": [
+          {
+            "name": "X-QueryString",
+            "in": "header",
+            "description": "Header query string (LGPD compliant) onde são informados os campos no formato: chave=valor. Neste contexto os parâmetros são:\n* telephoneNumber - Número do telefone do assinante",
+            "required": true,
+            "example": "telephoneNumber=9999999200",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Verificar a situação de migração do assinante através do número de telefone do assinante (MSISDN)"
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/migration"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.claro.com.br/mobile/v1",
+      "description": "Sandbox (SaaS)"
+    },
+    {
+      "url": "https://api-lab.claro.com.br/mobile/v1",
+      "description": "Lab (SaaS)"
+    },
+    {
+      "url": "https://api-dev.claro.com.br/mobile/v1",
+      "description": "Dev (SaaS)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/mobile/v1",
+      "description": "Test (SaaS)"
+    },
+    {
+      "url": "https://api-homolog.claro.com.br/mobile/v1",
+      "description": "Homologação (SaaS)"
+    },
+    {
+      "url": "https://api.claro.com.br/mobile/v1",
+      "description": "Produção (SaaS)"
+    },
+    {
+      "url": "https://lab.apigw.claro.com.br/mobile/v1",
+      "description": "Lab (OPDK)"
+    },
+    {
+      "url": "https://dev.apigw.claro.com.br/mobile/v1",
+      "description": "Dev (OPDK)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/mobile/v1",
+      "description": "Test (OPDK)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/mobile/v1",
+      "description": "Produção (OPDK Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/mobile/v1",
+      "description": "Produção (OPDK Lapa)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "error": {
+        "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx)",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "description": "Retorna sempre a versão maior e menor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2020-04-02”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+            "example": "1"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pelo API. Caso o identificador foi fornecido pelo cliente, o mesmo é ecoado sem alteração."
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "httpCode": {
+                "type": "string",
+                "description": "Código de erro HTTP"
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Código de erro interno da API no formato. Ex.: API-3566. Esse código poderá ser utilizado internamente pelo cliente para mapeamento customizado da mensagem de erro."
+              },
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida"
+              },
+              "detailedMessage": {
+                "type": "string",
+                "description": "Mensagem de erro detalhada"
+              },
+              "link": {
+                "type": "object",
+                "description": "Objeto para conter o link para a página com a documentação detalhada dos códigos e descrições dos erros no API Portal\n",
+                "properties": {
+                  "rel": {
+                    "type": "string",
+                    "enum": [
+                      "related"
+                    ],
+                    "description": "Para referenciar a página de erros do API portal será utilizada a semântica “related” nesse cenário"
+                  },
+                  "href": {
+                    "type": "string",
+                    "description": "URL completa do recurso"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "xml": {
+          "name": "xml"
+        }
+      },
+      "migration": {
+        "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "example": "1;2022-06-12",
+            "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2021-06-19”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível."
+          },
+          "transactionId": {
+            "type": "string",
+            "example": "593f33f6-6122-4624-8c1c-6602a14a730e",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pela API."
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "status"
+            ],
+            "properties": {
+              "status": {
+                "type": "string",
+                "description": "Situação de migração do MSISDN, se MIGRADO, indica que o assinante foi migrado para o CPC. Se NAO_MIGRADO, indica que o legado deve ser utilizado.  Se MIGRANDO, indica que o MSISDN está em fase de migração, e nenhuma ação neste assinante deve ser efetuada.",
+                "enum": [
+                  "MIGRADO",
+                  "NAO_MIGRADO",
+                  "MIGRANDO"
+                ],
+                "example": "MIGRADO"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2022-06-12",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-CPCCUSTOMERSMIGRATIONS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Invalid Request for operation.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "RequireFieldsFault": {
+                "value": {
+                  "apiVersion": "1;2022-06-12",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-CPCCUSTOMERSMIGRATIONS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo [nome_campo] é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "401",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-401",
+                "message": "Unauthorized",
+                "detailedMessage": "Unauthorized user.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-403",
+                "message": "Forbidden",
+                "detailedMessage": "Access denied.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-404",
+                "message": "Not found",
+                "detailedMessage": "Resource not found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Unavailable HTTP method.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-406",
+                "message": "Request Not Acceptable",
+                "detailedMessage": "Requested content type not acceptable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "410": {
+        "description": "Gone",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "410",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-410",
+                "message": "Resource Unavailable",
+                "detailedMessage": "The resource is no longer available.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "415": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "415",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-415",
+                "message": "Unsupported Media Type",
+                "detailedMessage": "Unsupported request media type.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unprocessable Entity - Identifica erros de negócio, podendo ser detalhados conforme regras do sistema backend. ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "422",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-422",
+                "message": "Unprocessable Entity",
+                "detailedMessage": "Business fault occurred.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "Consumer requests exceeded policies.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "451": {
+        "description": "Unavailable For Legal Reasons",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "451",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-451",
+                "message": "Unavailable For Legal Reasons",
+                "detailedMessage": "Unavailable For Legal Reasons.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "InternalServerError": {
+                "value": {
+                  "apiVersion": "1;2022-06-12",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-CPCCUSTOMERSMIGRATIONS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "TechnicalFault": {
+                "value": {
+                  "apiVersion": "1;2022-06-12",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-CPCCUSTOMERSMIGRATIONS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Backend: Ocorreu uma falha técnica não esperada",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-06-12",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-CPCCUSTOMERSMIGRATIONS-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

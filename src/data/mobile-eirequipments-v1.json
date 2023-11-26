@@ -1,0 +1,879 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mobile - Eir Equipments \n(Proxy Apigee: mobile-eirequipments-v1 )",
+    "description": "<table>\n  <thead>\n    <tr>\n      <th>Versão</th>\n      <th>Elaborado por</th>\n      <th>Data</th>\n      <th>Alterações</th>\n    </tr>\n  </thead>  \n  <tbody>\n    <tr>\n      <td>1.0.0</td>\n      <td>Rodrigo Prado</td>\n      <td>2022-08-09</td>\n      <td>[5G SA] - Versão inicial</td> \n    </tr> \n  </tbody>\n</table>\n\n\n## Objetivo\n\n  API responsável por solicitações inclusão/remoção de IMEI'S para blacklist no EIR(Equipment Identity Register) 5G SA.\n\n## Público-Alvo\n\n  Os potenciais consumidores dessa API são processos que necessitem incluir/remover IMEI'S para blacklist.\n  \n## Provedores\n\nO backend provedor da API é o EIR(Equipment Identity Register) 5G.\n\n## Contexto em que a API se Insere\nEsta API está inserida no conjunto de APIs de domínio mobile. \nOs principais elementos desse sistema são:\n* Interface para criar ou substituir o(s) equipamento(s) existente(s) junto com seu status e lista de associação no EIR.\n* Interface para remover dados de autenticação de assinante.",
+    "version": "1;2022-08-09",
+    "contact": {
+      "name": "(CC-Integração) - Rodrigo Prado",
+      "email": "coee.api.integracao@claro.com.br"
+    },
+    "x-claro-domains": [
+      "Customer"
+    ]
+  },
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/eir/equipments": {
+      "put": {
+        "summary": "Crie ou substitua o(s) equipamento(s) existente(s) junto com seu status e lista de associação no EIR. Suportado apenas para 5G.. Backend: EIR 5G",
+        "x-claro-backends": [
+          "EIR 5G"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "operationId": "AddEditConfig",
+        "description": "<b>Como degustar esta API em sandbox:</b><br>Os seguintes cenários de retorno podem ser simulados, conforme o <b>pei</b> informado:</p><br>Retorno de sucesso (HTTP 204):<br>pei  = imei-988634777243204",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EquipmentsObj"
+              }
+            }
+          },
+          "required": true
+        },
+        "tags": [
+          "Equipments"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/eirPutResponse"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Resposta esperada a uma solicitação válida"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Com base nos parâmetros passados a API irá excluir dados de autenticação de assinante. Backend: EIR 5G",
+        "x-claro-backends": [
+          "EIR 5G"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "operationId": "DeleteConfig",
+        "description": "<b>Como degustar esta API em sandbox:</b><br>Os seguintes cenários de retorno podem ser simulados, conforme o <b>pei</b> informado:</p><br>Retorno de sucesso (HTTP 204):<br>pei  = imei-988634777243204",
+        "tags": [
+          "Equipments"
+        ],
+        "parameters": [
+          {
+            "name": "x-querystring",
+            "in": "header",
+            "required": true,
+            "description": "O PEI que deve ser buscado. Apenas **imei** e **imeisv** são compatíveis",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Exemplo1": {
+                "summary": "Consultar com mais de um IMEI",
+                "value": "pei=imei-988634777243484&pei=imei-123456789123416"
+              },
+              "Exemplo2": {
+                "summary": "Consultar com um IMEI",
+                "value": "pei=imei-988634777243484"
+              }
+            }
+          },
+          {
+            "name": "appType",
+            "in": "query",
+            "required": true,
+            "description": "Tipo de aplicativo",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "5GS"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Exemplo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/eirResponse"
+                },
+                "example": {
+                  "apiVersion": "1;2022-08-09",
+                  "transactionId": "5c622fdb-278b-4479-aa40-3e451dcfdd83",
+                  "data": []
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Após o sucesso, um corpo de resposta vazio deve ser retornado."
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-lab.claro.com.br/mobile/v1",
+      "description": "Lab (SaaS)"
+    },
+    {
+      "url": "https://api-dev.claro.com.br/mobile/v1",
+      "description": "Dev (SaaS)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/mobile/v1",
+      "description": "Test (SaaS)"
+    },
+    {
+      "url": "https://api-homolog.claro.com.br/mobile/v1",
+      "description": "Homologação (SaaS)"
+    },
+    {
+      "url": "https://api.claro.com.br/mobile/v1",
+      "description": "Produção (SaaS)"
+    },
+    {
+      "url": "https://lab.apigw.claro.com.br/mobile/v1",
+      "description": "Lab (OPDK)"
+    },
+    {
+      "url": "https://dev.apigw.claro.com.br/mobile/v1",
+      "description": "Dev (OPDK)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/mobile/v1",
+      "description": "Test (OPDK)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/mobile/v1",
+      "description": "Produção (OPDK Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/mobile/v1",
+      "description": "Produção (OPDK Lapa)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "error": {
+        "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx)",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "description": "Retorna sempre a versão maior e menor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2020-04-02”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+            "example": "1"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pelo API. Caso o identificador foi fornecido pelo cliente, o mesmo é ecoado sem alteração."
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "httpCode": {
+                "type": "string",
+                "description": "Código de erro HTTP"
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Código de erro interno da API no formato. Ex.: API-3566. Esse código poderá ser utilizado internamente pelo cliente para mapeamento customizado da mensagem de erro."
+              },
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida"
+              },
+              "detailedMessage": {
+                "type": "string",
+                "description": "Mensagem de erro detalhada"
+              },
+              "link": {
+                "type": "object",
+                "description": "Objeto para conter o link para a página com a documentação detalhada dos códigos e descrições dos erros no API Portal\n",
+                "properties": {
+                  "rel": {
+                    "type": "string",
+                    "enum": [
+                      "related"
+                    ],
+                    "description": "Para referenciar a página de erros do API portal será utilizada a semântica “related” nesse cenário"
+                  },
+                  "href": {
+                    "type": "string",
+                    "description": "URL completa do recurso"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "EquipmentsObj": {
+        "description": "Objeto de negócio contendo os dados enviados para API.",
+        "type": "object",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Equipments"
+          }
+        }
+      },
+      "Equipments": {
+        "type": "object",
+        "required": [
+          "appType",
+          "equipmentList"
+        ],
+        "properties": {
+          "appType": {
+            "$ref": "#/components/schemas/EirAppType"
+          },
+          "equipmentList": {
+            "description": "Lista de equipamento",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EquipmentDetails"
+            }
+          }
+        }
+      },
+      "EquipmentDetails": {
+        "type": "object",
+        "required": [
+          "equipmentDetails",
+          "pei",
+          "status"
+        ],
+        "properties": {
+          "pei": {
+            "$ref": "#/components/schemas/Pei"
+          },
+          "status": {
+            "$ref": "#/components/schemas/EquipmentStatus"
+          },
+          "checkDigit": {
+            "description": "Dígito de verificação",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9,
+            "default": 0,
+            "example": 2
+          },
+          "reasonCode": {
+            "description": "Código do motivo",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4095,
+            "example": 4000
+          },
+          "description": {
+            "description": "Descrição do equipamento",
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 40,
+            "example": "Razão para o estado atual do equipamento"
+          },
+          "associationList": {
+            "$ref": "#/components/schemas/AssociationList"
+          }
+        }
+      },
+      "EirAppType": {
+        "type": "string",
+        "description": "Tipo de aplicativo",
+        "enum": [
+          "5GS"
+        ]
+      },
+      "EquipmentStatus": {
+        "description": "Status do equipamento",
+        "type": "string",
+        "enum": [
+          "WHITELISTED",
+          "BLACKLISTED",
+          "GREYLISTED"
+        ]
+      },
+      "AssociationList": {
+        "type": "object",
+        "required": [
+          "associationList"
+        ],
+        "description": "Lista de associações",
+        "properties": {
+          "blacklist": {
+            "$ref": "#/components/schemas/EntityList"
+          },
+          "whitelist": {
+            "$ref": "#/components/schemas/EntityList"
+          },
+          "greylist": {
+            "$ref": "#/components/schemas/EntityList"
+          }
+        }
+      },
+      "EntityList": {
+        "type": "object",
+        "minItems": 0,
+        "properties": {
+          "supi": {
+            "type": "array",
+            "description": "Uma lista de entidades SUPI. Para dispositivos que são capazes de acessar uma rede 3GPP, o SUPI será um IMSI",
+            "example": [
+              "imsi-714045970074054",
+              "imsi-814045970074055"
+            ],
+            "items": {
+              "type": "string",
+              "pattern": "^(imsi-[0-9]{5,15})$"
+            }
+          },
+          "gpsi": {
+            "type": "array",
+            "description": "Uma lista de entidades GPSI. Para dispositivos capazes de acessar uma rede 3GPP, o GPSI será um MSISDN",
+            "example": [
+              "msisdn-053433788691",
+              "msisdn-9886347772"
+            ],
+            "items": {
+              "type": "string",
+              "pattern": "^(msisdn-[0-9]{5,15})$"
+            }
+          }
+        }
+      },
+      "Pei": {
+        "type": "string",
+        "pattern": "^(imei-[0-9]{15}|imeisv-[0-9]{16}|mac((-[0-9a-fA-F]{2}){6})(-untrusted)?|eui((-[0-9a-fA-F]{2}){8})|.+)$",
+        "description": "O PEI é o meio pelo qual a rede identifica o Equipamento do Usuário (para dispositivos capazes de acessar uma rede 3GPP, o PEI será um IMEI).",
+        "example": "imei-152660821838935"
+      },
+      "eirPutResponse": {
+        "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "example": "1;2022-08-09",
+            "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2021-06-19”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível."
+          },
+          "transactionId": {
+            "type": "string",
+            "example": "593f33f6-6122-4624-8c1c-6602a14a730e",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pela API."
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Título",
+                "example": "Success"
+              },
+              "status": {
+                "type": "integer",
+                "description": "Status",
+                "example": 204
+              },
+              "detail": {
+                "type": "string",
+                "description": "Detalhes"
+              }
+            }
+          }
+        }
+      },
+      "eirResponse": {
+        "description": "Objeto de negócio contendo os dados retornados pela API caso existam.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "example": "1;2022-08-09",
+            "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2021-06-19”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível."
+          },
+          "transactionId": {
+            "type": "string",
+            "example": "593f33f6-6122-4624-8c1c-6602a14a730e",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pela API."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/data"
+            }
+          }
+        }
+      },
+      "data": {
+        "type": "object"
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2022-08-09",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-EIREQUIPMENTS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Invalid Request for operation.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "401",
+                "errorCode": "API-EIREQUIPMENTS-401",
+                "message": "Unauthorized",
+                "detailedMessage": "Unauthorized user.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-EIREQUIPMENTS-403",
+                "message": "Forbidden",
+                "detailedMessage": "Access denied.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-EIREQUIPMENTS-404",
+                "message": "Not found",
+                "detailedMessage": "Resource not found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-EIREQUIPMENTS-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Unavailable HTTP method.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-EIREQUIPMENTS-406",
+                "message": "Request Not Acceptable",
+                "detailedMessage": "Requested content type not acceptable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "410": {
+        "description": "Gone",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "410",
+                "errorCode": "API-EIREQUIPMENTS-410",
+                "message": "Resource Unavailable",
+                "detailedMessage": "The resource is no longer available.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "415": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "415",
+                "errorCode": "API-EIREQUIPMENTS-415",
+                "message": "Unsupported Media Type",
+                "detailedMessage": "Unsupported request media type.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unprocessable Entity - Identifica erros de negócio, podendo ser detalhados conforme regras do sistema backend. ",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "422",
+                "errorCode": "API-EIREQUIPMENTS-422",
+                "message": "Unprocessable Entity",
+                "detailedMessage": "Business fault occurred.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-EIREQUIPMENTS-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "Consumer requests exceeded policies.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "451": {
+        "description": "Unavailable For Legal Reasons",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "451",
+                "errorCode": "API-EIREQUIPMENTS-451",
+                "message": "Unavailable For Legal Reasons",
+                "detailedMessage": "Unavailable For Legal Reasons.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "InternalServerError": {
+                "value": {
+                  "apiVersion": "1;2022-08-09",
+                  "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-EIREQUIPMENTS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2022-08-09",
+              "transactionId": "593f33f6-6122-4624-8c1c-6602a14a730e",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-EIREQUIPMENTS-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
