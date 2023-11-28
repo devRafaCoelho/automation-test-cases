@@ -15,9 +15,13 @@ export const createDescriptionDesignSteps = async (
         "1 - Para validação do request, execute a API com os seguintes parâmetros:",
       ];
 
-      typeof element.value === "string"
-        ? descriptionData.push(element.value)
-        : descriptionData.push(JSON.stringify(element.value, null, 2));
+      if (typeof element.value === "string") {
+        descriptionData.push(element.value);
+      } else if (Array.isArray(element.value)) {
+        descriptionData.push(element.value.join("\n"));
+      } else {
+        descriptionData.push(JSON.stringify(element.value, null, 2));
+      }
 
       descriptionData.push(
         "2 - O response retornado deve apresentar o seguinte valor:"

@@ -39,5 +39,6 @@ routes.get(
 routes.get("/excelData", createExcelDataSwagger);
 
 routes.get("/test", test);
+routes.post("/test", test);
 
 export default routes;
