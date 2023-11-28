@@ -67,3 +67,45 @@ export type PreCondition = {
 export type Combinations = {
   [method: string]: ParameterItem[][];
 };
+
+export type TestCaseName = {
+  [method: string]: string[];
+};
+
+export type Description = {
+  [method: string]: {
+    statusCode: string;
+    example?: string[];
+  }[];
+};
+
+export type DescriptionDesignSteps = {
+  [method: string]: {
+    statusCode: string;
+    value?: string[];
+  }[];
+};
+
+export type ExpectedResultDesignSteps = {
+  [method: string]: {
+    statusCode: string;
+    value?: string[];
+  }[];
+};
+
+export type ExcelData = {
+  [method: string]: {
+    apiName: string;
+    testCaseName: string;
+    description: string[];
+    preCondition: string | object;
+    assignedTo: string;
+    stepName: string;
+    descriptionDesignSteps: string[];
+    expectedResultDesignSteps: string[];
+    type: string;
+    version: string;
+    testProvider: string;
+    approvalFlow: string;
+  }[];
+};

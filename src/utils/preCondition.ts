@@ -38,25 +38,25 @@ export const createPreCondition = async (
 
       if (useStatusCodeList.includes(statusCode)) {
         switch (statusCode) {
-          case "400":
-            const preCondition400 = await createPreCondition400(swaggerFile);
-            preCondition400[method].forEach((element: any) => {
-              if (element.example) {
-                preCondition[method].push({
-                  statusCode: statusCode,
-                  description: filterResponses[0].description,
-                  example: element.example,
-                  value: element.value,
-                });
-              } else {
-                preCondition[method].push({
-                  statusCode: statusCode,
-                  description: filterResponses[0].description,
-                  value: element.value,
-                });
-              }
-            });
-            break;
+          // case "400":
+          //   const preCondition400 = await createPreCondition400(swaggerFile);
+          //   preCondition400[method].forEach((element: any) => {
+          //     if (element.example) {
+          //       preCondition[method].push({
+          //         statusCode: statusCode,
+          //         description: filterResponses[0].description,
+          //         example: element.example,
+          //         value: element.value,
+          //       });
+          //     } else {
+          //       preCondition[method].push({
+          //         statusCode: statusCode,
+          //         description: filterResponses[0].description,
+          //         value: element.value,
+          //       });
+          //     }
+          //   });
+          //   break;
           case "401":
             preCondition[method].push({
               statusCode: statusCode,
@@ -65,7 +65,7 @@ export const createPreCondition = async (
             });
             break;
           case "403":
-            const preCondition403 = createPreCondition403(swaggerFile);
+            const preCondition403 = await createPreCondition403(swaggerFile);
 
             preCondition[method].push({
               statusCode: statusCode,
@@ -74,7 +74,7 @@ export const createPreCondition = async (
             });
             break;
           case "404":
-            const preCondition404 = createPreCondition404(swaggerFile);
+            const preCondition404 = await createPreCondition404(swaggerFile);
 
             preCondition[method].push({
               statusCode: statusCode,
@@ -104,7 +104,7 @@ export const createPreCondition = async (
             });
             break;
           case "429":
-            const preCondition429 = createPreCondition429(swaggerFile);
+            const preCondition429 = await createPreCondition429(swaggerFile);
 
             preCondition[method].push({
               statusCode: statusCode,
@@ -185,14 +185,14 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
   return preCondition400Obj;
 };
 
-const createPreCondition403 = async (swaggerFile: SwaggerFile) => {
+export const createPreCondition403 = async (swaggerFile: SwaggerFile) => {
   const specificUrl = await getSpecificUrl(swaggerFile);
   const pathValue = Object.keys(swaggerFile.paths);
 
   return `${specificUrl[0].url}/(.*)${pathValue[0]}`;
 };
 
-const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
+export const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
   const specificUrl = await getSpecificUrl(swaggerFile);
   const pathValue = Object.keys(swaggerFile.paths);
 
