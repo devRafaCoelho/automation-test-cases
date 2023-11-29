@@ -48,57 +48,57 @@ export const createExcelData = async (
   return excelData;
 };
 
+// export const createExcelFile = async (swaggerFile: SwaggerFile) => {
+//   const apiName = await getAPIName(swaggerFile);
+//   const excelData = await createExcelData(swaggerFile);
+
+//   const headerColumnTitles = [
+//     "Subject",
+//     "Test Name",
+//     "Description",
+//     "Pré Condição",
+//     "Atribuído à",
+//     "Step Name (Design Steps)",
+//     "Description (Design Steps)",
+//     "Expected Result (Design Steps)",
+//     "Type",
+//     "Versão",
+//     "Fornecedor de Testes",
+//     "Fluxo de Aprovação",
+//   ];
+
+//   const workbook = new ExcelJS.Workbook();
+
+//   for (const method in excelData) {
+//     const worksheet = workbook.addWorksheet(method.toUpperCase());
+//     worksheet.addRow(headerColumnTitles);
+
+//     excelData[method].forEach((element: any) => {
+//       const data = [
+//         element.apiName,
+//         element.testCaseName,
+//         element.description.join("\n"),
+//         Array.isArray(element.preCondition)
+//           ? element.preCondition.join("\n")
+//           : element.preCondition,
+//         element.assignedTo,
+//         element.stepName,
+//         element.descriptionDesignSteps.join("\n"),
+//         element.expectedResultDesignSteps.join("\n"),
+//         element.type,
+//         element.version,
+//         element.testProvider,
+//         element.approvalFlow,
+//       ];
+
+//       worksheet.addRow(data);
+//     });
+//   }
+
+//   workbook.xlsx.writeFile(`${apiName}.xlsx`);
+// };
+
 export const createExcelFile = async (swaggerFile: SwaggerFile) => {
-  const apiName = await getAPIName(swaggerFile);
-  const excelData = await createExcelData(swaggerFile);
-
-  const headerColumnTitles = [
-    "Subject",
-    "Test Name",
-    "Description",
-    "Pré Condição",
-    "Atribuído à",
-    "Step Name (Design Steps)",
-    "Description (Design Steps)",
-    "Expected Result (Design Steps)",
-    "Type",
-    "Versão",
-    "Fornecedor de Testes",
-    "Fluxo de Aprovação",
-  ];
-
-  const workbook = new ExcelJS.Workbook();
-
-  for (const method in excelData) {
-    const worksheet = workbook.addWorksheet(method.toUpperCase());
-    worksheet.addRow(headerColumnTitles);
-
-    excelData[method].forEach((element: any) => {
-      const data = [
-        element.apiName,
-        element.testCaseName,
-        element.description.join("\n"),
-        Array.isArray(element.preCondition)
-          ? element.preCondition.join("\n")
-          : element.preCondition,
-        element.assignedTo,
-        element.stepName,
-        element.descriptionDesignSteps.join("\n"),
-        element.expectedResultDesignSteps.join("\n"),
-        element.type,
-        element.version,
-        element.testProvider,
-        element.approvalFlow,
-      ];
-
-      worksheet.addRow(data);
-    });
-  }
-
-  workbook.xlsx.writeFile(`${apiName}.xlsx`);
-};
-
-export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
   const apiName = await getAPIName(swaggerFile);
   const excelData = await createExcelData(swaggerFile);
 

@@ -176,10 +176,15 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
       preCondition400.push(newObj);
     });
 
-    if (
-      pathsParameters[method][0] &&
-      Object.keys(pathsParameters[method][0]).length > 1
-    ) {
+    if (pathsParameters[method][0]) {
+      if (Object.keys(pathsParameters[method][0]).length > 1) {
+        for (const key in obj) {
+          obj[key] = "";
+        }
+
+        preCondition400.push(obj);
+      }
+    } else {
       for (const key in obj) {
         obj[key] = "";
       }
