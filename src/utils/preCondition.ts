@@ -38,80 +38,80 @@ export const createPreCondition = async (
 
       if (useStatusCodeList.includes(statusCode)) {
         switch (statusCode) {
-          // case "400":
-          //   const preCondition400 = await createPreCondition400(swaggerFile);
-          //   preCondition400[method].forEach((element: any) => {
-          //     if (element.example) {
-          //       preCondition[method].push({
-          //         statusCode: statusCode,
-          //         description: filterResponses[0].description,
-          //         example: element.example,
-          //         value: element.value,
-          //       });
-          //     } else {
-          //       preCondition[method].push({
-          //         statusCode: statusCode,
-          //         description: filterResponses[0].description,
-          //         value: element.value,
-          //       });
-          //     }
+          case "400":
+            const preCondition400 = await createPreCondition400(swaggerFile);
+            preCondition400[method].forEach((element: any) => {
+              if (element.example) {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  example: element.example,
+                  value: element.value,
+                });
+              } else {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  value: element.value,
+                });
+              }
+            });
+            break;
+          // case "401":
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: "Authorization: ' ' ",
           //   });
           //   break;
-          case "401":
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: "Authorization: ' ' ",
-            });
-            break;
-          case "403":
-            const preCondition403 = await createPreCondition403(swaggerFile);
+          // case "403":
+          //   const preCondition403 = await createPreCondition403(swaggerFile);
 
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: preCondition403,
-            });
-            break;
-          case "404":
-            const preCondition404 = await createPreCondition404(swaggerFile);
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: preCondition403,
+          //   });
+          //   break;
+          // case "404":
+          //   const preCondition404 = await createPreCondition404(swaggerFile);
 
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: preCondition404,
-            });
-            break;
-          case "405":
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: "PATCH",
-            });
-            break;
-          case "406":
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: "Accept: text/plain",
-            });
-            break;
-          case "415":
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: "Content-Type: text/plain",
-            });
-            break;
-          case "429":
-            const preCondition429 = await createPreCondition429(swaggerFile);
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: preCondition404,
+          //   });
+          //   break;
+          // case "405":
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: "PATCH",
+          //   });
+          //   break;
+          // case "406":
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: "Accept: text/plain",
+          //   });
+          //   break;
+          // case "415":
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: "Content-Type: text/plain",
+          //   });
+          //   break;
+          // case "429":
+          //   const preCondition429 = await createPreCondition429(swaggerFile);
 
-            preCondition[method].push({
-              statusCode: statusCode,
-              description: filterResponses[0].description,
-              value: preCondition429,
-            });
-            break;
+          //   preCondition[method].push({
+          //     statusCode: statusCode,
+          //     description: filterResponses[0].description,
+          //     value: preCondition429,
+          //   });
+          //   break;
           default:
             break;
         }
@@ -125,6 +125,7 @@ export const createPreCondition = async (
 export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
   const requestBody = await getRequestBody(swaggerFile);
   const pathsParameters = await createObjectPathParameters(swaggerFile);
+
   const preCondition400Obj: { [key: string]: any[] } = {};
 
   for (const method in requestBody) {
@@ -137,7 +138,10 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
           swaggerFile.components?.schemas?.[`${element.schema}`]
         );
 
-        const emptyPropsCombination = emptyProp(schemaRequiredParameters);
+        const emptyPropsCombination = emptyProp(
+          schemaRequiredParameters,
+          method
+        );
 
         emptyPropsCombination.forEach((emptyProp) => {
           preCondition400Obj[method].push({
@@ -151,7 +155,7 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
 
   for (const method in pathsParameters) {
     if (pathsParameters[method].length > 0) {
-      const emptyValues = emptyProp(pathsParameters[method][0]);
+      const emptyValues = emptyProp(pathsParameters[method][0], method);
 
       emptyValues.forEach((element) => {
         preCondition400Obj[method].push({ value: element });
@@ -159,7 +163,7 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
     }
   }
 
-  function emptyProp(obj: any) {
+  function emptyProp(obj: any, method: string) {
     const keys = Object.keys(obj);
     const preCondition400 = [];
 
@@ -173,11 +177,13 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
       preCondition400.push(newObj);
     });
 
-    for (const key in obj) {
-      obj[key] = "";
-    }
+    if (Object.keys(pathsParameters[method]).length > 1) {
+      for (const key in obj) {
+        obj[key] = "";
+      }
 
-    preCondition400.push(obj);
+      preCondition400.push(obj);
+    }
 
     return preCondition400;
   }
@@ -221,7 +227,9 @@ export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
       const methodParams: { [key: string]: any } = {};
 
       parameters[method].forEach((param: any) => {
-        methodParams[param.name] = param.example;
+        methodParams[param.name] = param.example
+          ? param.example
+          : param.schema.example;
       });
 
       result[method].push(methodParams);
