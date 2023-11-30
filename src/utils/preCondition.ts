@@ -57,61 +57,61 @@ export const createPreCondition = async (
               }
             });
             break;
-          // case "401":
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: "Authorization: ' ' ",
-          //   });
-          //   break;
-          // case "403":
-          //   const preCondition403 = await createPreCondition403(swaggerFile);
+          case "401":
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: "Authorization: ' ' ",
+            });
+            break;
+          case "403":
+            const preCondition403 = await createPreCondition403(swaggerFile);
 
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: preCondition403,
-          //   });
-          //   break;
-          // case "404":
-          //   const preCondition404 = await createPreCondition404(swaggerFile);
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: preCondition403,
+            });
+            break;
+          case "404":
+            const preCondition404 = await createPreCondition404(swaggerFile);
 
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: preCondition404,
-          //   });
-          //   break;
-          // case "405":
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: "PATCH",
-          //   });
-          //   break;
-          // case "406":
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: "Accept: text/plain",
-          //   });
-          //   break;
-          // case "415":
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: "Content-Type: text/plain",
-          //   });
-          //   break;
-          // case "429":
-          //   const preCondition429 = await createPreCondition429(swaggerFile);
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: preCondition404,
+            });
+            break;
+          case "405":
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: "PATCH",
+            });
+            break;
+          case "406":
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: "Accept: text/plain",
+            });
+            break;
+          case "415":
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: "Content-Type: text/plain",
+            });
+            break;
+          case "429":
+            const preCondition429 = await createPreCondition429(swaggerFile);
 
-          //   preCondition[method].push({
-          //     statusCode: statusCode,
-          //     description: filterResponses[0].description,
-          //     value: preCondition429,
-          //   });
-          //   break;
+            preCondition[method].push({
+              statusCode: statusCode,
+              description: filterResponses[0].description,
+              value: preCondition429,
+            });
+            break;
           default:
             break;
         }

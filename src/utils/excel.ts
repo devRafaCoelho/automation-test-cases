@@ -162,7 +162,9 @@ export const createExcelFile = async (swaggerFile: SwaggerFile) => {
         element.description.join("\n"),
         Array.isArray(element.preCondition)
           ? element.preCondition.join("\n")
-          : element.preCondition,
+          : typeof element.preCondition === "string"
+          ? element.preCondition
+          : JSON.stringify(element.preCondition, null, 2),
         element.assignedTo,
         element.stepName,
         element.descriptionDesignSteps.join("\n"),

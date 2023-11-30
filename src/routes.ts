@@ -16,7 +16,7 @@ import {
   createPreConditionSwagger,
   createTestCaseNameSwagger,
 } from "./controllers/ExcelColumnsController";
-import { test } from "./controllers/TestController";
+import { test, testPOST } from "./controllers/TestController";
 
 const routes = Router();
 
@@ -39,6 +39,6 @@ routes.get(
 routes.get("/excelData", createExcelDataSwagger);
 
 routes.get("/test", test);
-routes.post("/test", test);
+routes.post("/test", testPOST);
 
 export default routes;

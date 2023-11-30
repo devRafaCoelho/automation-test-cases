@@ -158,7 +158,7 @@ export const getResponses = async (
             value:
               responsesMethod[statusCode].content["application/json"].examples[
                 example
-              ],
+              ].value,
           });
         }
       } else if (
@@ -169,7 +169,8 @@ export const getResponses = async (
           statusCode,
           description: "Ok",
           value:
-            responsesMethod[statusCode].content["application/json"].example,
+            responsesMethod[statusCode].content["application/json"].example
+              .value,
         });
       } else if (
         responsesMethod[statusCode].content &&
@@ -212,9 +213,8 @@ export const getResponses = async (
               description: componentsResponse.description,
               example,
               value:
-                componentsResponse.content["application/json"].examples[
-                  example
-                ],
+                componentsResponse.content["application/json"].examples[example]
+                  .value,
             });
           }
         } else if (

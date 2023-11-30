@@ -109,3 +109,14 @@ export type ExcelData = {
     approvalFlow: string;
   }[];
 };
+
+export type ResponseMessage = {
+  [key: string]: {
+    value: object;
+  };
+};
+export type Response400 = {
+  [key: string]: {
+    $ref: string;
+  };
+};
