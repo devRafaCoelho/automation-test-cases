@@ -5,12 +5,7 @@ import { getObjectsByKey } from "../utils/helpers";
 import { Response400, ResponseMessage } from "../Types/types";
 import { getResponses } from "../utils/swagger";
 
-// import swaggerFile from "../data/customers-risksanalysis-v1.json";
-// import swaggerFile from "../data/mobile-cpccustomersmigr.json";
-// import swaggerFile from "../data/mobile-eirequipments-v1.json";
-import swaggerFile from "../data/mobile-subscribersoffer.json";
-// import swaggerFile from "../data/party-employeesworkhistoricals-v1.json";
-// import swaggerFile from "../data/party-parties-v1.json";
+import { swaggerFile } from "../utils/swaggerFile";
 
 export const testPOST = async (req: Request, res: Response) => {
   try {
@@ -33,22 +28,30 @@ export const test = async (req: Request, res: Response) => {
         return element.statusCode === "400";
       });
 
-      response400.forEach((response) => {
-        const message = getObjectsByKey(response, "detailedMessage");
+      if (response400.length > 1) {
+        for (const response of response400) {
+          const message = getObjectsByKey(response, "detailedMessage");
 
-        if (!message) {
-          return res
-            .status(400)
-            .json({ error: { type: "file", message: "No file found." } });
-        }
+          if (!message) {
+            return res
+              .status(400)
+              .json({ error: { type: "file", message: "No file found." } });
+          }
 
-        if (message[0].includes("obrigatório")) {
-          response400Required = response.value;
+          const validadeIncludes =
+            message[0].includes("obrigatório") ||
+            message[0].includes("Invalido");
+
+          if (validadeIncludes) {
+            response400Required = response.value;
+            return res.status(200).json({ response400Required });
+          }
         }
-      });
+      } else if (response400.length === 1) {
+        response400Required = response400[0].value;
+        return res.status(200).json({ response400Required });
+      }
     }
-
-    return res.status(200).json({ response400Required });
   } catch {
     return res.status(500).json({ message: "Internal server error." });
   }

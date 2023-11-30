@@ -6,12 +6,7 @@ import { createDescriptionDesignSteps } from "../utils/descriptionDesignSteps";
 import { createExpectedResultDesignSteps } from "../utils/expectedResultDesignSteps";
 import { createExcelData } from "../utils/excel";
 
-// import swaggerFile from "../data/customers-risksanalysis-v1.json";
-// import swaggerFile from "../data/mobile-cpccustomersmigr.json";
-// import swaggerFile from "../data/mobile-eirequipments-v1.json";
-import swaggerFile from "../data/mobile-subscribersoffer.json";
-// import swaggerFile from "../data/party-employeesworkhistoricals-v1.json";
-// import swaggerFile from "../data/party-parties-v1.json";
+import { swaggerFile } from "../utils/swaggerFile";
 
 export const createPreConditionSwagger = async (
   req: Request,
