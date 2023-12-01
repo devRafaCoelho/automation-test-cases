@@ -13,48 +13,60 @@ export const createExpectedResultDesignSteps = async (
   for (const method in preConditions) {
     expectedResultDesignSteps[method] = [];
 
-    for (const element of preConditions[method]) {
-      const message =
-        element.statusCode === "200"
-          ? "Busca apresenta sucesso."
-          : "Busca apresenta falha.";
+    await Promise.all(
+      preConditions[method].map(async (element, index) => {
+        const message =
+          element.statusCode === "200"
+            ? "Busca apresenta sucesso."
+            : "Busca apresenta falha.";
 
-      const expectedResultData = [
-        `1 - ${message}`,
-        "2 - Response retorna os seguintes valores:",
-      ];
+        const expectedResultData = [
+          `1 - ${message}`,
+          "2 - Response retorna os seguintes valores:",
+        ];
 
-      const filterResponses = responses[method].filter((response) => {
-        return response.statusCode === element.statusCode;
-      });
+        const filterResponses = responses[method].filter((response) => {
+          return response.statusCode === element.statusCode;
+        });
 
-      switch (element.statusCode) {
-        case "400":
-          const response400Required = await getResponse400Required(
-            filterResponses
-          );
+        switch (element.statusCode) {
+          case "400":
+            const response400Required = await getResponse400Required(
+              filterResponses
+            );
 
-          expectedResultData.push(JSON.stringify(response400Required, null, 2));
-          expectedResultData.push(`APIGEE = ${element.statusCode}`);
+            expectedResultData.push(
+              JSON.stringify(response400Required, null, 2)
+            );
+            expectedResultData.push(`APIGEE = ${element.statusCode}`);
 
-          expectedResultDesignSteps[method].push({
-            statusCode: element.statusCode,
-            value: expectedResultData,
-          });
-          break;
-        default:
-          expectedResultData.push(
-            JSON.stringify(filterResponses[0].value, null, 2)
-          );
-          expectedResultData.push(`APIGEE = ${element.statusCode}`);
+            expectedResultDesignSteps[method].push({
+              statusCode: element.statusCode,
+              value: expectedResultData,
+            });
+            break;
+          default:
+            if (filterResponses.length > 1) {
+              expectedResultData.push(
+                JSON.stringify(filterResponses[index].value, null, 2)
+              );
+            } else {
+              expectedResultData.push(
+                JSON.stringify(filterResponses[0].value, null, 2)
+              );
+            }
 
-          expectedResultDesignSteps[method].push({
-            statusCode: element.statusCode,
-            value: expectedResultData,
-          });
-          break;
-      }
-    }
+            expectedResultData.push(`APIGEE = ${element.statusCode}`);
+
+            expectedResultDesignSteps[method].push({
+              statusCode: element.statusCode,
+              value: expectedResultData,
+            });
+
+            break;
+        }
+      })
+    );
   }
 
   return expectedResultDesignSteps;

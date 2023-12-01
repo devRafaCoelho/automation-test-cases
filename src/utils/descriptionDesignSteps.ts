@@ -19,7 +19,7 @@ export const createDescriptionDesignSteps = async (
 
       if (element.statusCode === "200") {
         descriptionData.push(
-          JSON.stringify(requestBody[method][index], null, 2)
+          JSON.stringify(requestBody[method][index].value, null, 2)
         );
       } else {
         if (typeof element.value === "string") {
