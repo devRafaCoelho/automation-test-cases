@@ -207,5 +207,5 @@ export const createExcelFile = async (swaggerFile: SwaggerFile) => {
     });
   }
 
-  workbook.xlsx.writeFile(`${apiName}.xlsx`);
+  workbook.xlsx.writeFile(`./excel/${apiName}.xlsx`);
 };

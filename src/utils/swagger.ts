@@ -11,7 +11,19 @@ import { createExampleResponse, getObjectsByKey } from "./helpers";
 
 export const getAPIName = async (swaggerFile: any) => {
   const title = swaggerFile.info.title;
-  return title ? title.split(" ").pop().replace(/\)$/, "") : "";
+  const splitTitle = title.split(" ");
+  const lastElement = splitTitle.pop();
+
+  if (lastElement === ")") {
+    return splitTitle[splitTitle.length - 1];
+  } else if (lastElement.includes(":")) {
+    const resumeTitle = lastElement.split(":");
+    return resumeTitle.pop().replace(/\)$/, "");
+  } else if (lastElement.includes(")")) {
+    return lastElement.replace(/\)$/, "");
+  } else {
+    return lastElement;
+  }
 };
 
 export const getAPIMethods = async (swaggerFile: SwaggerFile) => {

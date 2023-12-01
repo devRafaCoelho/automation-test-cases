@@ -1,5 +1,14 @@
 import { Router } from "express";
 import {
+  createDescriptionColumnSwagger,
+  createDescriptionDesignStepsSwagger,
+  createExcelDataSwagger,
+  createExpectedResultDesignStepsSwagger,
+  createPreConditionSwagger,
+  createTestCaseNameSwagger,
+} from "./controllers/ExcelColumnsController";
+import { createExcelFileSwagger } from "./controllers/ExcelFileController";
+import {
   getAPIMethodsDescriptionSwagger,
   getAPIMethodsSwagger,
   getAPINameSwagger,
@@ -8,15 +17,7 @@ import {
   getResponsesSwagger,
   getSpecificUrlSwagger,
 } from "./controllers/SwaggerController";
-import {
-  createDescriptionColumnSwagger,
-  createDescriptionDesignStepsSwagger,
-  createExcelDataSwagger,
-  createExpectedResultDesignStepsSwagger,
-  createPreConditionSwagger,
-  createTestCaseNameSwagger,
-} from "./controllers/ExcelColumnsController";
-import { test, testPOST } from "./controllers/TestController";
+import { test } from "./controllers/TestController";
 
 const routes = Router();
 
@@ -37,8 +38,8 @@ routes.get(
   createExpectedResultDesignStepsSwagger
 );
 routes.get("/excelData", createExcelDataSwagger);
+routes.post("/excelFile", createExcelFileSwagger);
 
 routes.get("/test", test);
-routes.post("/test", testPOST);
 
 export default routes;
