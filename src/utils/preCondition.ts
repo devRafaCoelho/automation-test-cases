@@ -1,4 +1,5 @@
 import { PreCondition, SwaggerFile } from "../Types/types";
+import { getObjectsByKey } from "./helpers";
 import {
   getPathsParameters,
   getRequestBody,
@@ -38,8 +39,29 @@ export const createPreCondition = async (
 
       if (useStatusCodeList.includes(statusCode)) {
         switch (statusCode) {
+          case "200":
+            const preCondition200 = await createPreCondition200(swaggerFile);
+
+            preCondition200[method].forEach((element: any) => {
+              if (element.example) {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  example: element.example,
+                  value: element.value,
+                });
+              } else {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  value: element.value,
+                });
+              }
+            });
+            break;
           case "400":
             const preCondition400 = await createPreCondition400(swaggerFile);
+
             preCondition400[method].forEach((element: any) => {
               if (element.example) {
                 preCondition[method].push({
@@ -120,6 +142,63 @@ export const createPreCondition = async (
   }
 
   return preCondition;
+};
+
+export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
+  const requestBody = await getRequestBody(swaggerFile);
+  const preCondition200: { [key: string]: any[] } = {};
+
+  for (const method in requestBody) {
+    preCondition200[method] = [];
+
+    for (const element of requestBody[method]) {
+      const schemaRequiredParameters = await getSchemaRequiredParameters(
+        swaggerFile,
+        swaggerFile.components?.schemas?.[`${element.schema}`]
+      );
+
+      for (const parameterName in schemaRequiredParameters) {
+        if (typeof schemaRequiredParameters[parameterName] === "object") {
+          for (const subParameterName in schemaRequiredParameters[
+            parameterName
+          ]) {
+            const exampleRequestValue = getObjectsByKey(
+              schemaRequiredParameters[parameterName],
+              subParameterName
+            );
+            schemaRequiredParameters[parameterName][subParameterName] =
+              removeQuotes(exampleRequestValue[0]);
+          }
+        } else {
+          const exampleRequestValue = getObjectsByKey(
+            element.value,
+            parameterName
+          );
+          schemaRequiredParameters[parameterName] = removeQuotes(
+            exampleRequestValue[0]
+          );
+        }
+      }
+
+      preCondition200[method].push({
+        example: element.example || null,
+        value: schemaRequiredParameters,
+      });
+
+      function removeQuotes(value: any) {
+        if (
+          typeof value === "string" &&
+          value.startsWith('"') &&
+          value.endsWith('"')
+        ) {
+          return value.slice(1, -1);
+        }
+        return value;
+      }
+    }
+  }
+
+  return preCondition200;
 };
 
 export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
