@@ -1,4 +1,5 @@
 import { Router } from "express";
+import multer from "multer";
 import {
   createDescriptionColumnSwagger,
   createDescriptionDesignStepsSwagger,
@@ -17,9 +18,16 @@ import {
   getResponsesSwagger,
   getSpecificUrlSwagger,
 } from "./controllers/SwaggerController";
-import { test } from "./controllers/TestController";
+import { test, testFiles, testUploadFile } from "./controllers/TestController";
+import {
+  getSwaggerData,
+  uploadSwaggerFile,
+} from "./controllers/FileController";
 
 const routes = Router();
+
+routes.post("/uploadFile", multer({}).single("swaggerFile"), uploadSwaggerFile);
+routes.get("/swaggerData", getSwaggerData);
 
 routes.get("/api-name", getAPINameSwagger);
 routes.get("/api-methods", getAPIMethodsSwagger);
@@ -40,6 +48,7 @@ routes.get(
 routes.get("/excelData", createExcelDataSwagger);
 routes.post("/excelFile", createExcelFileSwagger);
 
+routes.get("/testFiles", testFiles);
 routes.get("/test", test);
 
 export default routes;

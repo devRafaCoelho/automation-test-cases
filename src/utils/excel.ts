@@ -10,7 +10,7 @@ import ExcelJS from "exceljs";
 export const createExcelData = async (
   swaggerFile: SwaggerFile
 ): Promise<ExcelData> => {
-  const apiName = await getAPIName(swaggerFile);
+  const apiName = await getAPIName();
   const testCaseNames = await createTestCaseName(swaggerFile);
   const descriptions = await createDescriptionColumn(swaggerFile);
   const preConditions = await createPreCondition(swaggerFile);
@@ -99,7 +99,7 @@ export const createExcelData = async (
 // };
 
 export const createExcelFile = async (swaggerFile: SwaggerFile) => {
-  const apiName = await getAPIName(swaggerFile);
+  const apiName = await getAPIName();
   const excelData = await createExcelData(swaggerFile);
 
   const headerColumnTitles = [

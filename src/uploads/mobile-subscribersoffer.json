@@ -1,0 +1,2133 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Subscribers Offers - (Proxy Apigee: mobile-subscribersoffers-v1)",
+    "description": "<table>\n  <thead>\n    <tr>\n      <th>Versão</th>\n      <th>Elaborado por</th>\n      <th>Revisado por</th>\n      <th>Data</th>\n      <th>Alterações</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>1.0</td>\n      <td>Rogerio Micheletti</td>\n      <td></td>\n      <td>2021-08-17</td>\n      <td>[Bonus Patrocinado] -Versão Inicial.</td>\n    </tr>\n    <tr>\n      <td>1.1</td>\n      <td>Rodrigo Prado</td>\n      <td></td>\n      <td>2022-05-16</td>\n      <td>Adição no POST da interface 1. Adição do DELETE  interface 1 e 3</td>\n    </tr>\n <tr>\n      <td>1.2</td>\n      <td>Guilherme Xavier</td>\n      <td></td>\n      <td>2023-05-22</td>\n      <td>[VIGIA] - Adição da Interface CategoriaComum no POST e DELETE. Inclusão do GET</td>\n    </tr>\n </tbody>\n</table>\n\n## Objetivo\n\nAPI Responsavel por Adição de ofertas para um assinante pós/controle ou pré-pago. Ofertas podem ser características, serviços, componentes de plano, etc, de um assinante. \n\n## Público-Alvo\n  Até a data desta especificação o potencial consumidor é o ImusicaCorp (empresa do Grupo América Móvil e, com a sua incorporação recente,\n    passou a ser uma unidade de negócio dentro da Claro)\n    \n## Provedores\nO backend provedor da API é a Fachada Mobile responsabilidade da área de Pós-Pago e Controle.\n## Contexto em que a API se Insere\nEsta API está inserida no Projeto de Bonus Patrocinado (o bônus patrocinado será ofertado como um produto\n  dentro do portfólio de Novos Negócios Empresas como Nubank Mercado Livre e outros\n    podem contratar pacotes de dados como recompensa para ações realizadas pelos seus clientes)",
+    "version": "1;2023-05-22",
+    "contact": {
+      "name": "(CC-Integração) - Rogerio Micheletti",
+      "email": "coee.api.integracao@claro.com.br"
+    },
+    "x-claro-domains": [
+      "Customer"
+    ]
+  },
+  "security": [
+    {
+      "BasicAuth": []
+    },
+    {
+      "BearerAuth": []
+    },
+    {
+      "ApiKeyAuth": []
+    },
+    {
+      "OAuth2": []
+    }
+  ],
+  "paths": {
+    "/subscribers/offers": {
+      "post": {
+        "summary": "Operação responsável por Adição de ofertas para um assinante pós/control ou pré-pago. Backend: SOA Móvel - AdicionarOfertasAssinantesv1",
+        "x-claro-backends": [
+          "SOA Móvel"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "tags": [
+          "subscribers offers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/subscriber"
+                  },
+                  {
+                    "$ref": "#/components/schemas/subscriberType"
+                  },
+                  {
+                    "$ref": "#/components/schemas/commonCategory"
+                  }
+                ]
+              },
+              "examples": {
+                "Interface1-Adicionar-Ofertas-Assinante-PrePago-Codigo-Oferta": {
+                  "description": "Interface para adição de ofertas para um assinante pré-pago através do código da oferta no WPP.",
+                  "value": {
+                    "data": {
+                      "subscriber": {
+                        "serviceType": "MOVEL",
+                        "subscriptionType": "CLARO_CARTAO",
+                        "device": {
+                          "telephoneNumber": "1191000000"
+                        },
+                        "offers": [
+                          {
+                            "id": "123456"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "Interface3-Adicionar-Ofertas-Assinante-PosPago-Controle-Codigo-Oferta": {
+                  "description": "Interface para adição de ofertas para um assinante pós-pago ou controle através do código da oferta. O atributo mobile-oferta-id corresponde ao código de identificação da oferta no Mobile (SOC_CD), caso o nível da oferta não seja informado, a oferta será adicionada no nível de assinante, caso a data de início de vigência não seja informada, a data atual será aplicada como data de início de vigência, caso a data de término de vigência não seja informada, a oferta será adicionada sem data de expiração.",
+                  "value": {
+                    "data": {
+                      "subscriber": {
+                        "id": 123456,
+                        "serviceType": "MOVEL",
+                        "subscriptionType": "CLARO_CONTA",
+                        "salesman": {
+                          "id": "123456",
+                          "salesAgent": {
+                            "id": "123456"
+                          }
+                        },
+                        "offers": [
+                          {
+                            "id": 123456,
+                            "level": "CONTRATO",
+                            "startDate": "2009-01-01",
+                            "endDate": "2010-03-01",
+                            "isSubsidy": false,
+                            "subsidyValue": "CONTRATO",
+                            "parameters": [
+                              {
+                                "name": "JOAO DA SILVA",
+                                "values": [
+                                  {
+                                    "value": "z01"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "Interface-Adicionar-Ofertas-Assinante-Common-Category": {
+                  "description": "Interface para adição de ofertas para um assinante pré, pós ou controle através do código da categoria da oferta comum.",
+                  "value": {
+                    "data": {
+                      "telephoneNumber": "11910000",
+                      "mobileSubscriberId": "308586112",
+                      "partyType": "PF",
+                      "subscriptionType": "CLARO_CONTROLE",
+                      "commonCategory": "BLOQUEIO_TOTAL_DADOS"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/subscriber"
+                    },
+                    {
+                      "$ref": "#/components/schemas/subscriberType"
+                    },
+                    {
+                      "$ref": "#/components/schemas/commonCategoryResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "Interface1-Adicionar-Ofertas-Assinante-PrePago-Codigo-Oferta": {
+                    "value": {
+                      "apiVersion": "1;2021-08-17",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "subscriber": {
+                          "serviceType": "MOVEL",
+                          "subscriptionType": "CLARO_CARTAO",
+                          "device": {
+                            "telephoneNumber": "1191000000"
+                          },
+                          "offers": [
+                            {
+                              "id": "123456"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "Interface3-Adicionar-Ofertas-Assinante-PosPago-Controle-Codigo-Oferta": {
+                    "value": {
+                      "apiVersion": "1;2021-08-17",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "subscriber": {
+                          "id": 123456,
+                          "serviceType": "MOVEL",
+                          "subscriptionType": "CLARO_CONTA",
+                          "offers": [
+                            {
+                              "id": 123456,
+                              "level": "CONTRATO",
+                              "startDate": "2009-01-01",
+                              "endDate": "2010-03-01",
+                              "name": "Sigilo do Número do Originador",
+                              "category": {
+                                "id": "SIGILO"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "Interface-Adicionar-Ofertas-Assinante-Common-Category": {
+                    "description": "Interface para adição de ofertas para um assinante pré, pós ou controle através do código da categoria da oferta comum.",
+                    "value": {
+                      "apiVersion": "1;2023-05-22",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Operação responsável por Remover as ofertas para um assinante pós/control ou pré-pago. Backend: SOA Móvel - RemoverOfertasAssinantesv1",
+        "x-claro-backends": [
+          "SOA Móvel"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "tags": [
+          "subscribers offers"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/subscriber"
+                  },
+                  {
+                    "$ref": "#/components/schemas/subscriberTypeDeleteResquest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/commonCategory"
+                  }
+                ]
+              },
+              "examples": {
+                "Interface1-Remover-Ofertas-Assinante-PrePago-Codigo-Oferta": {
+                  "description": "Interface para remoção de ofertas de um assinante pré-pago.Remoção de ofertas de serviço de um determinado Assinante pelo telephoneNumber (MSISDN).",
+                  "value": {
+                    "data": {
+                      "subscriber": {
+                        "serviceType": "MOVEL",
+                        "subscriptionType": "CLARO_CARTAO",
+                        "device": {
+                          "telephoneNumber": "1191000000"
+                        },
+                        "offers": [
+                          {
+                            "id": "123456"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "Interface3-Remover-Ofertas-Assinante-PosPago-Controle-Codigo-Oferta": {
+                  "description": "Interface para remoção de ofertas de um assinante pós-pago ou controle através do código da oferta.",
+                  "value": {
+                    "data": {
+                      "subscriber": {
+                        "id": 123456,
+                        "serviceType": "MOVEL",
+                        "subscriptionType": "CLARO_CONTA",
+                        "offers": [
+                          {
+                            "id": 321456456,
+                            "level": "CONTRATO"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                },
+                "Interface-Remover-Ofertas-Assinante-Common-Category": {
+                  "description": "Interface para remoção de ofertas para um assinante pré, pós ou controle através do código da categoria da oferta comum.",
+                  "value": {
+                    "data": {
+                      "telephoneNumber": "11910000",
+                      "mobileSubscriberId": "308586112",
+                      "partyType": "PF",
+                      "subscriptionType": "CLARO_CONTROLE",
+                      "commonCategory": "BLOQUEIO_TOTAL_DADOS"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/subscriber"
+                    },
+                    {
+                      "$ref": "#/components/schemas/subscriberType"
+                    },
+                    {
+                      "$ref": "#/components/schemas/commonCategoryResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "Interface1-Remover-Ofertas-Assinante-PrePago-Codigo-Oferta": {
+                    "value": {
+                      "apiVersion": "1;2021-08-17",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "subscriber": {
+                          "serviceType": "MOVEL",
+                          "subscriptionType": "CLARO_CARTAO",
+                          "device": {
+                            "telephoneNumber": "1191000000"
+                          },
+                          "offers": [
+                            {
+                              "id": "123456"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "Interface3-Remover-Ofertas-Assinante-PosPago-Controle-Codigo-Oferta": {
+                    "value": {
+                      "apiVersion": "1;2021-08-17",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "subscriber": {
+                          "id": 123456,
+                          "serviceType": "MOVEL",
+                          "subscriptionType": "CLARO_CONTA",
+                          "offers": [
+                            {
+                              "id": 123456,
+                              "level": "CONTRATO",
+                              "startDate": "2009-01-01",
+                              "endDate": "2010-03-01",
+                              "name": "Sigilo do Número do Originador",
+                              "category": {
+                                "id": "SIGILO"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  "Interface-Remover-Ofertas-Assinante-Common-Category": {
+                    "description": "Interface para remoção de ofertas para um assinante pré, pós ou controle através do código da categoria da oferta comum.",
+                    "value": {
+                      "apiVersion": "1;2023-05-22",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400_delete"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422_delete"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500_delete"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      },
+      "get": {
+        "summary": "Operação responsável por listar as ofertas de um assinante pós, controle ou pré-pago. Backend: SOA Móvel",
+        "description": "Esta operação pode conter mais de um cenário de chamada (padrão \"oneOf\" - uma das opções) e portanto seus parâmetros de request possuem obrigatoriedade condicional, ou seja, determinados parâmetros só são obrigatórios quando usados em determinado conjunto, conforme descrito a seguir.\n\n## Cenário 1 - Listagem Unificada de Ofertas\n\n| Obrigatoriedade | Tipo Parâmetro | Parâmetro          |\n|-----------------|----------------|--------------------|\n| Obrigatório     | X-QueryString  | telephoneNumber |\n| Obrigatorio     | QueryParam     | partyType   |\n| Obrigatorio     | QueryParam     | subscriptionType     |\n| Obrigatorio     | QueryParam     | operationType |\n\n\nBackend: Fachada Mobile e WPP\n",
+        "x-claro-backends": [
+          "SOA Móvel"
+        ],
+        "x-claro-domains": [
+          "Customer"
+        ],
+        "tags": [
+          "subscribers offers"
+        ],
+        "parameters": [
+          {
+            "name": "X-QueryString",
+            "in": "header",
+            "description": "Header query string (LGPD compliant) onde são informados os campos no formato: chave=valor. Neste contexto os parâmetros são:\n* telephoneNumber - Número do telefone do assinante",
+            "required": true,
+            "example": "telephoneNumber=1191000000",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "partyType",
+            "in": "query",
+            "description": "Identificação do Assinante como Pessoa Física (PF) ou Pessoa Jurídica (PJ).",
+            "required": true,
+            "example": "PF",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PF",
+                "PJ"
+              ]
+            }
+          },
+          {
+            "name": "subscriptionType",
+            "in": "query",
+            "description": "Tipo de assinatura do serviço contratado pelo cliente. Os valores possíveis são:\n  * CLARO_CARTAO - Para serviço pré-pago (PRÉ-PAGO);\n  * CLARO_CONTA - Para serviço pós-pago (PÓS-PAGO);\n  * CLARO_CONTROLE - Para serviço híbrido, onde o assinante possui uma assinantura e franquia de uso, como no pós-pago, mas ao ultrapassar a franquia, apresenta comportamento semelhante ao pré-pago (CONTROLE).",
+            "required": true,
+            "example": "CLARO_CARTAO",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "CLARO_CARTAO",
+                "CLARO_CONTA",
+                "CLARO_CONTROLE"
+              ]
+            }
+          },
+          {
+            "name": "operationType",
+            "in": "query",
+            "description": "Tipo de consulta que será realizada",
+            "required": true,
+            "example": "CONSULTA_UNIFICADA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objeto de negócio contendo os dados retornados pela API.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/commonCategoryGetResponse"
+                },
+                "examples": {
+                  "Retorno-PosPago-Controle": {
+                    "value": {
+                      "apiVersion": "1;2023-05-22",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "offers": [
+                          {
+                            "offerId": "654321",
+                            "name": "50 Minutos adicionais Claro-Claro",
+                            "description": "PROMOCAO FALE A VONTADE",
+                            "type": "PROMOCIONAL",
+                            "categoryId": "BLOQUEIO_TOTAL_DADOS",
+                            "level": "ASSINANTE",
+                            "startDate": "2010-01-10",
+                            "endDate": "2010-02-20",
+                            "isMandatory": true,
+                            "isDistribution": true,
+                            "isDistributionSubscriber": true,
+                            "franchise": "50",
+                            "franchiseUnit": "MINUTOS",
+                            "franchises": [
+                              {
+                                "category": "MINUTOS_VC1",
+                                "unitQuantity": "ILIMITADO",
+                                "quantity": "50",
+                                "measuredUnit": "MINUTOS"
+                              }
+                            ],
+                            "franchiseRates": [
+                              {
+                                "category": "MINUTOS_VC1",
+                                "value": 0.1
+                              }
+                            ],
+                            "value": 0,
+                            "monthlyFee": 10,
+                            "discountMonthlyFee": "0.00",
+                            "offerParameters": [
+                              {
+                                "name": "CUG",
+                                "categoryId": "OFERTA",
+                                "valuesOfferParameters": [
+                                  {
+                                    "value": "3/20/92"
+                                  }
+                                ]
+                              }
+                            ],
+                            "correlatedOffers": [
+                              {
+                                "offer": {
+                                  "offerId": "654321",
+                                  "name": "50 Minutos adicionais Claro-Claro",
+                                  "description": "PROMOCAO FALE A VONTADE",
+                                  "type": "PROMOCIONAL",
+                                  "categoryId": "BLOQUEIO_TOTAL_DADOS",
+                                  "level": "ASSINANTE",
+                                  "startDate": "2010-01-10",
+                                  "endDate": "2010-02-20",
+                                  "isDistribution": true,
+                                  "isDistributionSubscriber": true,
+                                  "franchise": "50",
+                                  "franchiseUnit": "MINUTOS",
+                                  "franchises": [
+                                    {
+                                      "category": "MINUTOS_VC1",
+                                      "unitQuantity": "ILIMITADO",
+                                      "quantity": "50",
+                                      "measuredUnit": "MINUTOS"
+                                    }
+                                  ],
+                                  "franchiseRates": [
+                                    {
+                                      "category": "MINUTOS_VC1",
+                                      "value": 0.1
+                                    }
+                                  ],
+                                  "value": 0,
+                                  "monthlyFee": 10,
+                                  "discountMonthlyFee": "0.00",
+                                  "offerParameters": [
+                                    {
+                                      "name": "CUG",
+                                      "categoryId": "OFERTA",
+                                      "valuesOfferParameters": [
+                                        {
+                                          "value": "3/20/92"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "isMandatory": true
+                              }
+                            ],
+                            "mobileBan": "987654321",
+                            "mobileContract": "654321"
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  "Retorno-PrePago": {
+                    "value": {
+                      "apiVersion": "1;2023-05-22",
+                      "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                      "data": {
+                        "offers": [
+                          {
+                            "offerId": "654321",
+                            "name": "50 Minutos adicionais Claro-Claro",
+                            "categoryId": "BLOQUEIO_TOTAL_DADOS",
+                            "level": "ASSINANTE",
+                            "startDate": "2010-01-10",
+                            "endDate": "2010-02-20",
+                            "isMandatory": true
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "403": {
+            "$ref": "#/components/responses/403"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "405": {
+            "$ref": "#/components/responses/405"
+          },
+          "406": {
+            "$ref": "#/components/responses/406"
+          },
+          "410": {
+            "$ref": "#/components/responses/410"
+          },
+          "415": {
+            "$ref": "#/components/responses/415"
+          },
+          "422": {
+            "$ref": "#/components/responses/422"
+          },
+          "429": {
+            "$ref": "#/components/responses/429"
+          },
+          "451": {
+            "$ref": "#/components/responses/451"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          },
+          "503": {
+            "$ref": "#/components/responses/503"
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api-sandbox.claro.com.br/mobile/v1",
+      "description": "Sandbox (SaaS)"
+    },
+    {
+      "url": "https://api-test.claro.com.br/mobile/v1",
+      "description": "Teste (SaaS)"
+    },
+    {
+      "url": "https://api.claro.com.br/mobile/v1",
+      "description": "Produção (SaaS)"
+    },
+    {
+      "url": "https://api-dev.claro.com.br/mobile/v1",
+      "description": "Dev (SaaS)"
+    },
+    {
+      "url": "https://sandbox.cas.apigw.claro.com.br/mobile/v1",
+      "description": "Sandbox (on-premises DC Campinas)"
+    },
+    {
+      "url": "https://sandbox.lpa.apigw.claro.com.br/mobile/v1",
+      "description": "Sandbox (on-premises DC Lapa)"
+    },
+    {
+      "url": "https://test.apigw.claro.com.br/mobile/v1",
+      "description": "Test (on-premises)"
+    },
+    {
+      "url": "https://cas.apigw.claro.com.br/mobile/v1",
+      "description": "Production (on-premises DC Campinas)"
+    },
+    {
+      "url": "https://lpa.apigw.claro.com.br/mobile/v1",
+      "description": "Production (on-premises DC Lapa)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BasicAuth": {
+        "type": "http",
+        "scheme": "basic"
+      },
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Client-Key"
+      },
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "implicit": {
+            "authorizationUrl": "/oauth2/v1/token",
+            "scopes": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "subscriberType": {
+        "type": "object",
+        "description": "Objeto responsável por representar um assinante.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "serviceType",
+              "subscriptionType"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Código de identificação do assinante no mobile(SUBSCRIBER_NO)",
+                "example": 123456
+              },
+              "serviceType": {
+                "type": "string",
+                "description": "Tipo de serviço contratado pelo assinante. Os valores válidos para este serviços são:\n  Tipo de serviço contratado pelo assinante, se MOVEL,\n  FIXO, BANDA_LARGA ou TELEMETRIA",
+                "enum": [
+                  "MOVEL",
+                  "BANDA_LARGA",
+                  "FIXO",
+                  "TELEMETRIA"
+                ],
+                "example": "MOVEL"
+              },
+              "subscriptionType": {
+                "type": "string",
+                "description": "Tipo de assinatura do serviço contratado pelo cliente. Os valores possíveis são:\n  * CLARO_CARTAO - Para serviço pré-pago (PRÉ-PAGO);\n  * CLARO_CONTA - Para serviço pós-pago (PÓS-PAGO);\n  * CLARO_CONTROLE - Para serviço híbrido, onde o assinante possui uma assinantura e franquia de uso, como no pós-pago, mas ao ultrapassar a franquia, apresenta comportamento semelhante ao pré-pago (CONTROLE).",
+                "enum": [
+                  "CLARO_CARTAO",
+                  "CLARO_CONTA",
+                  "CLARO_CONTROLE"
+                ],
+                "example": "CLARO_CARTAO"
+              },
+              "offers": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/offersType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "offersType": {
+        "type": "object",
+        "description": "Objeto de negócio que representa o Ofertas.",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Código de identificação das ofertas (SOC_CD) que se deseja adicionar ao assinante",
+            "example": 123456
+          },
+          "level": {
+            "type": "string",
+            "description": "Nível em que a oferta deve ser adicionada, que pode ser - ASSINANTE ou CONTRATO",
+            "example": "CONTRATO"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Data de início do período de vigência da oferta",
+            "example": "2009-01-01T00:00:00.000Z"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Data de término do período de vigência da oferta",
+            "example": "2010-03-01T00:00:00.000Z"
+          },
+          "isSubsidy": {
+            "type": "boolean",
+            "description": "Indicador que sinaliza se a oferta é subsidiada ou não",
+            "example": false
+          },
+          "subsidyValue": {
+            "type": "number",
+            "description": "Valor do subsídio associado à oferta",
+            "example": "CONTRATO"
+          },
+          "parameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/parametersType"
+            }
+          },
+          "category": {
+            "$ref": "#/components/schemas/categoryType"
+          }
+        }
+      },
+      "categoryType": {
+        "type": "object",
+        "description": "Objeto de negócio que representa categoria de ofertas.",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Código de identificação das ofertas (SOC_CD) que se deseja adicionar ao assinante",
+            "example": 123456
+          }
+        }
+      },
+      "parametersType": {
+        "type": "object",
+        "description": "Objeto de negócio que representa a Lista de aprametros de ofertas.",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do parâmetro da oferta",
+            "example": 123456
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "description": "Valor de um parâmetro de oferta.",
+                  "example": "z01"
+                }
+              }
+            }
+          }
+        }
+      },
+      "subscriber": {
+        "type": "object",
+        "description": "Objeto responsável por representar um assinante.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "subscriber"
+            ],
+            "properties": {
+              "subscriber": {
+                "type": "object",
+                "required": [
+                  "serviceType",
+                  "subscriptionType",
+                  "device",
+                  "offers"
+                ],
+                "properties": {
+                  "serviceType": {
+                    "type": "string",
+                    "description": "Tipo de serviço contratado pelo assinante. Os valores válidos para este serviços são:\n  Tipo de serviço contratado pelo assinante, se MOVEL,\n  FIXO, BANDA_LARGA ou TELEMETRIA",
+                    "enum": [
+                      "MOVEL",
+                      "BANDA_LARGA",
+                      "FIXO",
+                      "TELEMETRIA"
+                    ],
+                    "example": "MOVEL"
+                  },
+                  "subscriptionType": {
+                    "type": "string",
+                    "description": "Tipo de assinatura do serviço contratado pelo cliente. Os valores possíveis são:\n  * CLARO_CARTAO - Para serviço pré-pago (PRÉ-PAGO);\n  * CLARO_CONTA - Para serviço pós-pago (PÓS-PAGO);\n  * CLARO_CONTROLE - Para serviço híbrido, onde o assinante possui uma assinantura e franquia de uso, como no pós-pago, mas ao ultrapassar a franquia, apresenta comportamento semelhante ao pré-pago (CONTROLE).",
+                    "enum": [
+                      "CLARO_CARTAO",
+                      "CLARO_CONTA",
+                      "CLARO_CONTROLE"
+                    ],
+                    "example": "CLARO_CARTAO"
+                  },
+                  "device": {
+                    "type": "object",
+                    "required": [
+                      "telephoneNumber"
+                    ],
+                    "properties": {
+                      "telephoneNumber": {
+                        "type": "string",
+                        "description": "Número do telefone do assinante",
+                        "example": 1191000000
+                      }
+                    }
+                  },
+                  "offers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Código de identificação das ofertas do assinante",
+                          "example": "SIGILO"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "subscriberTypeDeleteResquest": {
+        "type": "object",
+        "description": "Objeto responsável por representar um assinante.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "subscriber"
+            ],
+            "properties": {
+              "subscriber": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "serviceType",
+                  "subscriptionType",
+                  "device",
+                  "offers"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Código de identificação do assinante no mobile(SUBSCRIBER_NO)",
+                    "example": 123456
+                  },
+                  "serviceType": {
+                    "type": "string",
+                    "description": "Tipo de serviço contratado pelo assinante. Os valores válidos para este serviços são:\n  Tipo de serviço contratado pelo assinante, se MOVEL,\n  FIXO, BANDA_LARGA ou TELEMETRIA",
+                    "enum": [
+                      "MOVEL",
+                      "BANDA_LARGA",
+                      "FIXO",
+                      "TELEMETRIA"
+                    ],
+                    "example": "MOVEL"
+                  },
+                  "subscriptionType": {
+                    "type": "string",
+                    "description": "Tipo de assinatura do serviço contratado pelo cliente. Os valores possíveis são:\n  * CLARO_CARTAO - Para serviço pré-pago (PRÉ-PAGO);\n  * CLARO_CONTA - Para serviço pós-pago (PÓS-PAGO);\n  * CLARO_CONTROLE - Para serviço híbrido, onde o assinante possui uma assinantura e franquia de uso, como no pós-pago, mas ao ultrapassar a franquia, apresenta comportamento semelhante ao pré-pago (CONTROLE).",
+                    "enum": [
+                      "CLARO_CARTAO",
+                      "CLARO_CONTA",
+                      "CLARO_CONTROLE"
+                    ],
+                    "example": "CLARO_CARTAO"
+                  },
+                  "offers": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Código de identificação das ofertas (SOC_CD) que se deseja remover ao assinante",
+                          "example": 123456
+                        },
+                        "level": {
+                          "type": "string",
+                          "description": "Nível em que a oferta deve ser removida, que pode ser - ASSINANTE ou CONTRATO",
+                          "example": "CONTRATO"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "commonCategory": {
+        "type": "object",
+        "description": "Objeto responsável por representar um assinante.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "telephoneNumber",
+              "partyType",
+              "subscriptionType",
+              "commonCategory"
+            ],
+            "properties": {
+              "telephoneNumber": {
+                "type": "string",
+                "description": "Número do telefone do assinante.",
+                "example": "1191000000"
+              },
+              "mobileSubscriberId": {
+                "type": "string",
+                "description": "Identificador do assinante na plataforma Mobile. Necessário para os fluxos em que o provedor da funcionalidade é a plataforma Mobile e pode ser obtido a partir da consulta do assinante por intermédio do proxy domains-mobilesubscribers-v1",
+                "example": "308586112"
+              },
+              "partyType": {
+                "type": "string",
+                "description": "Identificação do Assinante como Pessoa Física (PF) ou Pessoa Jurídica (PJ)",
+                "enum": [
+                  "PF",
+                  "PJ"
+                ],
+                "example": "PF"
+              },
+              "subscriptionType": {
+                "type": "string",
+                "description": "Tipo de assinatura do serviço contratado pelo cliente. Os valores possíveis são:\n  * CLARO_CARTAO - Para serviço pré-pago (PRÉ-PAGO);\n  * CLARO_CONTA - Para serviço pós-pago (PÓS-PAGO);\n  * CLARO_CONTROLE - Para serviço híbrido, onde o assinante possui uma assinantura e franquia de uso, como no pós-pago, mas ao ultrapassar a franquia, apresenta comportamento semelhante ao pré-pago (CONTROLE).",
+                "enum": [
+                  "CLARO_CARTAO",
+                  "CLARO_CONTA",
+                  "CLARO_CONTROLE"
+                ],
+                "example": "CLARO_CARTAO"
+              },
+              "commonCategory": {
+                "type": "string",
+                "description": "Categoria de Oferta comum às fachadas do Mobile, CPC e WPP",
+                "example": "BLOQUEIO_TOTAL_DADOS"
+              }
+            }
+          }
+        }
+      },
+      "commonCategoryResponse": {
+        "type": "object",
+        "description": "Objeto responsável por representar um assinante."
+      },
+      "commonCategoryGetResponse": {
+        "description": "Objeto de negocio que representa o response.",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "data"
+        ],
+        "properties": {
+          "apiVersion": {
+            "type": "string",
+            "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: “apiVersion”: “2;2015-08-12”. Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+            "example": "1;2023-05-22"
+          },
+          "transactionId": {
+            "type": "string",
+            "description": "Retorna o identificador de rastreabilidade de transação gerado pela API.",
+            "example": "d86cebae-779d-4255-a479-1c0dd912dfac"
+          },
+          "data": {
+            "type": "object",
+            "required": [
+              "offers"
+            ],
+            "properties": {
+              "offers": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/controlOfferType"
+                    },
+                    {
+                      "$ref": "#/components/schemas/prepaidOfferType"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "prepaidOfferType": {
+        "description": "Objeto de negócio que representa os serviços elegíveis por meio da plataforma WPP",
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "description": "Código de identificação da oferta.",
+            "example": "654321"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome da oferta.",
+            "example": "50 Minutos adicionais Claro-Claro"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo de oferta (Plano Preço, Desconto, Opcional).",
+            "example": "PROMOCIONAL"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Código de identificação da categoria da oferta no sistema Mobile.",
+            "example": "BLOQUEIO_TOTAL_DADOS"
+          },
+          "level": {
+            "type": "string",
+            "description": "Nível em que a oferta é aplicável (Assinante, Contrato,Ambos).",
+            "example": "ASSINANTE"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Data de início da vigência da oferta.",
+            "format": "date",
+            "example": "2010-01-10"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Data de término da vigência da oferta",
+            "format": "date",
+            "example": "2010-02-20"
+          },
+          "isMandatory": {
+            "type": "boolean",
+            "description": "Indicador de obrigatoriedade da oferta correlacionada a esta oferta.",
+            "example": "true"
+          }
+        }
+      },
+      "controlOfferType": {
+        "description": "Objeto de negocio que representa os serviços elegíveis por meio da plataforma Mobile",
+        "type": "object",
+        "required": [
+          "offerId",
+          "name",
+          "level"
+        ],
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "description": "Código de identificação da oferta.",
+            "example": "654321"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome da oferta.",
+            "example": "50 Minutos adicionais Claro-Claro"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da oferta.",
+            "example": "PROMOCAO FALE A VONTADE"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo de oferta (Plano Preço, Desconto, Opcional).",
+            "example": "PROMOCIONAL"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Código de identificação da categoria da oferta no sistema Mobile.",
+            "example": "BLOQUEIO_TOTAL_DADOS"
+          },
+          "level": {
+            "type": "string",
+            "description": "Nível em que a oferta é aplicável (Assinante, Contrato,Ambos).",
+            "example": "ASSINANTE"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Data de início da vigência da oferta.",
+            "format": "date",
+            "example": "2010-01-10"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Data de término da vigência da oferta",
+            "format": "date",
+            "example": "2010-02-20"
+          },
+          "isMandatory": {
+            "type": "boolean",
+            "description": "Indicador de obrigatoriedade da oferta correlacionada a esta oferta.",
+            "example": "true"
+          },
+          "isDistribution": {
+            "type": "boolean",
+            "description": "Em caso de oferta de CONTRATO, indica se a oferta permite distribuição para os assinantes do contrato.",
+            "example": "true"
+          },
+          "isDistributionSubscriber": {
+            "type": "boolean",
+            "description": "Em caso de oferta de CONTRATO, indica se a oferta ela foi disponibilizada para o assinante consultado. FALSE não foi; TRUE foi disponibilizada.",
+            "example": "true"
+          },
+          "franchise": {
+            "type": "string",
+            "description": "Quantidade da franquia.",
+            "example": "50"
+          },
+          "franchiseUnit": {
+            "type": "string",
+            "description": "Unidade de medida da franquia (Unidades, Minutos,Reais, Mega Bytes).",
+            "example": "MINUTOS"
+          },
+          "franchises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/franchiseType"
+            }
+          },
+          "franchiseRates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/franchiseRateType"
+            }
+          },
+          "value": {
+            "type": "number",
+            "description": "Valor da oferta para ofertas que possuam uma cobrança pontual (apenas uma vez (OTC)), por exemplo assinatura, valor de adesão, etc..",
+            "format": "double",
+            "example": "0.00"
+          },
+          "monthlyFee": {
+            "type": "number",
+            "description": "Valor da oferta para ofertas que possuam cobrança recorrentes (Mensalidades, etc).",
+            "example": "10.00"
+          },
+          "discountMonthlyFee": {
+            "type": "string",
+            "description": "Valor do desconto na mensalidade do cliente com a aquisição desta oferta",
+            "format": "double",
+            "example": "0.00"
+          },
+          "offerParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/offerParametersType"
+            }
+          },
+          "correlatedOffers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/correlatedOfferType"
+            }
+          },
+          "mobileBan": {
+            "type": "string",
+            "description": "Código de identificação da account do cliente no módulo de cobrança do sistema de pós-pago, na qual é contabilizada o custo da oferta.",
+            "example": "987654321"
+          },
+          "mobileContract": {
+            "type": "string",
+            "description": "Código de identificação do contrato no sistema de billing (Mobile) que define esta oferta (caso seja oferta de nível contrato).",
+            "example": "654321"
+          }
+        }
+      },
+      "offerCorrelatedOfferType": {
+        "description": "Objeto de negocio que representa os serviços elegíveis",
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "description": "Código de identificação da oferta.",
+            "example": "654321"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nome da oferta.",
+            "example": "50 Minutos adicionais Claro-Claro"
+          },
+          "description": {
+            "type": "string",
+            "description": "Descrição da oferta.",
+            "example": "PROMOCAO FALE A VONTADE"
+          },
+          "type": {
+            "type": "string",
+            "description": "Tipo de oferta (Plano Preço, Desconto, Opcional).",
+            "example": "PROMOCIONAL"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Código de identificação da categoria da oferta no sistema Mobile.",
+            "example": "BLOQUEIO_TOTAL_DADOS"
+          },
+          "level": {
+            "type": "string",
+            "description": "Nível em que a oferta é aplicável (Assinante, Contrato,Ambos).",
+            "example": "ASSINANTE"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Data de início da vigência da oferta.",
+            "format": "date",
+            "example": "2010-01-10"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Data de término da vigência da oferta",
+            "format": "date",
+            "example": "2010-02-20"
+          },
+          "isDistribution": {
+            "type": "boolean",
+            "description": "Em caso de oferta de CONTRATO, indica se a oferta permite distribuição para os assinantes do contrato.",
+            "example": "true"
+          },
+          "isDistributionSubscriber": {
+            "type": "boolean",
+            "description": "Em caso de oferta de CONTRATO, indica se a oferta ela foi disponibilizada para o assinante consultado. FALSE não foi; TRUE foi disponibilizada.",
+            "example": "true"
+          },
+          "franchise": {
+            "type": "string",
+            "description": "Quantidade da franquia.",
+            "example": "50"
+          },
+          "franchiseUnit": {
+            "type": "string",
+            "description": "Unidade de medida da franquia (Unidades, Minutos,Reais, Mega Bytes).",
+            "example": "MINUTOS"
+          },
+          "franchises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/franchiseType"
+            }
+          },
+          "franchiseRates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/franchiseRateType"
+            }
+          },
+          "value": {
+            "type": "number",
+            "description": "Valor da oferta para ofertas que possuam uma cobrança pontual (apenas uma vez (OTC)), por exemplo assinatura, valor de adesão, etc..",
+            "format": "double",
+            "example": "0.00"
+          },
+          "monthlyFee": {
+            "type": "number",
+            "description": "Valor da oferta para ofertas que possuam cobrança recorrentes (Mensalidades, etc).",
+            "example": "10.00"
+          },
+          "discountMonthlyFee": {
+            "type": "string",
+            "description": "Valor do desconto na mensalidade do cliente com a aquisição desta oferta",
+            "format": "double",
+            "example": "0.00"
+          },
+          "offerParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/offerParametersType"
+            }
+          }
+        }
+      },
+      "franchiseType": {
+        "description": "Objeto de negocio que representa franquias",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Categoria da franquia, de dados, torpedos, minutos VC1, VC2, VC3, etc.",
+            "example": "MINUTOS_VC1"
+          },
+          "unitQuantity": {
+            "type": "string",
+            "description": "Tipo de unidade oferecido para franquia de oferta que não seja quantitativo.",
+            "example": "ILIMITADO"
+          },
+          "quantity": {
+            "type": "string",
+            "description": "Quantidade da franquia.",
+            "example": "50"
+          },
+          "measuredUnit": {
+            "type": "string",
+            "description": "Unidade de medida da franquia (Unidades, Minutos, Reais, Mega Bytes).",
+            "example": "MINUTOS"
+          }
+        }
+      },
+      "franchiseRateType": {
+        "description": "Objeto de negocio que representa a tarifa da franquia",
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Tipo da categoria da tarifa.",
+            "example": "MINUTOS_VC1"
+          },
+          "value": {
+            "type": "number",
+            "description": "Valor da tarifa.",
+            "format": "double",
+            "example": "0.10"
+          }
+        }
+      },
+      "offerParametersType": {
+        "description": "Objeto de negocio que representa os parametros da oferta",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nome do parametro da oferta.",
+            "example": "CUG"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Categoria de parâmetros da oferta, indica o tipo de parâmetros da oferta que pode ser de CONTRATO ou OFERTA.",
+            "example": "OFERTA"
+          },
+          "valuesOfferParameters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/valuesOfferParametersType"
+            }
+          }
+        }
+      },
+      "correlatedOfferType": {
+        "description": "Objeto de negocio que representa uma oferta correlacionada a outra oferta",
+        "type": "object",
+        "properties": {
+          "offer": {
+            "$ref": "#/components/schemas/offerCorrelatedOfferType"
+          },
+          "isMandatory": {
+            "type": "boolean",
+            "description": "Indicador de obrigatoriedade da oferta.",
+            "example": "true"
+          }
+        }
+      },
+      "valuesOfferParametersType": {
+        "description": "Objeto de negocio que representa os valores de parametros da oferta",
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "Valor da parametro da oferta.",
+            "example": "3/20/92"
+          }
+        }
+      },
+      "apiVersion": {
+        "type": "string",
+        "description": "Retorna sempre a versão major e minor da API efetivamente consumida. O formato é “versão major;versão minor”. Exemplo: \"apiVersion: 2;2015-08-12\". Quando a versão minor não é solicitada, a versão contratada pelo cliente é retornada. Quando não há restrição de contratação, retorna a última disponível.",
+        "example": "1;2021-08-17"
+      },
+      "transactionId": {
+        "type": "string",
+        "description": "Retorna o identificador de rastreabilidade de transação gerado pela API.",
+        "example": "d86cebae-779d-4255-a479-1c0dd912dfac"
+      },
+      "error": {
+        "description": "Objeto retornado na ocorrência de algum erro (4xx/5xx).",
+        "type": "object",
+        "required": [
+          "apiVersion",
+          "transactionId",
+          "error"
+        ],
+        "properties": {
+          "apiVersion": {
+            "$ref": "#/components/schemas/apiVersion"
+          },
+          "transactionId": {
+            "$ref": "#/components/schemas/transactionId"
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "httpCode": {
+                "type": "string",
+                "description": "Código de erro HTTP."
+              },
+              "errorCode": {
+                "type": "string",
+                "description": "Código de erro interno da API no formato. Ex.: API-3566. Esse código poderá ser utilizado internamente pelo cliente para mapeamento customizado da mensagem de erro."
+              },
+              "message": {
+                "type": "string",
+                "description": "Mensagem de erro resumida."
+              },
+              "detailedMessage": {
+                "type": "string",
+                "description": "Mensagem de erro detalhada."
+              },
+              "link": {
+                "type": "object",
+                "description": "Objeto para conter o link para a página com a documentação detalhada dos códigos e descrições dos erros no API portal.",
+                "properties": {
+                  "rel": {
+                    "type": "string",
+                    "enum": [
+                      "related"
+                    ],
+                    "description": "Para referenciar a página de erros do API portal será utilizada a semântica \"related\" nesse cenário."
+                  },
+                  "href": {
+                    "type": "string",
+                    "description": "URL completa do recurso."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Invalid Request for operation.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "RequireFieldsFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-001",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo [nome_campo] é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "401",
+                "errorCode": "API-SUBSCRIBERSOFFERS-401",
+                "message": "Unauthorized",
+                "detailedMessage": "Unauthorized user.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "403",
+                "errorCode": "API-SUBSCRIBERSOFFERS-403",
+                "message": "Forbidden",
+                "detailedMessage": "Access denied.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "404",
+                "errorCode": "API-SUBSCRIBERSOFFERS-404",
+                "message": "Not found",
+                "detailedMessage": "Resource not found.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "405": {
+        "description": "Method Not Allowed",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "405",
+                "errorCode": "API-SUBSCRIBERSOFFERS-405",
+                "message": "Method Not Allowed",
+                "detailedMessage": "Unavailable HTTP method.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "406": {
+        "description": "Not Acceptable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "406",
+                "errorCode": "API-SUBSCRIBERSOFFERS-406",
+                "message": "Request Not Acceptable",
+                "detailedMessage": "Requested content type not acceptable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "410": {
+        "description": "Gone",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "410",
+                "errorCode": "API-SUBSCRIBERSOFFERS-410",
+                "message": "Resource Unavailable",
+                "detailedMessage": "The resource is no longer available.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "415": {
+        "description": "Unsupported Media Type",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "415",
+                "errorCode": "API-SUBSCRIBERSOFFERS-415",
+                "message": "Unsupported Media Type",
+                "detailedMessage": "Unsupported request media type.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "422": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "UnprocessableEntity": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Business fault occurred.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "IncompatibleOfferFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-002",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Backend: Verifique se o código deidentificação da oferta está correto ou remova o oferta incompatível antes de adicionar a nova oferta",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "RegisteredOfferFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-003",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Backend: Verifique se o código de identificação da oferta a ser adicionada está correto",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "SubscribersNotFoundFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-004",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Backend: Verifique se o código de identificação do assinante está correto",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "429": {
+        "description": "Too Many Requests",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "429",
+                "errorCode": "API-SUBSCRIBERSOFFERS-429",
+                "message": "Too Many Requests",
+                "detailedMessage": "Consumer requests exceeded policies.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "451": {
+        "description": "Unavailable For Legal Reasons",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "451",
+                "errorCode": "API-SUBSCRIBERSOFFERS-451",
+                "message": "Unavailable For Legal Reasons",
+                "detailedMessage": "Unavailable For Legal Reasons.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "InternalServerError": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "TechnicalFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-005",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Backend: Ocorreu uma falha técnica não esperada",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "503": {
+        "description": "Service unavailable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "apiVersion": "1;2021-08-17",
+              "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+              "error": {
+                "httpCode": "503",
+                "errorCode": "API-SUBSCRIBERSOFFERS-503",
+                "message": "Service Unavailable",
+                "detailedMessage": "Service Unavailable.",
+                "link": {
+                  "rel": "related",
+                  "href": "https://api.claro.com.br/docs"
+                }
+              }
+            }
+          }
+        }
+      },
+      "400_delete": {
+        "description": "Bad Request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "BadRequest": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-400",
+                    "message": "Bad Request",
+                    "detailedMessage": "Invalid Request for operation.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "RequireFieldsFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "400",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-006",
+                    "message": "Bad Request",
+                    "detailedMessage": "O campo [nome_campo] é obrigatório.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "422_delete": {
+        "description": "Unprocessable Entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "UnprocessableEntity": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-422",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Business fault occurred.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "ContractNotFoundFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-007",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Backend: Verifique se o número do contrato informado está correto, ou se o contrato não se encontra cadastrado.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "OfferNotFoundFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "422",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-008",
+                    "message": "Unprocessable Entity",
+                    "detailedMessage": "Backend: A oferta [123456] não foi encontrada. Ou Não foi possível remover a oferta [123456789] por alguma incompatibilidade.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "500_delete": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "examples": {
+              "InternalServerError": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-500",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Internal Server Error.",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              },
+              "TechnicalFault": {
+                "value": {
+                  "apiVersion": "1;2021-08-17",
+                  "transactionId": "d86cebae-779d-4255-a479-1c0dd912dfac",
+                  "error": {
+                    "httpCode": "500",
+                    "errorCode": "API-SUBSCRIBERSOFFERS-009",
+                    "message": "Internal Server Error",
+                    "detailedMessage": "Backend: Ocorreu uma falha técnica não esperada",
+                    "link": {
+                      "rel": "related",
+                      "href": "https://api.claro.com.br/docs"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -8,22 +8,14 @@ import {
   SwaggerFile,
 } from "../Types/types";
 import { createExampleResponse, getObjectsByKey } from "./helpers";
+import { getFirstFile, listFiles } from "./storage";
+import { getSwaggerFile } from "./swaggerFile";
 
-export const getAPIName = async (swaggerFile: any) => {
-  const title = swaggerFile.info.title;
-  const splitTitle = title.split(" ");
-  const lastElement = splitTitle.pop();
+export const getAPIName = async () => {
+  const files = await listFiles();
+  const apiName = files?.[0].path?.split(".")[0];
 
-  if (lastElement === ")") {
-    return splitTitle[splitTitle.length - 1];
-  } else if (lastElement.includes(":")) {
-    const resumeTitle = lastElement.split(":");
-    return resumeTitle.pop().replace(/\)$/, "");
-  } else if (lastElement.includes(")")) {
-    return lastElement.replace(/\)$/, "");
-  } else {
-    return lastElement;
-  }
+  return apiName;
 };
 
 export const getAPIMethods = async (swaggerFile: SwaggerFile) => {
@@ -316,3 +308,20 @@ export const getSchemaRequiredParameters = async (
 
   return requiredParametersObject;
 };
+
+// export const getAPIName = async (swaggerFile: any) => {
+//   const title = swaggerFile.info.title;
+//   const splitTitle = title.split(" ");
+//   const lastElement = splitTitle.pop();
+
+//   if (lastElement === ")") {
+//     return splitTitle[splitTitle.length - 1];
+//   } else if (lastElement.includes(":")) {
+//     const resumeTitle = lastElement.split(":");
+//     return resumeTitle.pop().replace(/\)$/, "");
+//   } else if (lastElement.includes(")")) {
+//     return lastElement.replace(/\)$/, "");
+//   } else {
+//     return lastElement;
+//   }
+// };

@@ -95,7 +95,7 @@ export type ExpectedResultDesignSteps = {
 
 export type ExcelData = {
   [method: string]: {
-    apiName: string;
+    apiName: any;
     testCaseName: string;
     description: string[];
     preCondition: string | object;
