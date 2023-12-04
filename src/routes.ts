@@ -10,6 +10,10 @@ import {
 } from "./controllers/ExcelColumnsController";
 import { createExcelFileSwagger } from "./controllers/ExcelFileController";
 import {
+  getSwaggerData,
+  uploadSwaggerFile,
+} from "./controllers/FileController";
+import {
   getAPIMethodsDescriptionSwagger,
   getAPIMethodsSwagger,
   getAPINameSwagger,
@@ -18,11 +22,7 @@ import {
   getResponsesSwagger,
   getSpecificUrlSwagger,
 } from "./controllers/SwaggerController";
-import { test, testFiles, testUploadFile } from "./controllers/TestController";
-import {
-  getSwaggerData,
-  uploadSwaggerFile,
-} from "./controllers/FileController";
+import { test, testFiles } from "./controllers/TestController";
 
 const routes = Router();
 

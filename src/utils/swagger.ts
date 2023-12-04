@@ -1,15 +1,12 @@
 import {
-  ParameterItem,
   ParametersObject,
   RequestBodyItem,
   RequestBodyObject,
-  RequiredParametersObject,
   ResponsesObject,
   SwaggerFile,
 } from "../Types/types";
 import { createExampleResponse, getObjectsByKey } from "./helpers";
-import { getFirstFile, listFiles } from "./storage";
-import { getSwaggerFile } from "./swaggerFile";
+import { listFiles } from "./storage";
 
 export const getAPIName = async () => {
   const files = await listFiles();

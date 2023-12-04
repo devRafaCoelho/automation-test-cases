@@ -1,18 +1,18 @@
 import { Request, Response } from "express";
-import { createPreCondition } from "../utils/preCondition";
-import { createTestCaseName } from "../utils/testCaseName";
 import { createDescriptionColumn } from "../utils/description";
 import { createDescriptionDesignSteps } from "../utils/descriptionDesignSteps";
-import { createExpectedResultDesignSteps } from "../utils/expectedResultDesignSteps";
 import { createExcelData } from "../utils/excel";
-
-import { swaggerFile } from "../utils/swaggerFile";
+import { createExpectedResultDesignSteps } from "../utils/expectedResultDesignSteps";
+import { createPreCondition } from "../utils/preCondition";
+import { createTestCaseName } from "../utils/testCaseName";
+import { getFirstFile } from "../utils/storage";
 
 export const createPreConditionSwagger = async (
   req: Request,
   res: Response
 ) => {
   try {
+    const swaggerFile = await getFirstFile();
     const preCondition = await createPreCondition(swaggerFile);
 
     if (!preCondition)
@@ -31,6 +31,7 @@ export const createTestCaseNameSwagger = async (
   res: Response
 ) => {
   try {
+    const swaggerFile = await getFirstFile();
     const testCaseName = await createTestCaseName(swaggerFile);
 
     if (!testCaseName)
@@ -49,6 +50,7 @@ export const createDescriptionColumnSwagger = async (
   res: Response
 ) => {
   try {
+    const swaggerFile = await getFirstFile();
     const description = await createDescriptionColumn(swaggerFile);
 
     if (!description)
@@ -67,6 +69,7 @@ export const createDescriptionDesignStepsSwagger = async (
   res: Response
 ) => {
   try {
+    const swaggerFile = await getFirstFile();
     const descriptionDesignSteps = await createDescriptionDesignSteps(
       swaggerFile
     );
@@ -87,6 +90,7 @@ export const createExpectedResultDesignStepsSwagger = async (
   res: Response
 ) => {
   try {
+    const swaggerFile = await getFirstFile();
     const expectedResultDesignSteps = await createExpectedResultDesignSteps(
       swaggerFile
     );
@@ -104,6 +108,7 @@ export const createExpectedResultDesignStepsSwagger = async (
 
 export const createExcelDataSwagger = async (req: Request, res: Response) => {
   try {
+    const swaggerFile = await getFirstFile();
     const excelData = await createExcelData(swaggerFile);
 
     if (!excelData)

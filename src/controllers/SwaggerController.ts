@@ -9,11 +9,9 @@ import {
   getSpecificUrl,
 } from "../utils/swagger";
 
-import { getSwaggerFile } from "../utils/swaggerFile";
+import { getFirstFile } from "../utils/storage";
 
 export const getAPINameSwagger = async (req: Request, res: Response) => {
-  const swaggerFile = await getSwaggerFile();
-
   try {
     const apiName = await getAPIName();
 
@@ -29,7 +27,7 @@ export const getAPINameSwagger = async (req: Request, res: Response) => {
 };
 
 export const getAPIMethodsSwagger = async (req: Request, res: Response) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const methods = await getAPIMethods(swaggerFile);
@@ -49,7 +47,7 @@ export const getAPIMethodsDescriptionSwagger = async (
   req: Request,
   res: Response
 ) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const descriptions = await getAPIMethodsDescription(swaggerFile);
@@ -66,7 +64,7 @@ export const getAPIMethodsDescriptionSwagger = async (
 };
 
 export const getSpecificUrlSwagger = async (req: Request, res: Response) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const url = await getSpecificUrl(swaggerFile);
@@ -83,7 +81,7 @@ export const getSpecificUrlSwagger = async (req: Request, res: Response) => {
 };
 
 export const getRequestBodySwagger = async (req: Request, res: Response) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const resquestBody = await getRequestBody(swaggerFile);
@@ -103,7 +101,7 @@ export const getPathsParametersSwagger = async (
   req: Request,
   res: Response
 ) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const pathsParameters = await getPathsParameters(swaggerFile);
@@ -120,7 +118,7 @@ export const getPathsParametersSwagger = async (
 };
 
 export const getResponsesSwagger = async (req: Request, res: Response) => {
-  const swaggerFile = await getSwaggerFile();
+  const swaggerFile = await getFirstFile();
 
   try {
     const responses = await getResponses(swaggerFile);

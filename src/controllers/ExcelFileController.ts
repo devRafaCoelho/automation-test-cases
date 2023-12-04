@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { createExcelFile } from "../utils/excel";
-import { swaggerFile } from "../utils/swaggerFile";
+import { getFirstFile } from "../utils/storage";
 
 export const createExcelFileSwagger = async (req: Request, res: Response) => {
   try {
+    const swaggerFile = await getFirstFile();
     await createExcelFile(swaggerFile);
 
     return res.status(200).json({ message: "File created!" });

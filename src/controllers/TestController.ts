@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { getFirstFile, uploadFile } from "../utils/storage";
+import { getFirstFile } from "../utils/storage";
 import { getAPIName } from "../utils/swagger";
 
 export const test = async (req: Request, res: Response) => {
