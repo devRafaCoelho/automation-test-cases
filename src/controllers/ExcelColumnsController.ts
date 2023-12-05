@@ -12,6 +12,7 @@ export const createPreConditionSwagger = async (
   res: Response
 ) => {
   try {
+    const { method }: any = req.query;
     const swaggerFile = await getFirstFile();
     const preCondition = await createPreCondition(swaggerFile);
 
@@ -19,6 +20,12 @@ export const createPreConditionSwagger = async (
       return res
         .status(400)
         .json({ error: { type: "file", message: "No files found." } });
+
+    if (method) {
+      return res
+        .status(200)
+        .json({ preCondition: { [method]: preCondition[method] } });
+    }
 
     return res.status(200).json({ preCondition });
   } catch {

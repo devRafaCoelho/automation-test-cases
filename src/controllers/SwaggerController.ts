@@ -101,6 +101,7 @@ export const getPathsParametersSwagger = async (
   req: Request,
   res: Response
 ) => {
+  const { method }: any = req.query;
   const swaggerFile = await getFirstFile();
 
   try {
@@ -110,6 +111,12 @@ export const getPathsParametersSwagger = async (
       return res
         .status(400)
         .json({ error: { type: "file", message: "No files found." } });
+
+    if (method) {
+      return res
+        .status(200)
+        .json({ pathsParameters: { [method]: pathsParameters[method] } });
+    }
 
     return res.status(200).json({ pathsParameters });
   } catch {

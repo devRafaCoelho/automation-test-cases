@@ -29,10 +29,15 @@ export type ParameterItem = {
   in: string;
   description?: string;
   example?: string | string[];
+  schema?: any;
 };
 
 export type ParametersObject = {
   [method: string]: ParameterItem[];
+};
+
+export type ParametersObjectCombination = {
+  [method: string]: any;
 };
 
 export type ParameterItemResume = {
@@ -115,6 +120,7 @@ export type ResponseMessage = {
     value: object;
   };
 };
+
 export type Response400 = {
   [key: string]: {
     $ref: string;
