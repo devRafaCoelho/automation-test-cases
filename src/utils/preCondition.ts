@@ -1,5 +1,5 @@
 import { PreCondition, SwaggerFile } from "../Types/types";
-import { getObjectsByKey } from "./helpers";
+import { createPathParameterCombinations, getObjectsByKey } from "./helpers";
 import {
   getPathsParameters,
   getRequestBody,
@@ -146,6 +146,7 @@ export const createPreCondition = async (
 
 export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
   const requestBody = await getRequestBody(swaggerFile);
+  const parameters = await createPathParameterCombinations(swaggerFile);
   const preCondition200: { [key: string]: any[] } = {};
 
   for (const method in requestBody) {
@@ -195,6 +196,14 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
         }
         return value;
       }
+    }
+  }
+
+  for (const method in parameters) {
+    for (const element of parameters[method]) {
+      preCondition200[method].push({
+        value: element,
+      });
     }
   }
 

@@ -124,7 +124,9 @@ export const createExcelDataSwagger = async (req: Request, res: Response) => {
         .json({ error: { type: "file", message: "No files found." } });
 
     return res.status(200).json({ excelData });
-  } catch {
+  } catch (error) {
+    console.log(error);
+
     return res.status(500).json({ message: "Internal server error." });
   }
 };

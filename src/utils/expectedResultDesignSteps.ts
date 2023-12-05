@@ -98,6 +98,12 @@ export const createExpectedResultDesignSteps = async (
           (response) => response.statusCode === element.statusCode
         );
 
+        const filterPreConditions = preConditions[method].filter(
+          (preCondition) => {
+            return preCondition.statusCode === element.statusCode;
+          }
+        );
+
         switch (element.statusCode) {
           case "400":
             const response400Required = await getResponse400Required(
@@ -116,9 +122,11 @@ export const createExpectedResultDesignSteps = async (
             break;
           default:
             if (filterResponses.length > 1) {
-              expectedResultData.push(
-                JSON.stringify(filterResponses[index].value, null, 2)
-              );
+              filterResponses.length === filterPreConditions.length
+                ? expectedResultData.push(
+                    JSON.stringify(filterResponses[index].value, null, 2)
+                  )
+                : expectedResultData.push("");
             } else {
               expectedResultData.push(
                 JSON.stringify(filterResponses[0].value, null, 2)
@@ -131,7 +139,6 @@ export const createExpectedResultDesignSteps = async (
               statusCode: element.statusCode,
               value: expectedResultData,
             });
-
             break;
         }
       }
@@ -150,7 +157,8 @@ const getResponse400Required = async (filterResponses: any) => {
         const message = getObjectsByKey(response, "detailedMessage");
         const includeMessage =
           message[0].includes("obrigatório") ||
-          message[0].includes("ParametroInvalido");
+          message[0].includes("ParametroInvalido") ||
+          message[0].includes("invalido");
 
         if (includeMessage) {
           response400Required = response.value;
@@ -164,26 +172,3 @@ const getResponse400Required = async (filterResponses: any) => {
 
   return response400Required;
 };
-
-// const getResponse400Required = async (
-//   filterResponses: any
-// ): Promise<ExpectedResultDesignSteps> => {
-//   let response400Required: any = {};
-
-//   for (const iterator of object) {
-
-//   }
-
-//   filterResponses.forEach((response: any) => {
-//     const message = getObjectsByKey(response, "detailedMessage");
-//     const includeMessage =
-//       message[0].includes("obrigatório") ||
-//       message[0].includes("ParametroInvalido");
-
-//     if (includeMessage) {
-//       response400Required = response.value;
-//     }
-//   });
-
-//   return response400Required;
-// };
