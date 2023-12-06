@@ -125,6 +125,7 @@ export const getPathsParametersSwagger = async (
 };
 
 export const getResponsesSwagger = async (req: Request, res: Response) => {
+  const { statusCode }: any = req.query;
   const swaggerFile = await getFirstFile();
 
   try {
@@ -134,6 +135,16 @@ export const getResponsesSwagger = async (req: Request, res: Response) => {
       return res
         .status(400)
         .json({ error: { type: "file", message: "No files found." } });
+
+    if (statusCode) {
+      for (const method in responses) {
+        responses[method] = responses[method].filter((element) => {
+          return element.statusCode === statusCode;
+        });
+      }
+
+      return res.status(200).json({ responses });
+    }
 
     return res.status(200).json({ responses });
   } catch {

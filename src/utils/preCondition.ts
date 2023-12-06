@@ -125,6 +125,26 @@ export const createPreCondition = async (
               value: "Content-Type: text/plain",
             });
             break;
+          case "422":
+            const preCondition422 = await createPreCondition422(swaggerFile);
+
+            preCondition422[method].forEach((element: any) => {
+              if (element.example) {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  example: element.example,
+                  value: element.value,
+                });
+              } else {
+                preCondition[method].push({
+                  statusCode: statusCode,
+                  description: filterResponses[0].description,
+                  value: element.value,
+                });
+              }
+            });
+            break;
           case "429":
             const preCondition429 = await createPreCondition429(swaggerFile);
 
@@ -332,4 +352,41 @@ export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
   }
 
   return result;
+};
+
+export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
+  const responses = await getResponses(swaggerFile);
+  const preCondition = await createPreCondition200(swaggerFile);
+  const preCondition422: { [key: string]: any[] } = {};
+
+  const addComplement = (obj: any) => {
+    const modifiedObjectsList: any[] = [];
+
+    for (const parameterName in obj) {
+      const rootObject = { ...obj };
+
+      rootObject[parameterName] = obj[parameterName] + "*%5r";
+      modifiedObjectsList.push(rootObject);
+    }
+
+    return modifiedObjectsList;
+  };
+
+  for (const method in responses) {
+    preCondition422[method] = [];
+
+    const responses422 = responses[method].filter((response) => {
+      return response.statusCode === "422";
+    });
+    const preConditionsList = addComplement(preCondition[method][0].value);
+
+    responses422.forEach((element, index) => {
+      preCondition422[method].push({
+        example: element.example || null,
+        value: preConditionsList[index],
+      });
+    });
+  }
+
+  return preCondition422;
 };
