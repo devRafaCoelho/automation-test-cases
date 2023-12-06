@@ -11,6 +11,9 @@ export const createExpectedResultDesignSteps = async (
   const expectedResultDesignSteps: ExpectedResultDesignSteps = {};
 
   for (const method in preConditions) {
+    let subIndex200 = 0;
+    let subIndex422 = 0;
+
     if (preConditions.hasOwnProperty(method)) {
       expectedResultDesignSteps[method] = [];
 
@@ -36,6 +39,19 @@ export const createExpectedResultDesignSteps = async (
         );
 
         switch (element.statusCode) {
+          case "200":
+            expectedResultData.push(
+              JSON.stringify(filterResponses[subIndex200].value, null, 2) ??
+                JSON.stringify(filterResponses[0].value, null, 2)
+            );
+            subIndex200++;
+
+            expectedResultData.push(`APIGEE = ${element.statusCode}`);
+            expectedResultDesignSteps[method].push({
+              statusCode: element.statusCode,
+              value: expectedResultData,
+            });
+            break;
           case "400":
             const response400Required = await getResponse400Required(
               filterResponses
@@ -51,18 +67,37 @@ export const createExpectedResultDesignSteps = async (
               value: expectedResultData,
             });
             break;
+          case "422":
+            expectedResultData.push(
+              JSON.stringify(filterResponses[subIndex422].value, null, 2)
+            );
+            subIndex422++;
+
+            expectedResultData.push(`APIGEE = ${element.statusCode}`);
+            expectedResultDesignSteps[method].push({
+              statusCode: element.statusCode,
+              value: expectedResultData,
+            });
+            break;
+
           default:
-            if (filterResponses.length > 1) {
-              filterResponses.length === filterPreConditions.length
-                ? expectedResultData.push(
-                    JSON.stringify(filterResponses[index].value, null, 2)
-                  )
-                : expectedResultData.push("");
-            } else {
-              expectedResultData.push(
-                JSON.stringify(filterResponses[0].value, null, 2)
-              );
-            }
+            // if (filterResponses.length > 1) {
+            //   if (filterResponses.length === filterPreConditions.length) {
+            //     expectedResultData.push(
+            //       JSON.stringify(filterResponses[index].value, null, 2)
+            //     );
+            //   } else {
+            //     expectedResultData.push("");
+            //   }
+            // } else {
+            //   expectedResultData.push(
+            //     JSON.stringify(filterResponses[0].value, null, 2)
+            //   );
+            // }
+
+            expectedResultData.push(
+              JSON.stringify(filterResponses[0].value, null, 2)
+            );
 
             expectedResultData.push(`APIGEE = ${element.statusCode}`);
 

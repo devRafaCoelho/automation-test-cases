@@ -85,6 +85,8 @@ export const createDescriptionDesignStepsSwagger = async (
   req: Request,
   res: Response
 ) => {
+  const { statusCode }: any = req.query;
+
   try {
     const swaggerFile = await getFirstFile();
     const descriptionDesignSteps = await createDescriptionDesignSteps(
@@ -96,6 +98,18 @@ export const createDescriptionDesignStepsSwagger = async (
         .status(400)
         .json({ error: { type: "file", message: "No files found." } });
 
+    if (statusCode) {
+      for (const method in descriptionDesignSteps) {
+        descriptionDesignSteps[method] = descriptionDesignSteps[method].filter(
+          (element) => {
+            return element.statusCode === statusCode;
+          }
+        );
+      }
+
+      return res.status(200).json({ descriptionDesignSteps });
+    }
+
     return res.status(200).json({ descriptionDesignSteps });
   } catch {
     return res.status(500).json({ message: "Internal server error." });
@@ -106,6 +120,8 @@ export const createExpectedResultDesignStepsSwagger = async (
   req: Request,
   res: Response
 ) => {
+  const { statusCode }: any = req.query;
+
   try {
     const swaggerFile = await getFirstFile();
     const expectedResultDesignSteps = await createExpectedResultDesignSteps(
@@ -117,8 +133,21 @@ export const createExpectedResultDesignStepsSwagger = async (
         .status(400)
         .json({ error: { type: "file", message: "No files found." } });
 
+    if (statusCode) {
+      for (const method in expectedResultDesignSteps) {
+        expectedResultDesignSteps[method] = expectedResultDesignSteps[
+          method
+        ].filter((element) => {
+          return element.statusCode === statusCode;
+        });
+      }
+
+      return res.status(200).json({ expectedResultDesignSteps });
+    }
+
     return res.status(200).json({ expectedResultDesignSteps });
-  } catch {
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };

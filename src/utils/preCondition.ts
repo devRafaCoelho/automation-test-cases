@@ -383,7 +383,7 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
     responses422.forEach((element, index) => {
       preCondition422[method].push({
         example: element.example || null,
-        value: preConditionsList[index],
+        value: preConditionsList[index] ?? preConditionsList[0],
       });
     });
   }
