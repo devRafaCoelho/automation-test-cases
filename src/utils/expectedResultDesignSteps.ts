@@ -41,8 +41,8 @@ export const createExpectedResultDesignSteps = async (
         switch (element.statusCode) {
           case "200":
             expectedResultData.push(
-              JSON.stringify(filterResponses[subIndex200].value, null, 2) ??
-                JSON.stringify(filterResponses[0].value, null, 2)
+              JSON.stringify(filterResponses[subIndex200]?.value, null, 2) ??
+                JSON.stringify(filterResponses[0]?.value, null, 2)
             );
             subIndex200++;
 

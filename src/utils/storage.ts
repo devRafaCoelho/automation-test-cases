@@ -46,7 +46,7 @@ export const listFiles = async () => {
 
 export const getFirstFile = async () => {
   const files = await listFiles();
-  const response = await axios.get(files?.[0].url!);
+  const response = await axios.get(files?.[6].url!);
 
   return response.data;
 };

@@ -10,7 +10,7 @@ import { listFiles } from "./storage";
 
 export const getAPIName = async () => {
   const files = await listFiles();
-  const apiName = files?.[0].path?.split(".")[0];
+  const apiName = files?.[6].path?.split(".")[0];
 
   return apiName;
 };
@@ -44,6 +44,148 @@ export const getSpecificUrl = async (swaggerFile: any) => {
   });
 
   return specificUrl;
+};
+
+export const getResponses = async (
+  swaggerFile: SwaggerFile
+): Promise<ResponsesObject> => {
+  const pathsValues = Object.values(swaggerFile.paths)[0];
+  const responses: ResponsesObject = {};
+
+  for (const method in pathsValues) {
+    responses[method] = [];
+    const responsesMethod = pathsValues[method].responses;
+
+    for (const statusCode in responsesMethod) {
+      if (responsesMethod[statusCode].content) {
+        if (Object.values(responsesMethod[statusCode].content).length === 1) {
+          const responseType: any = Object.values(
+            responsesMethod[statusCode].content
+          )[0];
+          // console.log(responseType);
+
+          if (responseType.examples) {
+            for (const example in responseType.examples) {
+              responses[method].push({
+                statusCode,
+                description: "Ok",
+                example,
+                value:
+                  responsesMethod[statusCode].content["application/json"]
+                    .examples[example].value,
+              });
+            }
+          } else if (responseType.example) {
+            responses[method].push({
+              statusCode,
+              description: "Ok",
+              value: responseType.example.value ?? responseType.example,
+            });
+          } else if (responseType.schema) {
+            const schemaName = responseType.schema["$ref"].split("/").pop();
+            // const schemaName = responseType.example.schema["$ref"]
+            //   .split("/")
+            //   .pop();
+
+            const schema = schemaName
+              ? swaggerFile.components?.schemas?.[schemaName]
+              : undefined;
+
+            const exempleResponse = createExampleResponse(schema);
+
+            responses[method].push({
+              statusCode,
+              description: "Ok",
+              value: exempleResponse,
+            });
+          }
+        } else {
+          if (
+            responsesMethod[statusCode].content["application/json"].examples
+          ) {
+            for (const example in responsesMethod[statusCode].content[
+              "application/json"
+            ].examples) {
+              responses[method].push({
+                statusCode,
+                description: "Ok",
+                example,
+                value:
+                  responsesMethod[statusCode].content["application/json"]
+                    .examples[example].value,
+              });
+            }
+          } else if (
+            responsesMethod[statusCode].content["application/json"].example
+          ) {
+            responses[method].push({
+              statusCode,
+              description: "Ok",
+              value:
+                responsesMethod[statusCode].content["application/json"].example
+                  .value,
+            });
+          } else if (
+            responsesMethod[statusCode].content["application/json"].schema
+          ) {
+            const schemaName = responsesMethod[statusCode].content[
+              "application/json"
+            ].schema["$ref"]
+              .split("/")
+              .pop();
+
+            const schema = schemaName
+              ? swaggerFile.components?.schemas?.[schemaName]
+              : undefined;
+
+            const exempleResponse = createExampleResponse(schema);
+
+            responses[method].push({
+              statusCode,
+              description: "Ok",
+              value: exempleResponse,
+            });
+          }
+        }
+      } else if (responsesMethod[statusCode]["$ref"]) {
+        const responseName = responsesMethod[statusCode]["$ref"]
+          .split("/")
+          .pop();
+
+        const componentsResponse = responseName
+          ? swaggerFile.components?.responses?.[responseName]
+          : undefined;
+
+        if (
+          componentsResponse.content &&
+          componentsResponse.content["application/json"].examples
+        ) {
+          for (const example in componentsResponse.content["application/json"]
+            .examples) {
+            responses[method].push({
+              statusCode,
+              description: componentsResponse.description,
+              example,
+              value:
+                componentsResponse.content["application/json"].examples[example]
+                  .value,
+            });
+          }
+        } else if (
+          componentsResponse.content &&
+          componentsResponse.content["application/json"].example
+        ) {
+          responses[method].push({
+            statusCode,
+            description: componentsResponse.description,
+            value: componentsResponse.content["application/json"].example,
+          });
+        }
+      }
+    }
+  }
+
+  return responses;
 };
 
 export const getRequestBody = async (
@@ -132,107 +274,6 @@ export const getPathsParameters = async (
   }
 
   return parameters;
-};
-
-export const getResponses = async (
-  swaggerFile: SwaggerFile
-): Promise<ResponsesObject> => {
-  const pathsValues = Object.values(swaggerFile.paths)[0];
-  const responses: ResponsesObject = {};
-
-  for (const method in pathsValues) {
-    responses[method] = [];
-    const responsesMethod = pathsValues[method].responses;
-
-    for (const statusCode in responsesMethod) {
-      if (
-        responsesMethod[statusCode].content &&
-        responsesMethod[statusCode].content["application/json"].examples
-      ) {
-        for (const example in responsesMethod[statusCode].content[
-          "application/json"
-        ].examples) {
-          responses[method].push({
-            statusCode,
-            description: "Ok",
-            example,
-            value:
-              responsesMethod[statusCode].content["application/json"].examples[
-                example
-              ].value,
-          });
-        }
-      } else if (
-        responsesMethod[statusCode].content &&
-        responsesMethod[statusCode].content["application/json"].example
-      ) {
-        responses[method].push({
-          statusCode,
-          description: "Ok",
-          value:
-            responsesMethod[statusCode].content["application/json"].example
-              .value,
-        });
-      } else if (
-        responsesMethod[statusCode].content &&
-        responsesMethod[statusCode].content["application/json"].schema
-      ) {
-        const schemaName = responsesMethod[statusCode].content[
-          "application/json"
-        ].schema["$ref"]
-          .split("/")
-          .pop();
-
-        const schema = schemaName
-          ? swaggerFile.components?.schemas?.[schemaName]
-          : undefined;
-
-        const exempleResponse = createExampleResponse(schema);
-
-        responses[method].push({
-          statusCode,
-          description: "Ok",
-          value: exempleResponse,
-        });
-      } else if (responsesMethod[statusCode]["$ref"]) {
-        const responseName = responsesMethod[statusCode]["$ref"]
-          .split("/")
-          .pop();
-
-        const componentsResponse = responseName
-          ? swaggerFile.components?.responses?.[responseName]
-          : undefined;
-
-        if (
-          componentsResponse.content &&
-          componentsResponse.content["application/json"].examples
-        ) {
-          for (const example in componentsResponse.content["application/json"]
-            .examples) {
-            responses[method].push({
-              statusCode,
-              description: componentsResponse.description,
-              example,
-              value:
-                componentsResponse.content["application/json"].examples[example]
-                  .value,
-            });
-          }
-        } else if (
-          componentsResponse.content &&
-          componentsResponse.content["application/json"].example
-        ) {
-          responses[method].push({
-            statusCode,
-            description: componentsResponse.description,
-            value: componentsResponse.content["application/json"].example,
-          });
-        }
-      }
-    }
-  }
-
-  return responses;
 };
 
 export const getSchemaRequiredParameters = async (
