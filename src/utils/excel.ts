@@ -151,7 +151,7 @@ export const createExcelFile = async (swaggerFile: SwaggerFile) => {
         (cell.fill = {
           type: "pattern",
           pattern: "solid",
-          fgColor: { argb: "0398fc" },
+          fgColor: { argb: "78766e" },
         });
     });
 

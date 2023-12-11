@@ -10,7 +10,7 @@ import { listFiles } from "./storage";
 
 export const getAPIName = async () => {
   const files = await listFiles();
-  const apiName = files?.[6].path?.split(".")[0];
+  const apiName = files?.[3].path?.split(".")[0];
 
   return apiName;
 };

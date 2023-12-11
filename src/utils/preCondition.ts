@@ -220,9 +220,15 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
   }
 
   for (const method in parameters) {
-    for (const element of parameters[method]) {
+    if (parameters[method].length > 0) {
+      for (const element of parameters[method]) {
+        preCondition200[method].push({
+          value: element,
+        });
+      }
+    } else {
       preCondition200[method].push({
-        value: element,
+        value: "",
       });
     }
   }
@@ -267,6 +273,8 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
       emptyValues.forEach((element) => {
         preCondition400Obj[method].push({ value: element });
       });
+    } else {
+      preCondition400Obj[method].push({ value: "" });
     }
   }
 
@@ -320,40 +328,6 @@ export const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
   return `${specificUrl[0].url}${pathValue[0]}/smart`;
 };
 
-const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
-  const specificUrl = await getSpecificUrl(swaggerFile);
-  const pathValue = Object.keys(swaggerFile.paths);
-
-  return [
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-  ];
-};
-
-export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
-  const parameters = await getPathsParameters(swaggerFile);
-  const result: { [key: string]: any[] } = {};
-
-  for (const method in parameters) {
-    result[method] = [];
-
-    if (parameters[method].length > 0) {
-      const methodParams: { [key: string]: any } = {};
-
-      parameters[method].forEach((param: any) => {
-        methodParams[param.name] = param.example
-          ? param.example
-          : param.schema.example;
-      });
-
-      result[method].push(methodParams);
-    }
-  }
-
-  return result;
-};
-
 export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
   const responses = await getResponses(swaggerFile);
   const preCondition = await createPreCondition200(swaggerFile);
@@ -389,4 +363,38 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
   }
 
   return preCondition422;
+};
+
+const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
+  const specificUrl = await getSpecificUrl(swaggerFile);
+  const pathValue = Object.keys(swaggerFile.paths);
+
+  return [
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+  ];
+};
+
+export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
+  const parameters = await getPathsParameters(swaggerFile);
+  const result: { [key: string]: any[] } = {};
+
+  for (const method in parameters) {
+    result[method] = [];
+
+    if (parameters[method].length > 0) {
+      const methodParams: { [key: string]: any } = {};
+
+      parameters[method].forEach((param: any) => {
+        methodParams[param.name] = param.example
+          ? param.example
+          : param.schema.example;
+      });
+
+      result[method].push(methodParams);
+    }
+  }
+
+  return result;
 };
