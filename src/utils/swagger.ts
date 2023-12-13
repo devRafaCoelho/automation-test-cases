@@ -1,4 +1,5 @@
 import {
+  MethodDescription,
   ParametersObject,
   RequestBodyItem,
   RequestBodyObject,
@@ -6,11 +7,11 @@ import {
   SwaggerFile,
 } from "../Types/types";
 import { createExampleResponse, getObjectsByKey } from "./helpers";
-import { listFiles } from "./storage";
+import { getFirstFileName } from "./storage";
 
 export const getAPIName = async () => {
-  const files = await listFiles();
-  const apiName = files?.[3].path?.split(".")[0];
+  const fileName = await getFirstFileName();
+  const apiName = fileName?.split(".")[0];
 
   return apiName;
 };
@@ -62,7 +63,6 @@ export const getResponses = async (
           const responseType: any = Object.values(
             responsesMethod[statusCode].content
           )[0];
-          // console.log(responseType);
 
           if (responseType.examples) {
             for (const example in responseType.examples) {
@@ -345,6 +345,18 @@ export const getSchemaRequiredParameters = async (
   });
 
   return requiredParametersObject;
+};
+
+export const getTest = async (swaggerFile: SwaggerFile): Promise<any> => {
+  const pathsValues = swaggerFile.paths;
+
+  for (const path in pathsValues) {
+    for (const method in pathsValues[path]) {
+      console.log(pathsValues[path][method]);
+    }
+  }
+
+  return pathsValues;
 };
 
 // export const getAPIName = async (swaggerFile: any) => {

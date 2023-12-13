@@ -22,7 +22,7 @@ import {
   getResponsesSwagger,
   getSpecificUrlSwagger,
 } from "./controllers/SwaggerController";
-import { test, testFiles } from "./controllers/TestController";
+import { test, testDelete, testFiles } from "./controllers/TestController";
 
 const routes = Router();
 
@@ -50,5 +50,6 @@ routes.post("/excelFile", createExcelFileSwagger);
 
 routes.get("/testFiles", testFiles);
 routes.get("/test", test);
+routes.delete("/test", testDelete);
 
 export default routes;

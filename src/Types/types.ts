@@ -45,17 +45,6 @@ export type ParameterItemResume = {
   example?: string | string[];
 };
 
-export type ResponseItem = {
-  statusCode: string;
-  description: string;
-  example?: string;
-  value: any;
-};
-
-export type ResponsesObject = {
-  [method: string]: ResponseItem[];
-};
-
 export type RequiredParametersObject = {
   [schemaName: string]: string | { [parameterName: string]: string };
 };
@@ -124,5 +113,53 @@ export type ResponseMessage = {
 export type Response400 = {
   [key: string]: {
     $ref: string;
+  };
+};
+
+export type MethodDescription = {
+  [path: string]: {
+    [method: string]: {
+      description: string;
+    };
+  };
+};
+
+export type ResponseItem = {
+  statusCode: string;
+  description: string;
+  example?: string;
+  value: any;
+};
+
+export type ResponseItem2 = {
+  [statusCode: string]: {
+    [type: string]: {
+      description: string;
+      content?: {
+        schema?: string;
+        example?: string;
+      };
+    };
+  };
+};
+
+export type ResponsesObject = {
+  [method: string]: ResponseItem[];
+};
+
+export type PathResponse = {
+  [path: string]: {
+    [method: string]: {
+      [statusCode: string]: {
+        description: string;
+        content?: {
+          [type: string]: {
+            schema?: string;
+            example?: object;
+            examples?: object;
+          };
+        };
+      };
+    };
   };
 };

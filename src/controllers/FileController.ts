@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import { getFirstFile, uploadFile } from "../utils/storage";
+import { deleteAllFiles, getFirstFile, uploadFile } from "../utils/storage";
 
 export const uploadSwaggerFile = async (req: Request, res: Response) => {
   const { file } = req;
 
   try {
+    await deleteAllFiles();
+
     const fileUploaded = await uploadFile(
       file?.originalname,
       file?.buffer,
@@ -12,8 +14,7 @@ export const uploadSwaggerFile = async (req: Request, res: Response) => {
     );
 
     return res.status(201).json(fileUploaded);
-  } catch (error) {
-    console.log(error);
+  } catch {
     return res.status(500).json({ message: "Internal server error." });
   }
 };

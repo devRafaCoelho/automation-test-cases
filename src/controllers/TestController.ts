@@ -1,32 +1,29 @@
 import { Request, Response } from "express";
 
-import {
-  createPreCondition200,
-  createPreCondition400,
-  createPreCondition422,
-} from "../utils/preCondition";
-import { getFirstFile, listFiles } from "../utils/storage";
+import { getResponses2 } from "../utils/newSwagger";
+import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
 
 export const test = async (req: Request, res: Response) => {
   const { method }: any = req.query;
+
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition422 = await createPreCondition422(swaggerFile);
+    const responses = await getResponses2(swaggerFile);
 
-    if (!preCondition422)
+    if (!responses)
       return res
         .status(422)
         .json({ error: { type: "file", message: "No files found." } });
 
     if (method) {
       return res.status(422).json({
-        preCondition422: {
-          [method]: preCondition422[method],
+        responses: {
+          [method]: responses[method],
         },
       });
     }
 
-    return res.status(200).json({ preCondition422 });
+    return res.status(200).json({ responses });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });
@@ -44,6 +41,16 @@ export const testFiles = async (req: Request, res: Response) => {
 
     return res.status(200).json({ files });
   } catch {
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const testDelete = async (req: Request, res: Response) => {
+  try {
+    await deleteAllFiles();
+    return res.status(200).json({ message: "Files deleted" });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal server error." });
   }
 };

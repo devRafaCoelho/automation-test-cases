@@ -46,7 +46,45 @@ export const listFiles = async () => {
 
 export const getFirstFile = async () => {
   const files = await listFiles();
-  const response = await axios.get(files?.[3].url!);
+  const response = await axios.get(files?.[0].url!);
 
   return response.data;
 };
+
+export const getFirstFileName = async () => {
+  const files = await listFiles();
+
+  const fileName = files?.[0].path;
+  return fileName;
+};
+
+export const deleteAllFiles = async () => {
+  const files = await listFiles();
+
+  if (files) {
+    const promises = files.map(async (file) => {
+      if (file.path) {
+        await s3
+          .deleteObject({
+            Bucket: process.env.BACKBLAZE_BUCKET || "",
+            Key: file.path,
+          })
+          .promise();
+      }
+    });
+
+    await Promise.all(promises);
+  }
+};
+
+// export const deleteFile = async () => {
+//   const files = await listFiles();
+//   const fileName = files?.[0].path;
+
+//   await s3
+//     .deleteObject({
+//       Bucket: process.env.BACKBLAZE_BUCKET || "",
+//       Key: fileName || "",
+//     })
+//     .promise();
+// };
