@@ -47,7 +47,23 @@ export const getResponses2 = async (
                   ) || Object.values(componentsResponse.content)[0];
 
             responses[path][method][statusCode] = {
-              description: componentsResponse.description,
+              description:
+                statusCode === "200" ? "Ok" : componentsResponse.description,
+              content: contentType,
+            };
+          } else {
+            const contentType =
+              Object.values(methodResponses[statusCode]?.content).length === 1
+                ? methodResponses[statusCode]?.content
+                : Object.values(
+                    methodResponses[statusCode]?.content["application/json"]
+                  ) || Object.values(methodResponses[statusCode]?.content)[0];
+
+            responses[path][method][statusCode] = {
+              description:
+                statusCode === "200"
+                  ? "Ok"
+                  : methodResponses[statusCode]?.description,
               content: contentType,
             };
           }
@@ -58,10 +74,3 @@ export const getResponses2 = async (
 
   return responses;
 };
-
-// else {
-//   responses[path][method][statusCode] = {
-//     description: methodResponses[statusCode]?.description,
-//     content: methodResponses[statusCode]?.content,
-//   };
-// }
