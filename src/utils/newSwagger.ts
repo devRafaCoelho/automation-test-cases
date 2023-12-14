@@ -1,4 +1,10 @@
-import { MethodDescription, PathResponse, SwaggerFile } from "../Types/types";
+import {
+  MethodDescription,
+  PathParameter,
+  PathRequestBody,
+  PathResponse,
+  SwaggerFile,
+} from "../Types/types";
 
 export const getAPIMethodsDescription2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
@@ -73,4 +79,61 @@ export const getResponses2 = async (
   }
 
   return responses;
+};
+
+export const getRequestBody2 = async (
+  swaggerFile: SwaggerFile
+): Promise<PathRequestBody> => {
+  const pathsValues = swaggerFile.paths;
+  const requestBody: PathRequestBody = {};
+
+  for (const path in pathsValues) {
+    if (!requestBody[path]) requestBody[path] = {};
+
+    for (const method in pathsValues[path]) {
+      if (!requestBody[path][method]) requestBody[path][method] = {};
+
+      if (pathsValues[path][method].requestBody) {
+        const methodRequestBody = pathsValues[path][method].requestBody;
+
+        const contentType =
+          Object.values(methodRequestBody.content).length === 1
+            ? methodRequestBody.content
+            : Object.values(methodRequestBody.content["application/json"]) ||
+              Object.values(methodRequestBody.content)[0];
+
+        requestBody[path][method] = contentType;
+      }
+    }
+  }
+
+  return requestBody;
+};
+
+export const getPathsParameters2 = async (
+  swaggerFile: SwaggerFile
+): Promise<PathParameter> => {
+  const pathsValues = swaggerFile.paths;
+  const patrameters: PathParameter = {};
+
+  for (const path in pathsValues) {
+    if (!patrameters[path]) patrameters[path] = {};
+
+    for (const method in pathsValues[path]) {
+      if (!patrameters[path][method]) patrameters[path][method] = {};
+
+      if (pathsValues[path][method].parameters) {
+        const methodParameters = pathsValues[path][method].parameters;
+
+        const requiredParameters = methodParameters.filter((element: any) => {
+          return element.required === true;
+        });
+
+        patrameters[path][method] =
+          requiredParameters.length !== 0 ? requiredParameters : {};
+      }
+    }
+  }
+
+  return patrameters;
 };

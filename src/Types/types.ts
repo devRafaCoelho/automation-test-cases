@@ -163,3 +163,39 @@ export type PathResponse = {
     };
   };
 };
+
+export type PathRequestBody = {
+  [path: string]: {
+    [method: string]: {
+      requestBody?: {
+        content?: {
+          [type: string]: {
+            schema?: string;
+            example?: object;
+            examples?: object;
+          };
+        };
+      };
+    };
+  };
+};
+
+export type PathParameter = {
+  [path: string]: {
+    [method: string]: {
+      requestBody?: {
+        parameters?: ParameterProps[];
+      };
+    };
+  };
+};
+
+export type ParameterProps = {
+  name: string;
+  in: string;
+  required: string;
+  example: string;
+  schema: {
+    enum?: any[];
+  };
+};

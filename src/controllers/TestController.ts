@@ -1,29 +1,32 @@
 import { Request, Response } from "express";
 
-import { getResponses2 } from "../utils/newSwagger";
 import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
+import { getSchemaRequiredParameters } from "../utils/swagger";
 
 export const test = async (req: Request, res: Response) => {
   const { method }: any = req.query;
 
   try {
     const swaggerFile = await getFirstFile();
-    const responses = await getResponses2(swaggerFile);
+    const requiredParameters = await getSchemaRequiredParameters(
+      swaggerFile,
+      swaggerFile.components?.schemas?.["error"]
+    );
 
-    if (!responses)
+    if (!requiredParameters)
       return res
         .status(422)
         .json({ error: { type: "file", message: "No files found." } });
 
     if (method) {
       return res.status(422).json({
-        responses: {
-          [method]: responses[method],
+        requiredParameters: {
+          [method]: requiredParameters[method],
         },
       });
     }
 
-    return res.status(200).json({ responses });
+    return res.status(200).json({ requiredParameters });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });
