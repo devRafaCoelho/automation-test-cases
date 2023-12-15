@@ -21,11 +21,22 @@ export const getAPIMethodsDescription2 = async (swaggerFile: SwaggerFile) => {
   return descriptions;
 };
 
-export const getResponses2 = async (
-  swaggerFile: SwaggerFile
-): Promise<PathResponse> => {
+export const getResponses2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
   const responses: PathResponse = {};
+
+  const useStatusCodeList = [
+    "200",
+    "400",
+    "401",
+    "403",
+    "404",
+    "405",
+    "406",
+    "415",
+    "422",
+    "429",
+  ];
 
   for (const path in pathsValues) {
     if (!responses[path]) responses[path] = {};
@@ -36,7 +47,10 @@ export const getResponses2 = async (
       const methodResponses = pathsValues[path][method].responses;
 
       for (const statusCode in methodResponses) {
-        if (!responses[path][method][statusCode]) {
+        if (
+          !responses[path][method][statusCode] &&
+          useStatusCodeList.includes(statusCode)
+        ) {
           if (methodResponses[statusCode]["$ref"]) {
             const responseName = methodResponses[statusCode]["$ref"]
               .split("/")
@@ -81,9 +95,7 @@ export const getResponses2 = async (
   return responses;
 };
 
-export const getRequestBody2 = async (
-  swaggerFile: SwaggerFile
-): Promise<PathRequestBody> => {
+export const getRequestBody2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
   const requestBody: PathRequestBody = {};
 
@@ -110,9 +122,7 @@ export const getRequestBody2 = async (
   return requestBody;
 };
 
-export const getPathsParameters2 = async (
-  swaggerFile: SwaggerFile
-): Promise<PathParameter> => {
+export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
   const patrameters: PathParameter = {};
 

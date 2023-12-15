@@ -22,7 +22,14 @@ import {
   getResponsesSwagger,
   getSpecificUrlSwagger,
 } from "./controllers/SwaggerController";
-import { test, testDelete, testFiles } from "./controllers/TestController";
+import {
+  test,
+  testDelete,
+  testFiles,
+  testParameters,
+  testRequestBody,
+  testResponses,
+} from "./controllers/TestController";
 
 const routes = Router();
 
@@ -51,5 +58,9 @@ routes.post("/excelFile", createExcelFileSwagger);
 routes.get("/testFiles", testFiles);
 routes.get("/test", test);
 routes.delete("/test", testDelete);
+
+routes.get("/test-responses", testResponses);
+routes.get("/test-resquestBody", testRequestBody);
+routes.get("/test-parameters", testParameters);
 
 export default routes;

@@ -183,9 +183,7 @@ export type PathRequestBody = {
 export type PathParameter = {
   [path: string]: {
     [method: string]: {
-      requestBody?: {
-        parameters?: ParameterProps[];
-      };
+      parameters?: ParameterProps[];
     };
   };
 };
@@ -197,5 +195,18 @@ export type ParameterProps = {
   example: string;
   schema: {
     enum?: any[];
+  };
+};
+
+export type PreCondition2 = {
+  [path: string]: {
+    [method: string]: {
+      [statusCode: string]: {
+        statusCode?: string;
+        description?: string;
+        example?: string;
+        value?: any;
+      };
+    };
   };
 };

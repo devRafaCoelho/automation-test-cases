@@ -347,17 +347,17 @@ export const getSchemaRequiredParameters = async (
   return requiredParametersObject;
 };
 
-export const getTest = async (swaggerFile: SwaggerFile): Promise<any> => {
-  const pathsValues = swaggerFile.paths;
+// export const getTest = async (swaggerFile: SwaggerFile): Promise<any> => {
+//   const pathsValues = swaggerFile.paths;
 
-  for (const path in pathsValues) {
-    for (const method in pathsValues[path]) {
-      console.log(pathsValues[path][method]);
-    }
-  }
+//   for (const path in pathsValues) {
+//     for (const method in pathsValues[path]) {
+//       console.log(pathsValues[path][method]);
+//     }
+//   }
 
-  return pathsValues;
-};
+//   return pathsValues;
+// };
 
 // export const getAPIName = async (swaggerFile: any) => {
 //   const title = swaggerFile.info.title;
