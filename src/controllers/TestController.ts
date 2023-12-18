@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 
-import { createPreCondition2 } from "../utils/newPreCondition";
+import {
+  createObjectPathParameters,
+  createPreCondition400,
+} from "../utils/newPreCondition";
 import {
   getPathsParameters2,
   getRequestBody2,
@@ -9,26 +12,26 @@ import {
 import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
 
 export const test = async (req: Request, res: Response) => {
-  const { method }: any = req.query;
+  // const { method }: any = req.query;
 
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition = await createPreCondition2(swaggerFile);
+    const preCondition400 = await createPreCondition400(swaggerFile);
 
-    if (!preCondition)
+    if (!preCondition400)
       return res
         .status(422)
         .json({ error: { type: "file", message: "No files found." } });
 
-    if (method) {
-      return res.status(422).json({
-        preCondition: {
-          [method]: preCondition[method],
-        },
-      });
-    }
+    // if (method) {
+    //   return res.status(422).json({
+    //     preCondition: {
+    //       [method]: preCondition[method],
+    //     },
+    //   });
+    // }
 
-    return res.status(200).json({ preCondition });
+    return res.status(200).json({ preCondition400 });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });

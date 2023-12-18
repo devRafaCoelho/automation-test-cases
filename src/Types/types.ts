@@ -210,3 +210,15 @@ export type PreCondition2 = {
     };
   };
 };
+
+export type ObjectParameters = {
+  [key: string]: string;
+};
+
+export type PreCondition400 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
