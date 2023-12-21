@@ -125,12 +125,12 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
               swaggerFile.components?.schemas?.[schemaName]
             );
 
-            for (const key in properties[0]) {
-              preCondition400[path][method][schemaName] = properties[0];
-            }
+            // for (const key in properties[0]) {
+            //   preCondition400[path][method][schemaName] = properties[0];
+            // }
 
-            // preCondition400[path][method][schemaName] =
-            //   schemaRequiredParameters;
+            preCondition400[path][method][schemaName] =
+              schemaRequiredParameters;
           });
         }
       }
