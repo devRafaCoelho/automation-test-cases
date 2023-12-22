@@ -97,73 +97,6 @@ export const createPreCondition2 = async (swaggerFile: SwaggerFile) => {
   return preCondition;
 };
 
-export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
-  const parameters = await createObjectPathParameters(swaggerFile);
-  const resquestBody = await getRequestBody2(swaggerFile);
-  const preCondition400: PreCondition400 = {};
-
-  for (const path in resquestBody) {
-    if (!preCondition400[path]) preCondition400[path] = {};
-
-    for (const method in resquestBody[path]) {
-      if (!preCondition400[path][method]) preCondition400[path][method] = {};
-
-      for (const element in resquestBody[path][method]) {
-        const schemaList = getObjectsByKey(resquestBody[path][method], "$ref");
-
-        if (schemaList.length > 0) {
-          schemaList.forEach(async (schema) => {
-            const schemaName = schema.split("/").pop();
-
-            const properties = getObjectsByKey(
-              swaggerFile.components?.schemas?.[schemaName],
-              "properties"
-            );
-
-            const schemaRequiredParameters = await getSchemaRequiredParameters(
-              swaggerFile,
-              swaggerFile.components?.schemas?.[schemaName]
-            );
-
-            // for (const key in properties[0]) {
-            //   preCondition400[path][method][schemaName] = properties[0];
-            // }
-
-            preCondition400[path][method][schemaName] =
-              schemaRequiredParameters;
-          });
-        }
-      }
-    }
-  }
-
-  // for (const path in parameters) {
-  //   if (!preCondition400[path]) preCondition400[path] = {};
-
-  //   for (const method in parameters[path]) {
-  //     if (!preCondition400[path][method]) preCondition400[path][method] = {};
-
-  //     let index = 1;
-  //     for (const key in parameters[path][method]) {
-  //       preCondition400[path][method][index] = {
-  //         ...parameters[path][method],
-  //         [key]: "",
-  //       };
-  //       index++;
-  //     }
-
-  //     if (Object.values(preCondition400[path][method]).length > 1) {
-  //       preCondition400[path][method][index] = {};
-  //       for (const key in parameters[path][method]) {
-  //         preCondition400[path][method][index][key] = "";
-  //       }
-  //     }
-  //   }
-  // }
-
-  return preCondition400;
-};
-
 export const createPreCondition403 = async (swaggerFile: SwaggerFile) => {
   const specificUrl = await getSpecificUrl(swaggerFile);
   const pathValue = Object.keys(swaggerFile.paths);
@@ -210,4 +143,86 @@ export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
   }
 
   return parameters;
+};
+
+export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
+  const parameters = await createObjectPathParameters(swaggerFile);
+  const resquestBody = await getRequestBody2(swaggerFile);
+  const preCondition400: PreCondition400 = {};
+
+  for (const path in resquestBody) {
+    if (!preCondition400[path]) preCondition400[path] = {};
+
+    for (const method in resquestBody[path]) {
+      if (!preCondition400[path][method]) preCondition400[path][method] = {};
+
+      for (const element in resquestBody[path][method]) {
+        const schemas = getObjectsByKey(resquestBody[path][method], "schema");
+        const schemaRef = getObjectsByKey(schemas[0], "$ref");
+
+        if (schemaRef.length > 0) {
+          schemaRef.forEach(async (schema) => {
+            const schemaName = schema.split("/").pop();
+
+            const schemaRequiredParameters = await getSchemaRequiredParameters(
+              swaggerFile,
+              swaggerFile.components?.schemas?.[schemaName]
+            );
+
+            if (Object.values(schemaRequiredParameters).length > 0) {
+              preCondition400[path][method][schemaName] =
+                schemaRequiredParameters;
+            } else {
+              const properties = getObjectsByKey(
+                swaggerFile.components?.schemas?.[schemaName],
+                "properties"
+              );
+
+              const newObject: any = {};
+              for (const key in properties[0]) {
+                newObject[key] = properties[0][key]?.example;
+              }
+
+              preCondition400[path][method][schemaName] = newObject;
+            }
+          });
+        } else {
+          const properties = getObjectsByKey(schemas, "properties");
+          const newObject: any = {};
+
+          for (const key in properties[0]) {
+            newObject[key] = properties[0][key]?.example;
+          }
+
+          preCondition400[path][method] = newObject;
+        }
+      }
+    }
+  }
+
+  // for (const path in parameters) {
+  //   if (!preCondition400[path]) preCondition400[path] = {};
+
+  //   for (const method in parameters[path]) {
+  //     if (!preCondition400[path][method]) preCondition400[path][method] = {};
+
+  //     let index = 1;
+  //     for (const key in parameters[path][method]) {
+  //       preCondition400[path][method][index] = {
+  //         ...parameters[path][method],
+  //         [key]: "",
+  //       };
+  //       index++;
+  //     }
+
+  //     if (Object.values(preCondition400[path][method]).length > 1) {
+  //       preCondition400[path][method][index] = {};
+  //       for (const key in parameters[path][method]) {
+  //         preCondition400[path][method][index][key] = "";
+  //       }
+  //     }
+  //   }
+  // }
+
+  return preCondition400;
 };
