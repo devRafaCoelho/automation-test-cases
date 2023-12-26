@@ -1,10 +1,11 @@
 import {
   ObjectParameters,
   PreCondition2,
+  PreCondition200,
   PreCondition400,
   SwaggerFile,
 } from "../Types/types";
-import { getObjectsByKey } from "./helpers";
+import { createPathParameterCombinations2, getObjectsByKey } from "./helpers";
 import {
   getPathsParameters2,
   getRequestBody2,
@@ -25,25 +26,24 @@ export const createPreCondition2 = async (swaggerFile: SwaggerFile) => {
 
       for (const statusCode in responses[path][method]) {
         switch (statusCode) {
+          case "200":
+            const preCondition200 = await createPreCondition200(swaggerFile);
+
+            if (!preCondition[path][method][statusCode]) {
+              preCondition[path][method][statusCode] = {
+                description: responses[path][method][statusCode].description,
+                examples: preCondition200[path][method],
+              };
+            }
+            break;
           case "400":
             const preCondition400 = await createPreCondition400(swaggerFile);
 
-            console.log(
-              Object.values(preCondition400[path][method]).length === 1
-            );
-
             if (!preCondition[path][method][statusCode]) {
-              if (Object.values(preCondition400[path][method]).length === 1) {
-                preCondition[path][method][statusCode] = {
-                  description: responses[path][method][statusCode].description,
-                  example: preCondition400[path][method],
-                };
-              } else {
-                preCondition[path][method][statusCode] = {
-                  description: responses[path][method][statusCode].description,
-                  examples: preCondition400[path][method],
-                };
-              }
+              preCondition[path][method][statusCode] = {
+                description: responses[path][method][statusCode].description,
+                examples: preCondition400[path][method],
+              };
             }
             break;
           case "401":
@@ -116,55 +116,6 @@ export const createPreCondition2 = async (swaggerFile: SwaggerFile) => {
   }
 
   return preCondition;
-};
-
-export const createPreCondition403 = async (swaggerFile: SwaggerFile) => {
-  const specificUrl = await getSpecificUrl(swaggerFile);
-  const pathValue = Object.keys(swaggerFile.paths);
-
-  return `${specificUrl[0].url}/(.*)${pathValue[0]}`;
-};
-
-export const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
-  const specificUrl = await getSpecificUrl(swaggerFile);
-  const pathValue = Object.keys(swaggerFile.paths);
-
-  return `${specificUrl[0].url}${pathValue[0]}/smarth`;
-};
-
-const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
-  const specificUrl = await getSpecificUrl(swaggerFile);
-  const pathValue = Object.keys(swaggerFile.paths);
-
-  return [
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-  ];
-};
-
-export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
-  const parameters = await getPathsParameters2(swaggerFile);
-
-  for (const path in parameters) {
-    for (const method in parameters[path]) {
-      const requiredParameters = parameters[path][method];
-
-      if (Array.isArray(requiredParameters)) {
-        const objectParameters: ObjectParameters = {};
-
-        requiredParameters.forEach((element: any) => {
-          objectParameters[element.name] = element.example
-            ? element.example
-            : element.schema.example;
-        });
-
-        parameters[path][method] = objectParameters;
-      }
-    }
-  }
-
-  return parameters;
 };
 
 export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
@@ -295,4 +246,121 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
   }
 
   return preCondition400;
+};
+
+export const createPreCondition403 = async (swaggerFile: SwaggerFile) => {
+  const specificUrl = await getSpecificUrl(swaggerFile);
+  const pathValue = Object.keys(swaggerFile.paths);
+
+  return `${specificUrl[0].url}/(.*)${pathValue[0]}`;
+};
+
+export const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
+  const specificUrl = await getSpecificUrl(swaggerFile);
+  const pathValue = Object.keys(swaggerFile.paths);
+
+  return `${specificUrl[0].url}${pathValue[0]}/smarth`;
+};
+
+const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
+  const specificUrl = await getSpecificUrl(swaggerFile);
+  const pathValue = Object.keys(swaggerFile.paths);
+
+  return [
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+  ];
+};
+
+export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
+  const parameters = await getPathsParameters2(swaggerFile);
+
+  for (const path in parameters) {
+    for (const method in parameters[path]) {
+      const requiredParameters = parameters[path][method];
+
+      if (Array.isArray(requiredParameters)) {
+        const objectParameters: ObjectParameters = {};
+
+        requiredParameters.forEach((element: any) => {
+          objectParameters[element.name] = element.example
+            ? element.example
+            : element.schema.example;
+        });
+
+        parameters[path][method] = objectParameters;
+      }
+    }
+  }
+
+  return parameters;
+};
+
+export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
+  const parameters = await createPathParameterCombinations2(swaggerFile);
+  const resquestBody = await getRequestBody2(swaggerFile);
+  const preCondition200: PreCondition200 = {};
+
+  for (const path in resquestBody) {
+    if (!preCondition200[path]) preCondition200[path] = {};
+
+    for (const method in resquestBody[path]) {
+      if (!preCondition200[path][method]) preCondition200[path][method] = {};
+
+      if (Object.values(resquestBody[path][method]).length > 0) {
+        for (const element in resquestBody[path][method]) {
+          const schemas = getObjectsByKey(resquestBody[path][method], "schema");
+          const schemaRef = getObjectsByKey(schemas[0], "$ref");
+
+          if (schemaRef.length > 0) {
+            schemaRef.forEach(async (schema) => {
+              const schemaName = schema.split("/").pop();
+              const schemaRequiredParameters =
+                await getSchemaRequiredParameters(
+                  swaggerFile,
+                  swaggerFile.components?.schemas?.[schemaName]
+                );
+
+              if (Object.values(schemaRequiredParameters).length > 0) {
+                preCondition200[path][method][schemaName] =
+                  schemaRequiredParameters;
+              } else {
+                const properties = getObjectsByKey(
+                  swaggerFile.components?.schemas?.[schemaName],
+                  "properties"
+                );
+                const newObject: any = {};
+                for (const key in properties[0]) {
+                  newObject[key] = properties[0][key]?.example;
+                }
+                preCondition200[path][method] = newObject;
+              }
+            });
+          } else {
+            const properties = getObjectsByKey(schemas, "properties");
+            const newObject: any = {};
+            for (const key in properties[0]) {
+              if (properties[0][key].example) {
+                newObject[key] = properties[0][key].example;
+              }
+            }
+            preCondition200[path][method] = newObject;
+          }
+        }
+      }
+    }
+  }
+
+  for (const path in parameters) {
+    if (!preCondition200[path]) preCondition200[path] = {};
+
+    for (const method in parameters[path]) {
+      if (!preCondition200[path][method]) preCondition200[path][method] = {};
+
+      preCondition200[path][method] = parameters[path][method];
+    }
+  }
+
+  return preCondition200;
 };

@@ -124,13 +124,13 @@ export const getRequestBody2 = async (swaggerFile: SwaggerFile) => {
 
 export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
-  const patrameters: PathParameter = {};
+  const parameters: PathParameter = {};
 
   for (const path in pathsValues) {
-    if (!patrameters[path]) patrameters[path] = {};
+    if (!parameters[path]) parameters[path] = {};
 
     for (const method in pathsValues[path]) {
-      if (!patrameters[path][method]) patrameters[path][method] = {};
+      if (!parameters[path][method]) parameters[path][method] = {};
 
       if (pathsValues[path][method].parameters) {
         const methodParameters = pathsValues[path][method].parameters;
@@ -139,7 +139,7 @@ export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
           return element.required === true;
         });
 
-        patrameters[path][method] =
+        parameters[path][method] =
           requiredParameters.length !== 0
             ? requiredParameters
             : methodParameters;
@@ -147,5 +147,5 @@ export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
     }
   }
 
-  return patrameters;
+  return parameters;
 };

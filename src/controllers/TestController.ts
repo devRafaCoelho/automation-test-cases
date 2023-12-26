@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 
-import {
-  createPreCondition2,
-  createPreCondition400,
-} from "../utils/newPreCondition";
+import { createPathParameterCombinations2 } from "../utils/helpers";
+import { createPreCondition2 } from "../utils/newPreCondition";
 import {
   getPathsParameters2,
   getRequestBody2,
@@ -16,9 +14,11 @@ export const test = async (req: Request, res: Response) => {
 
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition400 = await createPreCondition400(swaggerFile);
+    const parametersCombinations = await createPathParameterCombinations2(
+      swaggerFile
+    );
 
-    if (!preCondition400)
+    if (!parametersCombinations)
       return res
         .status(422)
         .json({ error: { type: "file", message: "No files found." } });
@@ -31,7 +31,7 @@ export const test = async (req: Request, res: Response) => {
     //   });
     // }
 
-    return res.status(200).json({ preCondition400 });
+    return res.status(200).json({ parametersCombinations });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });

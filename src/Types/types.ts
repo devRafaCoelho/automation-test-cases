@@ -214,7 +214,23 @@ export type ObjectParameters = {
   [key: string]: string;
 };
 
+export type PreCondition200 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+
 export type PreCondition400 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+
+export type ParametersCombination = {
   [path: string]: {
     [method: string]: {
       [key: string]: any;

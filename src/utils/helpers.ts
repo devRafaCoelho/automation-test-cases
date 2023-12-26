@@ -1,9 +1,5 @@
-import {
-  ParameterItem,
-  ParametersObject,
-  ParametersObjectCombination,
-  SwaggerFile,
-} from "../Types/types";
+import { ParametersObjectCombination, SwaggerFile } from "../Types/types";
+import { getPathsParameters2 } from "./newSwagger";
 import { getPathsParameters } from "./swagger";
 
 export const getObjectsByKey = (obj: any, keyName: string): any[] => {
@@ -92,6 +88,80 @@ export const createPathParameterCombinations = async (
           }
         });
       });
+    }
+  }
+
+  return combinations;
+};
+
+// export const createPathParameterCombinations2 = async (
+//   swaggerFile: SwaggerFile
+// ) => {
+//   const parameters = await getPathsParameters2(swaggerFile);
+//   const combinations: any = {};
+
+//   for (const path in parameters) {
+//     for (const method in parameters[path]) {
+//       console.log(parameters[path][method]);
+//     }
+//   }
+
+//   return combinations;
+// };
+
+export const createPathParameterCombinations2 = async (
+  swaggerFile: SwaggerFile
+) => {
+  const parameters = await getPathsParameters2(swaggerFile);
+  const combinations: ParametersObjectCombination = {};
+
+  for (const path in parameters) {
+    combinations[path] = {};
+
+    for (const method in parameters[path]) {
+      const methodParameters = parameters[path][method];
+
+      if (methodParameters && Array.isArray(methodParameters)) {
+        if (methodParameters.length > 0) {
+          let enumValues: { [key: string]: any[] } = {};
+
+          methodParameters.forEach((element) => {
+            if (element.schema && element.schema.enum) {
+              enumValues[element.name] = element.schema.enum;
+            }
+          });
+
+          const totalCombinations = Object.values(enumValues).reduce(
+            (accumulator, currentEnum) => accumulator * currentEnum.length,
+            1
+          );
+
+          const methodCombinations: any[] = [];
+
+          for (let index = 0; index < totalCombinations; index++) {
+            const combination: ParametersObjectCombination = {};
+            methodCombinations.push(combination);
+          }
+
+          methodCombinations.forEach((combination: any, index: number) => {
+            Object.keys(enumValues).forEach((paramName) => {
+              const enumIndex = index % enumValues[paramName].length;
+              combination[paramName] = enumValues[paramName][enumIndex];
+            });
+
+            methodParameters.forEach((parameter) => {
+              if (parameter.schema && !parameter.schema.enum) {
+                combination[parameter.name] =
+                  parameter.example ?? parameter.schema.example;
+              }
+            });
+          });
+
+          combinations[path][method] = methodCombinations;
+        }
+      } else {
+        combinations[path][method] = {};
+      }
     }
   }
 
