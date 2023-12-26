@@ -199,10 +199,20 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
           const newObject: any = {};
 
           for (const key in properties[0]) {
-            newObject[key] = properties[0][key]?.example;
+            if (properties[0][key].example) {
+              newObject[key] = properties[0][key].example;
+            }
           }
 
           preCondition400[path][method] = newObject;
+
+          let index = 1;
+          const subObject: any = {};
+          for (const key in newObject) {
+            subObject[index] = { ...newObject, [key]: "" };
+            index++;
+          }
+          preCondition400[path][method] = subObject;
         }
       }
     }
