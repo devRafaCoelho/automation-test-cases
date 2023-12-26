@@ -156,63 +156,58 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
     for (const method in resquestBody[path]) {
       if (!preCondition400[path][method]) preCondition400[path][method] = {};
 
-      for (const element in resquestBody[path][method]) {
-        const schemas = getObjectsByKey(resquestBody[path][method], "schema");
-        const schemaRef = getObjectsByKey(schemas[0], "$ref");
-
-        if (schemaRef.length > 0) {
-          schemaRef.forEach(async (schema) => {
-            const schemaName = schema.split("/").pop();
-
-            const schemaRequiredParameters = await getSchemaRequiredParameters(
-              swaggerFile,
-              swaggerFile.components?.schemas?.[schemaName]
-            );
-
-            if (Object.values(schemaRequiredParameters).length > 0) {
-              preCondition400[path][method][schemaName] =
-                schemaRequiredParameters;
-            } else {
-              const properties = getObjectsByKey(
-                swaggerFile.components?.schemas?.[schemaName],
-                "properties"
-              );
-
-              const newObject: any = {};
-              for (const key in properties[0]) {
-                newObject[key] = properties[0][key]?.example;
+      if (Object.values(resquestBody[path][method]).length > 0) {
+        for (const element in resquestBody[path][method]) {
+          const schemas = getObjectsByKey(resquestBody[path][method], "schema");
+          const schemaRef = getObjectsByKey(schemas[0], "$ref");
+          if (schemaRef.length > 0) {
+            schemaRef.forEach(async (schema) => {
+              const schemaName = schema.split("/").pop();
+              const schemaRequiredParameters =
+                await getSchemaRequiredParameters(
+                  swaggerFile,
+                  swaggerFile.components?.schemas?.[schemaName]
+                );
+              if (Object.values(schemaRequiredParameters).length > 0) {
+                preCondition400[path][method][schemaName] =
+                  schemaRequiredParameters;
+              } else {
+                const properties = getObjectsByKey(
+                  swaggerFile.components?.schemas?.[schemaName],
+                  "properties"
+                );
+                const newObject: any = {};
+                for (const key in properties[0]) {
+                  newObject[key] = properties[0][key]?.example;
+                }
+                preCondition400[path][method][schemaName] = newObject;
+                let index = 1;
+                const subObject: any = {};
+                for (const key in newObject) {
+                  subObject[index] = { ...newObject, [key]: "" };
+                  index++;
+                }
+                preCondition400[path][method][schemaName] = subObject;
               }
-
-              preCondition400[path][method][schemaName] = newObject;
-
-              let index = 1;
-              const subObject: any = {};
-              for (const key in newObject) {
-                subObject[index] = { ...newObject, [key]: "" };
-                index++;
+            });
+          } else {
+            const properties = getObjectsByKey(schemas, "properties");
+            const newObject: any = {};
+            for (const key in properties[0]) {
+              if (properties[0][key].example) {
+                newObject[key] = properties[0][key].example;
               }
-              preCondition400[path][method][schemaName] = subObject;
             }
-          });
-        } else {
-          const properties = getObjectsByKey(schemas, "properties");
-          const newObject: any = {};
 
-          for (const key in properties[0]) {
-            if (properties[0][key].example) {
-              newObject[key] = properties[0][key].example;
+            preCondition400[path][method] = newObject;
+            let index = 1;
+            const subObject: any = {};
+            for (const key in newObject) {
+              subObject[index] = { ...newObject, [key]: "" };
+              index++;
             }
+            preCondition400[path][method] = subObject;
           }
-
-          preCondition400[path][method] = newObject;
-
-          let index = 1;
-          const subObject: any = {};
-          for (const key in newObject) {
-            subObject[index] = { ...newObject, [key]: "" };
-            index++;
-          }
-          preCondition400[path][method] = subObject;
         }
       }
     }
@@ -224,19 +219,21 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
     for (const method in parameters[path]) {
       if (!preCondition400[path][method]) preCondition400[path][method] = {};
 
-      let index = 1;
-      for (const key in parameters[path][method]) {
-        preCondition400[path][method][index] = {
-          ...parameters[path][method],
-          [key]: "",
-        };
-        index++;
-      }
-
-      if (Object.values(preCondition400[path][method]).length > 1) {
-        preCondition400[path][method][index] = {};
+      if (Object.values(parameters[path][method]).length > 0) {
+        let index = 1;
         for (const key in parameters[path][method]) {
-          preCondition400[path][method][index][key] = "";
+          preCondition400[path][method][index] = {
+            ...parameters[path][method],
+            [key]: "",
+          };
+          index++;
+        }
+
+        if (Object.values(preCondition400[path][method]).length > 1) {
+          preCondition400[path][method][index] = {};
+          for (const key in parameters[path][method]) {
+            preCondition400[path][method][index][key] = "";
+          }
         }
       }
     }
