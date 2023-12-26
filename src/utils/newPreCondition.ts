@@ -184,6 +184,14 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
               }
 
               preCondition400[path][method][schemaName] = newObject;
+
+              let index = 1;
+              const subObject: any = {};
+              for (const key in newObject) {
+                subObject[index] = { ...newObject, [key]: "" };
+                index++;
+              }
+              preCondition400[path][method][schemaName] = subObject;
             }
           });
         } else {
@@ -200,29 +208,29 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
     }
   }
 
-  // for (const path in parameters) {
-  //   if (!preCondition400[path]) preCondition400[path] = {};
+  for (const path in parameters) {
+    if (!preCondition400[path]) preCondition400[path] = {};
 
-  //   for (const method in parameters[path]) {
-  //     if (!preCondition400[path][method]) preCondition400[path][method] = {};
+    for (const method in parameters[path]) {
+      if (!preCondition400[path][method]) preCondition400[path][method] = {};
 
-  //     let index = 1;
-  //     for (const key in parameters[path][method]) {
-  //       preCondition400[path][method][index] = {
-  //         ...parameters[path][method],
-  //         [key]: "",
-  //       };
-  //       index++;
-  //     }
+      let index = 1;
+      for (const key in parameters[path][method]) {
+        preCondition400[path][method][index] = {
+          ...parameters[path][method],
+          [key]: "",
+        };
+        index++;
+      }
 
-  //     if (Object.values(preCondition400[path][method]).length > 1) {
-  //       preCondition400[path][method][index] = {};
-  //       for (const key in parameters[path][method]) {
-  //         preCondition400[path][method][index][key] = "";
-  //       }
-  //     }
-  //   }
-  // }
+      if (Object.values(preCondition400[path][method]).length > 1) {
+        preCondition400[path][method][index] = {};
+        for (const key in parameters[path][method]) {
+          preCondition400[path][method][index][key] = "";
+        }
+      }
+    }
+  }
 
   return preCondition400;
 };
