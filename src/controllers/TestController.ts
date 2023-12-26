@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import {
-  createObjectPathParameters,
+  createPreCondition2,
   createPreCondition400,
 } from "../utils/newPreCondition";
 import {
@@ -108,6 +108,23 @@ export const testDelete = async (req: Request, res: Response) => {
   try {
     await deleteAllFiles();
     return res.status(200).json({ message: "Files deleted" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+export const testPreCondition = async (req: Request, res: Response) => {
+  try {
+    const swaggerFile = await getFirstFile();
+    const preCondition = await createPreCondition2(swaggerFile);
+
+    if (!preCondition)
+      return res
+        .status(422)
+        .json({ error: { type: "file", message: "No files found." } });
+
+    return res.status(200).json({ preCondition });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });

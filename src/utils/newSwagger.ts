@@ -140,7 +140,9 @@ export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
         });
 
         patrameters[path][method] =
-          requiredParameters.length !== 0 ? requiredParameters : {};
+          requiredParameters.length !== 0
+            ? requiredParameters
+            : methodParameters;
       }
     }
   }

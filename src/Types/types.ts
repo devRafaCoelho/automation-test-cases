@@ -197,15 +197,14 @@ export type ParameterProps = {
     enum?: any[];
   };
 };
-
 export type PreCondition2 = {
   [path: string]: {
     [method: string]: {
       [statusCode: string]: {
         statusCode?: string;
         description?: string;
-        example?: string;
-        value?: any;
+        example?: string | { [key: string]: any };
+        examples?: any;
       };
     };
   };
