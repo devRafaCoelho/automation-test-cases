@@ -222,6 +222,14 @@ export type PreCondition200 = {
   };
 };
 
+export type PreCondition422 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+
 export type PreCondition400 = {
   [path: string]: {
     [method: string]: {

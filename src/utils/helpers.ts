@@ -94,21 +94,6 @@ export const createPathParameterCombinations = async (
   return combinations;
 };
 
-// export const createPathParameterCombinations2 = async (
-//   swaggerFile: SwaggerFile
-// ) => {
-//   const parameters = await getPathsParameters2(swaggerFile);
-//   const combinations: any = {};
-
-//   for (const path in parameters) {
-//     for (const method in parameters[path]) {
-//       console.log(parameters[path][method]);
-//     }
-//   }
-
-//   return combinations;
-// };
-
 export const createPathParameterCombinations2 = async (
   swaggerFile: SwaggerFile
 ) => {
@@ -136,14 +121,12 @@ export const createPathParameterCombinations2 = async (
             1
           );
 
-          const methodCombinations: any[] = [];
+          combinations[path][method] = {};
 
           for (let index = 0; index < totalCombinations; index++) {
             const combination: ParametersObjectCombination = {};
-            methodCombinations.push(combination);
-          }
+            combinations[path][method][index + 1] = combination;
 
-          methodCombinations.forEach((combination: any, index: number) => {
             Object.keys(enumValues).forEach((paramName) => {
               const enumIndex = index % enumValues[paramName].length;
               combination[paramName] = enumValues[paramName][enumIndex];
@@ -151,13 +134,14 @@ export const createPathParameterCombinations2 = async (
 
             methodParameters.forEach((parameter) => {
               if (parameter.schema && !parameter.schema.enum) {
-                combination[parameter.name] =
-                  parameter.example ?? parameter.schema.example;
+                combination[parameter.name] = parameter.example
+                  ? parameter.example
+                  : parameter.schema.example
+                  ? parameter.schema.example
+                  : getObjectsByKey(parameter.examples, "value");
               }
             });
-          });
-
-          combinations[path][method] = methodCombinations;
+          }
         }
       } else {
         combinations[path][method] = {};

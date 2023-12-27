@@ -352,6 +352,7 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
     const responses422 = responses[method].filter((response) => {
       return response.statusCode === "422";
     });
+
     const preConditionsList = addComplement(preCondition[method][0].value);
 
     responses422.forEach((element, index) => {

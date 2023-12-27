@@ -323,22 +323,21 @@ export const getSchemaRequiredParameters = async (
     if (refRequiredParameters.length > 0) {
       refRequiredParameters.forEach((refParameterNameList: any) => {
         refParameterNameList.forEach((refParameterName: any) => {
-          if (!requiredParametersObject[name]) {
+          if (!requiredParametersObject[name])
             requiredParametersObject[name] = {};
-          }
 
           const refSubObj = getObjectsByKey(
             swaggerFile.components?.schemas?.[name],
             refParameterName
           );
 
-          if (refSubObj[0].example) {
-            requiredParametersObject[name][refParameterName] =
-              refSubObj[0].example;
-          } else {
-            requiredParametersObject[name][refParameterName] =
-              refSubObj[0].example;
-          }
+          requiredParametersObject[name][refParameterName] =
+            refSubObj[0]?.example ?? "";
+
+          // if (refSubObj[0].example) {
+          //   requiredParametersObject[name][refParameterName] =
+          //     refSubObj[0].example;
+          // }
         });
       });
     }
