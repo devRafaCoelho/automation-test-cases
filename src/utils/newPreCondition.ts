@@ -345,6 +345,7 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
                 newObject[key] = properties[0][key].example;
               }
             }
+
             preCondition200[path][method] = newObject;
           }
         }
@@ -358,9 +359,12 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
     for (const method in parameters[path]) {
       if (!preCondition200[path][method]) preCondition200[path][method] = {};
 
-      preCondition200[path][method] = parameters[path][method];
+      if (Object.values(parameters[path][method]).length > 0) {
+        preCondition200[path][method] = parameters[path][method];
+      }
     }
   }
 
+  console.log(preCondition200);
   return preCondition200;
 };
