@@ -99,6 +99,16 @@ export const createPreCondition2 = async (swaggerFile: SwaggerFile) => {
               };
             }
             break;
+          case "422":
+            const preCondition422 = await createPreCondition422(swaggerFile);
+
+            if (!preCondition[path][method][statusCode]) {
+              preCondition[path][method][statusCode] = {
+                description: responses[path][method][statusCode].description,
+                examples: preCondition422[path][method],
+              };
+            }
+            break;
           case "429":
             const preCondition429 = await createPreCondition429(swaggerFile);
 
@@ -370,24 +380,9 @@ export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
   return parameters;
 };
 
-export const createPrecondition422 = async (swaggerFile: SwaggerFile) => {
+export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
   const preCondition200 = await createPreCondition200(swaggerFile);
   const preCondition422: PreCondition422 = {};
-
-  // const addComplement = (obj: any) => {
-  //   const modifiedObjectsList: any[] = [];
-
-  //   for (const index in obj) {
-  //     for (const parameterName in obj[index]) {
-  //       const rootObject = { ...obj[index] };
-
-  //       rootObject[parameterName] = obj[index][parameterName] + "*%5r";
-  //       modifiedObjectsList.push(rootObject);
-  //     }
-  //   }
-
-  //   return modifiedObjectsList;
-  // };
 
   for (const path in preCondition200) {
     if (!preCondition422[path]) preCondition422[path] = {};
@@ -395,7 +390,10 @@ export const createPrecondition422 = async (swaggerFile: SwaggerFile) => {
     for (const method in preCondition200[path]) {
       if (!preCondition422[path][method]) preCondition422[path][method] = {};
 
-      const fixedObject = Object.values(preCondition200[path][method])[0];
+      const fixedObject =
+        typeof Object.values(preCondition200[path][method])[0] === "object"
+          ? Object.values(preCondition200[path][method])[0]
+          : preCondition200[path][method];
 
       let index = 1;
       const newObject: any = {};

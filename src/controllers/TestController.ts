@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import {
   createPreCondition2,
-  createPrecondition422,
+  createPreCondition422,
 } from "../utils/newPreCondition";
 import {
   getPathsParameters2,
@@ -14,7 +14,7 @@ import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition422 = await createPrecondition422(swaggerFile);
+    const preCondition422 = await createPreCondition422(swaggerFile);
 
     if (!preCondition422)
       return res
