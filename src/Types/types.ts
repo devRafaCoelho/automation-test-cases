@@ -238,6 +238,14 @@ export type PreCondition400 = {
   };
 };
 
+export type TestCaseName2 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+
 export type ParametersCombination = {
   [path: string]: {
     [method: string]: {

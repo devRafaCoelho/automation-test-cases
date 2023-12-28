@@ -2,7 +2,8 @@ import { Request, Response } from "express";
 
 import {
   createPreCondition2,
-  createPreCondition422,
+  createPreCondition200,
+  createPreCondition400,
 } from "../utils/newPreCondition";
 import {
   getPathsParameters2,
@@ -14,14 +15,14 @@ import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition422 = await createPreCondition422(swaggerFile);
+    const preCondition400 = await createPreCondition400(swaggerFile);
 
-    if (!preCondition422)
+    if (!preCondition400)
       return res
         .status(422)
         .json({ error: { type: "file", message: "No files found." } });
 
-    return res.status(200).json({ preCondition422 });
+    return res.status(200).json({ preCondition400 });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });
