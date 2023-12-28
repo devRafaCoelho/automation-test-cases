@@ -398,7 +398,11 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
       let index = 1;
       const newObject: any = {};
       for (const parameterName in fixedObject) {
-        if (typeof fixedObject[parameterName] !== "string") {
+        if (Array.isArray(fixedObject[parameterName])) {
+          newObject[parameterName] = fixedObject[parameterName].map(
+            (value: any) => value + "*%5r"
+          );
+        } else if (typeof fixedObject[parameterName] === "object") {
           for (const key in fixedObject[parameterName]) {
             newObject[index] = {
               ...fixedObject[parameterName],
@@ -407,11 +411,13 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
             index++;
           }
         } else {
-          newObject[index] = {
-            ...fixedObject,
-            [parameterName]: fixedObject[parameterName] + "*%5r",
-          };
-          index++;
+          if (fixedObject[parameterName]) {
+            newObject[index] = {
+              ...fixedObject,
+              [parameterName]: fixedObject[parameterName] + "*%5r",
+            };
+            index++;
+          }
         }
 
         preCondition422[path][method] = newObject;
