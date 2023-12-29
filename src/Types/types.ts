@@ -184,6 +184,7 @@ export type PathParameter = {
   [path: string]: {
     [method: string]: {
       parameters?: ParameterProps[];
+      [key: string]: any;
     };
   };
 };
@@ -191,12 +192,13 @@ export type PathParameter = {
 export type ParameterProps = {
   name: string;
   in: string;
-  required: string;
-  example: string;
+  required: boolean;
+  example: string | number;
   schema: {
     enum?: any[];
   };
 };
+
 export type PreCondition2 = {
   [path: string]: {
     [method: string]: {
