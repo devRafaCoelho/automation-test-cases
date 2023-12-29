@@ -1,5 +1,5 @@
-import { SwaggerFile, TestCaseName2 } from "../Types/types";
-import { createPreCondition2 } from "./newPreCondition";
+import { SwaggerFile, TestCaseName2 } from '../Types/types';
+import { createPreCondition2 } from './newPreCondition';
 
 export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
   const preConditions = await createPreCondition2(swaggerFile);
@@ -10,6 +10,69 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
 
     for (const method in preConditions[path]) {
       if (!testCaseName[path][method]) testCaseName[path][method] = {};
+
+      let index = 1;
+
+      for (const statusCode in preConditions[path][method]) {
+        const testCaseIndex = index < 10 ? '00' : index < 100 ? '0' : '';
+
+        switch (statusCode) {
+          case '200':
+            if (Object.keys(preConditions[path][method][statusCode]?.examples).length > 1) {
+              let subIndex = 1;
+              testCaseName[path][method][statusCode] = {};
+
+              for (const example in preConditions[path][method][statusCode]?.examples) {
+                testCaseName[path][method][statusCode][
+                  subIndex
+                ] = `CT${testCaseIndex}${index}.${subIndex} - Request enviada com sucesso - COD ${statusCode}`;
+                subIndex++;
+              }
+            } else {
+              testCaseName[path][method][
+                statusCode
+              ] = `CT${testCaseIndex}${index} - Request enviada com sucesso - COD ${statusCode}`;
+            }
+            index++;
+            break;
+          case '400':
+          case '422':
+            if (Object.keys(preConditions[path][method][statusCode]?.examples).length > 1) {
+              testCaseName[path][method][statusCode] = {};
+
+              for (const key in preConditions[path][method][statusCode]?.examples) {
+                if (!Number(key)) {
+                  for (const testCaseNumber in preConditions[path][method][statusCode]?.examples[
+                    key
+                  ]) {
+                    testCaseName[path][method][statusCode][
+                      testCaseNumber
+                    ] = `CT${testCaseIndex}${index}.${testCaseNumber} - Request enviada com falha - COD ${statusCode}`;
+                  }
+                } else {
+                  testCaseName[path][method][statusCode][
+                    key
+                  ] = `CT${testCaseIndex}${index}.${key} - Request enviada com falha - COD ${statusCode}`;
+                }
+              }
+            } else {
+              testCaseName[path][method][
+                statusCode
+              ] = `CT${testCaseIndex}${index} - Request enviada com falha - COD ${statusCode}`;
+            }
+            index++;
+            break;
+
+          default:
+            if (preConditions[path][method][statusCode].example) {
+              testCaseName[path][method][
+                statusCode
+              ] = `CT${testCaseIndex}${index} - Request enviada com falha - COD ${statusCode}`;
+              index++;
+            }
+            break;
+        }
+      }
     }
   }
 

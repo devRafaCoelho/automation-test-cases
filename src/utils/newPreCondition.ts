@@ -305,41 +305,6 @@ export const createPreCondition404 = async (swaggerFile: SwaggerFile) => {
   return `${specificUrl[0].url}${pathValue[0]}/smarth`;
 };
 
-const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
-  const specificUrl = await getSpecificUrl(swaggerFile);
-  const pathValue = Object.keys(swaggerFile.paths);
-
-  return [
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-    `${specificUrl[0].url}${pathValue[0]}`,
-  ];
-};
-
-export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
-  const parameters = await getPathsParameters2(swaggerFile);
-
-  for (const path in parameters) {
-    for (const method in parameters[path]) {
-      const requiredParameters = parameters[path][method];
-
-      if (Array.isArray(requiredParameters)) {
-        const objectParameters: ObjectParameters = {};
-
-        requiredParameters.forEach((element: any) => {
-          objectParameters[element.name] = element.example
-            ? element.example
-            : element.schema.example;
-        });
-
-        parameters[path][method] = objectParameters;
-      }
-    }
-  }
-
-  return parameters;
-};
-
 export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
   const preCondition200 = await createPreCondition200(swaggerFile);
   const resquestBody = await getRequestBody2(swaggerFile);
@@ -411,4 +376,39 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
   }
 
   return preCondition422;
+};
+
+const createPreCondition429 = async (swaggerFile: SwaggerFile) => {
+  const specificUrl = await getSpecificUrl(swaggerFile);
+  const pathValue = Object.keys(swaggerFile.paths);
+
+  return [
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+    `${specificUrl[0].url}${pathValue[0]}`,
+  ];
+};
+
+export const createObjectPathParameters = async (swaggerFile: SwaggerFile) => {
+  const parameters = await getPathsParameters2(swaggerFile);
+
+  for (const path in parameters) {
+    for (const method in parameters[path]) {
+      const requiredParameters = parameters[path][method];
+
+      if (Array.isArray(requiredParameters)) {
+        const objectParameters: ObjectParameters = {};
+
+        requiredParameters.forEach((element: any) => {
+          objectParameters[element.name] = element.example
+            ? element.example
+            : element.schema.example;
+        });
+
+        parameters[path][method] = objectParameters;
+      }
+    }
+  }
+
+  return parameters;
 };
