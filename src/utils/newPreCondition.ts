@@ -142,7 +142,6 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
 
       if (Object.values(resquestBody[path][method]).length > 0) {
         let index = 1;
-        const testCaseIndex = index < 10 ? "00" : index < 10 ? "0" : "";
 
         for (const element in resquestBody[path][method]) {
           const schemas = getObjectsByKey(resquestBody[path][method], "schema");
@@ -158,7 +157,7 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
                 );
 
               if (Object.values(schemaRequiredParameters).length > 0) {
-                preCondition200[path][method][`${testCaseIndex}${index}`] =
+                preCondition200[path][method][schemaName] =
                   schemaRequiredParameters;
               } else {
                 const properties = getObjectsByKey(
@@ -169,8 +168,7 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
                 for (const key in properties[0]) {
                   newObject[key] = properties[0][key]?.example;
                 }
-                preCondition200[path][method][`${testCaseIndex}${index}`] =
-                  newObject;
+                preCondition200[path][method][index] = newObject;
               }
 
               index++;
@@ -184,8 +182,7 @@ export const createPreCondition200 = async (swaggerFile: SwaggerFile) => {
               }
             }
 
-            preCondition200[path][method][`${testCaseIndex}${index}`] =
-              newObject;
+            preCondition200[path][method][index] = newObject;
             index++;
           }
         }
@@ -267,10 +264,9 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
       } else {
         const newObject: any = {};
         let index = 1;
-        const testCaseIndex = index < 10 ? "00" : index < 10 ? "0" : "";
 
         for (const parameterName in parameters[path][method]) {
-          newObject[`${testCaseIndex}${index}`] = {
+          newObject[index] = {
             ...parameters[path][method],
             [parameterName]: "",
           };
@@ -278,12 +274,12 @@ export const createPreCondition400 = async (swaggerFile: SwaggerFile) => {
         }
 
         if (Object.keys(newObject).length > 1) {
-          newObject[`${testCaseIndex}${index}`] = {
+          newObject[index] = {
             ...parameters[path][method],
           };
 
-          for (const parameterName in newObject[`${testCaseIndex}${index}`]) {
-            newObject[`${testCaseIndex}${index}`][parameterName] = "";
+          for (const parameterName in newObject[index]) {
+            newObject[index][parameterName] = "";
           }
         }
 
@@ -399,10 +395,9 @@ export const createPreCondition422 = async (swaggerFile: SwaggerFile) => {
         } else {
           const newObject: any = {};
           let index = 1;
-          const testCaseIndex = index < 10 ? "00" : index < 10 ? "0" : "";
 
           for (const parameterName in parameters[path][method]) {
-            newObject[`${testCaseIndex}${index}`] = {
+            newObject[index] = {
               ...parameters[path][method],
               [parameterName]: parameters[path][method][parameterName] + "*%5r",
             };

@@ -124,11 +124,8 @@ export const createPathParameterCombinations2 = async (
           combinations[path][method] = {};
 
           for (let index = 0; index < totalCombinations; index++) {
-            const testCaseIndex = index < 10 ? "00" : index < 10 ? "0" : "";
-
             const combination: ParametersObjectCombination = {};
-            combinations[path][method][`${testCaseIndex}${index + 1}`] =
-              combination;
+            combinations[path][method][index + 1] = combination;
 
             Object.keys(enumValues).forEach((paramName) => {
               const enumIndex = index % enumValues[paramName].length;
