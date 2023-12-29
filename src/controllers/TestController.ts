@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 
 import {
   createPreCondition2,
+  createPreCondition200,
+  createPreCondition400,
   createPreCondition422,
 } from "../utils/newPreCondition";
 import {
@@ -12,16 +14,54 @@ import {
 import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
 
 export const test = async (req: Request, res: Response) => {
+  const { statusCode } = req.query;
+
   try {
     const swaggerFile = await getFirstFile();
-    const preCondition422 = await createPreCondition422(swaggerFile);
 
-    if (!preCondition422)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+    const specificPreCondition = async (statusCode: any) => {
+      switch (statusCode) {
+        case "200":
+          const preCondition200 = await createPreCondition200(swaggerFile);
 
-    return res.status(200).json({ preCondition422 });
+          if (!preCondition200)
+            return res
+              .status(400)
+              .json({ error: { type: "file", message: "No files found." } });
+
+          return res.status(200).json({ preCondition200 });
+        case "400":
+          const preCondition400 = await createPreCondition400(swaggerFile);
+
+          if (!preCondition400)
+            return res
+              .status(400)
+              .json({ error: { type: "file", message: "No files found." } });
+
+          return res.status(200).json({ preCondition400 });
+        case "422":
+          const preCondition422 = await createPreCondition422(swaggerFile);
+
+          if (!preCondition422)
+            return res.status(400).json({
+              error: {
+                type: "preCondition",
+                message: "No Pre Conditions found.",
+              },
+            });
+
+          return res.status(200).json({ preCondition422 });
+        default:
+          return res.status(400).json({
+            error: {
+              type: "preCondition",
+              message: "No Pre Conditions found.",
+            },
+          });
+      }
+    };
+
+    await specificPreCondition(statusCode);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error." });
