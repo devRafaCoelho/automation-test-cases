@@ -15,6 +15,15 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
 
       for (const statusCode in preConditions[path][method]) {
         const testCaseIndex = index < 10 ? '00' : index < 100 ? '0' : '';
+        const requestText =
+          statusCode === '200' ? 'Request enviada com sucesso' : 'Request enviada com falha';
+
+        const name = () => {
+          testCaseName[path][method][
+            statusCode
+          ] = `CT${testCaseIndex}${index} - ${requestText} - ${preConditions[path][method][statusCode]?.description} - COD ${statusCode}`;
+          index++;
+        };
 
         switch (statusCode) {
           case '200':
@@ -25,15 +34,12 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
               for (const example in preConditions[path][method][statusCode]?.examples) {
                 testCaseName[path][method][statusCode][
                   subIndex
-                ] = `CT${testCaseIndex}${index}.${subIndex} - Request enviada com sucesso - COD ${statusCode}`;
+                ] = `CT${testCaseIndex}${index}.${subIndex} - ${requestText} - ${preConditions[path][method][statusCode]?.description} - COD ${statusCode}`;
                 subIndex++;
               }
             } else {
-              testCaseName[path][method][
-                statusCode
-              ] = `CT${testCaseIndex}${index} - Request enviada com sucesso - COD ${statusCode}`;
+              name();
             }
-            index++;
             break;
           case '400':
           case '422':
@@ -47,28 +53,22 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
                   ]) {
                     testCaseName[path][method][statusCode][
                       testCaseNumber
-                    ] = `CT${testCaseIndex}${index}.${testCaseNumber} - Request enviada com falha - COD ${statusCode}`;
+                    ] = `CT${testCaseIndex}${index}.${testCaseNumber} - ${requestText} - ${preConditions[path][method][statusCode]?.description} - COD ${statusCode}`;
                   }
                 } else {
                   testCaseName[path][method][statusCode][
                     key
-                  ] = `CT${testCaseIndex}${index}.${key} - Request enviada com falha - COD ${statusCode}`;
+                  ] = `CT${testCaseIndex}${index}.${key} - ${requestText} - ${preConditions[path][method][statusCode]?.description} - COD ${statusCode}`;
                 }
               }
             } else {
-              testCaseName[path][method][
-                statusCode
-              ] = `CT${testCaseIndex}${index} - Request enviada com falha - COD ${statusCode}`;
+              name();
             }
-            index++;
             break;
 
           default:
             if (preConditions[path][method][statusCode].example) {
-              testCaseName[path][method][
-                statusCode
-              ] = `CT${testCaseIndex}${index} - Request enviada com falha - COD ${statusCode}`;
-              index++;
+              name();
             }
             break;
         }
