@@ -10,7 +10,6 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
 
     for (const method in preConditions[path]) {
       if (!testCaseName[path][method]) testCaseName[path][method] = {};
-
       let index = 1;
 
       for (const statusCode in preConditions[path][method]) {

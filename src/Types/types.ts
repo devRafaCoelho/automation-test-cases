@@ -255,3 +255,11 @@ export type ParametersCombination = {
     };
   };
 };
+
+export type DescriptionColumn = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};

@@ -1,28 +1,23 @@
-import { Request, Response } from "express";
+import { Request, Response } from 'express';
 
-import { createPreCondition2 } from "../utils/newPreCondition";
-import {
-  getPathsParameters2,
-  getRequestBody2,
-  getResponses2,
-} from "../utils/newSwagger";
-import { createTestCaseName2 } from "../utils/newTestCaseName";
-import { deleteAllFiles, getFirstFile, listFiles } from "../utils/storage";
+import { createDescriptionColumn2 } from '../utils/newDescriptions';
+import { createPreCondition2 } from '../utils/newPreCondition';
+import { getPathsParameters2, getRequestBody2, getResponses2 } from '../utils/newSwagger';
+import { createTestCaseName2 } from '../utils/newTestCaseName';
+import { deleteAllFiles, getFirstFile, listFiles } from '../utils/storage';
 
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    const testCaseName = await createTestCaseName2(swaggerFile);
+    const descriptionColumn = await createDescriptionColumn2(swaggerFile);
 
-    if (!testCaseName)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+    if (!descriptionColumn)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
-    return res.status(200).json({ testCaseName });
+    return res.status(200).json({ descriptionColumn });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -87,14 +82,12 @@ export const testResponses = async (req: Request, res: Response) => {
     const responses = await getResponses2(swaggerFile);
 
     if (!responses)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ responses });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -104,14 +97,12 @@ export const testRequestBody = async (req: Request, res: Response) => {
     const requestBody = await getRequestBody2(swaggerFile);
 
     if (!requestBody)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ requestBody });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -121,14 +112,12 @@ export const testParameters = async (req: Request, res: Response) => {
     const parameters = await getPathsParameters2(swaggerFile);
 
     if (!parameters)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ parameters });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -137,23 +126,21 @@ export const testFiles = async (req: Request, res: Response) => {
     const files = await listFiles();
 
     if (!files)
-      return res
-        .status(400)
-        .json({ error: { type: "file", message: "No files found." } });
+      return res.status(400).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ files });
   } catch {
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
 export const testDelete = async (req: Request, res: Response) => {
   try {
     await deleteAllFiles();
-    return res.status(200).json({ message: "Files deleted" });
+    return res.status(200).json({ message: 'Files deleted' });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
 
@@ -163,13 +150,26 @@ export const testPreCondition = async (req: Request, res: Response) => {
     const preCondition = await createPreCondition2(swaggerFile);
 
     if (!preCondition)
-      return res
-        .status(422)
-        .json({ error: { type: "file", message: "No files found." } });
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ preCondition });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error." });
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+export const testTestCaseName = async (req: Request, res: Response) => {
+  try {
+    const swaggerFile = await getFirstFile();
+    const testCaseName = await createTestCaseName2(swaggerFile);
+
+    if (!testCaseName)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+
+    return res.status(200).json({ testCaseName });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error.' });
   }
 };
