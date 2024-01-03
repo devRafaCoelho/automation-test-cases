@@ -263,3 +263,11 @@ export type DescriptionColumn = {
     };
   };
 };
+
+export type ExcelData2 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};

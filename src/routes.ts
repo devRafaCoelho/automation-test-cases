@@ -22,6 +22,8 @@ import {
 import {
   test,
   testDelete,
+  testDescriptionColumn,
+  testExcelData,
   testFiles,
   testParameters,
   testPreCondition,
@@ -60,5 +62,7 @@ routes.get('/test-resquestBody', testRequestBody);
 routes.get('/test-parameters', testParameters);
 routes.get('/test-preCondition', testPreCondition);
 routes.get('/test-testCaseName', testTestCaseName);
+routes.get('/test-descriptions', testDescriptionColumn);
+routes.get('/test-excelData', testExcelData);
 
 export default routes;

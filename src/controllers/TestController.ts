@@ -1,20 +1,23 @@
 import { Request, Response } from 'express';
 
-import { createDescriptionColumn2 } from '../utils/newDescriptions';
+import { createExcelData2, createExcelFile2 } from '../utils/newExcel';
 import { createPreCondition2 } from '../utils/newPreCondition';
 import { getPathsParameters2, getRequestBody2, getResponses2 } from '../utils/newSwagger';
 import { createTestCaseName2 } from '../utils/newTestCaseName';
 import { deleteAllFiles, getFirstFile, listFiles } from '../utils/storage';
+import { createDescriptionColumn2 } from '../utils/newDescriptions';
 
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    const descriptionColumn = await createDescriptionColumn2(swaggerFile);
+    // const excelData = await createExcelData2(swaggerFile);
+    await createExcelFile2(swaggerFile);
 
-    if (!descriptionColumn)
-      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+    // if (!excelData)
+    //   return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
-    return res.status(200).json({ descriptionColumn });
+    // return res.status(200).json({ excelData });
+    return res.status(200).json({ message: 'File created!' });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal server error.' });
@@ -168,6 +171,36 @@ export const testTestCaseName = async (req: Request, res: Response) => {
       return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
     return res.status(200).json({ testCaseName });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+export const testDescriptionColumn = async (req: Request, res: Response) => {
+  try {
+    const swaggerFile = await getFirstFile();
+    const descriptions = await createDescriptionColumn2(swaggerFile);
+
+    if (!descriptions)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+
+    return res.status(200).json({ descriptions });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};
+
+export const testExcelData = async (req: Request, res: Response) => {
+  try {
+    const swaggerFile = await getFirstFile();
+    const excelData = await createExcelData2(swaggerFile);
+
+    if (!excelData)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+
+    return res.status(200).json({ excelData });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal server error.' });
