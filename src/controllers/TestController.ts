@@ -206,3 +206,19 @@ export const testExcelData = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+export const testExcelFile = async (req: Request, res: Response) => {
+  try {
+    const swaggerFile = await getFirstFile();
+
+    if (!swaggerFile)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+
+    await createExcelFile2(swaggerFile);
+
+    return res.status(201).json({ message: 'File created!' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+};

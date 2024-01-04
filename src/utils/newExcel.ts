@@ -48,14 +48,19 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
           for (const example in preConditions[path][method][statusCode]?.examples) {
             const singlePreCondition = preConditions[path][method][statusCode]?.examples[example];
 
-            const singleDescription = Number(example)
-              ? descriptions[path][method][statusCode][example]?.data
-              : descriptions[path][method][statusCode]?.data;
+            const singleDescription =
+              descriptions[path][method][statusCode][example]?.data ||
+              descriptions[path][method][statusCode]?.data;
 
             if (Number(example)) {
+              const singleTestCaseName =
+                Object.keys(preConditions[path][method][statusCode]?.examples).length > 1
+                  ? testCaseNames[path][method][statusCode][example]
+                  : testCaseNames[path][method][statusCode];
+
               excelData[path][method][statusCode][index] = {
                 ...data,
-                testCaseName: testCaseNames[path][method][statusCode][example],
+                testCaseName: singleTestCaseName,
                 description: singleDescription,
                 preCondition: singlePreCondition
               };
@@ -155,6 +160,7 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
       for (const statusCode in excelData[path][method]) {
         for (const key in excelData[path][method][statusCode]) {
           const statusCodeData = excelData[path][method][statusCode][key];
+
           const data = [
             statusCodeData.apiName,
             statusCodeData.testCaseName,
