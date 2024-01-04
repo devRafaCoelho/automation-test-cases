@@ -25,7 +25,7 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
       for (const statusCode in preConditions[path][method]) {
         if (!excelData[path][method][statusCode]) excelData[path][method][statusCode] = {};
 
-        const obj = {
+        const data = {
           apiName,
           testCaseName: '',
           description: descriptions[path][method][statusCode]?.data,
@@ -40,7 +40,7 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
 
         if (preConditions[path][method][statusCode]?.example) {
           excelData[path][method][statusCode][index] = {
-            ...obj,
+            ...data,
             testCaseName: testCaseNames[path][method][statusCode],
             preCondition: preConditions[path][method][statusCode]?.example
           };
@@ -49,36 +49,47 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
         } else {
           for (const example in preConditions[path][method][statusCode]?.examples) {
             if (statusCode === '200') {
-              const singlePreCondition =
-                Object.values(parameters[path][method]).length > 0
-                  ? preConditions[path][method][statusCode]?.examples[example]
-                  : {
-                      [example]: preConditions[path][method][statusCode]?.examples[example]
-                    };
+              const singleDescription = Number(example)
+                ? descriptions[path][method][statusCode][example]?.data
+                : descriptions[path][method][statusCode]?.data;
+
+              const singlePreCondition = Number(example)
+                ? preConditions[path][method][statusCode]?.examples[example]
+                : {
+                    [example]: preConditions[path][method][statusCode]?.examples[example]
+                  };
 
               excelData[path][method][statusCode][index] = {
-                ...obj,
+                ...data,
                 testCaseName: testCaseNames[path][method][statusCode][index],
+                description: singleDescription,
                 preCondition: singlePreCondition
               };
 
               index++;
-            } else {
-              for (const key in preConditions[path][method][statusCode]?.examples[example]) {
-                const singlePreCondition =
-                  Object.values(parameters[path][method]).length > 0
-                    ? preConditions[path][method][statusCode]?.examples[example]
-                    : preConditions[path][method][statusCode]?.examples[example][key];
-
-                excelData[path][method][statusCode][index] = {
-                  ...obj,
-                  testCaseName: testCaseNames[path][method][statusCode][key],
-                  preCondition: singlePreCondition
-                };
-
-                index++;
-              }
             }
+
+            // } else {
+            //   for (const key in preConditions[path][method][statusCode]?.examples[example]) {
+            //     const singleTestCaseName =
+            //       Object.values(parameters[path][method]).length > 0
+            //         ? testCaseNames[path][method][statusCode][example]
+            //         : testCaseNames[path][method][statusCode][key];
+
+            //     const singlePreCondition =
+            //       Object.values(parameters[path][method]).length > 0
+            //         ? preConditions[path][method][statusCode]?.examples[example]
+            //         : preConditions[path][method][statusCode]?.examples[example][key];
+
+            //     excelData[path][method][statusCode][index] = {
+            //       ...data,
+            //       testCaseName: singleTestCaseName,
+            //       preCondition: singlePreCondition
+            //     };
+
+            //     index++;
+            //   }
+            // }
           }
         }
       }
