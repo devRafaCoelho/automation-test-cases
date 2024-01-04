@@ -1,6 +1,7 @@
 import { ExcelData2, SwaggerFile } from '../Types/types';
 import { createDescriptionColumn2 } from './newDescriptions';
 import { createPreCondition2 } from './newPreCondition';
+import { getPathsParameters2 } from './newSwagger';
 import { createTestCaseName2 } from './newTestCaseName';
 import { getAPIName } from './swagger';
 import ExcelJS from 'exceljs';
@@ -12,6 +13,7 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
   const apiName = await getAPIName();
   const testCaseNames = await createTestCaseName2(swaggerFile);
   const descriptions = await createDescriptionColumn2(swaggerFile);
+  const parameters = await getPathsParameters2(swaggerFile);
 
   for (const path in preConditions) {
     if (!excelData[path]) excelData[path] = {};
@@ -41,13 +43,18 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
         } else {
           for (const example in preConditions[path][method][statusCode]?.examples) {
             if (statusCode === '200') {
+              const singlePreCondition =
+                Object.values(parameters[path][method]).length > 0
+                  ? preConditions[path][method][statusCode]?.examples[example]
+                  : {
+                      [example]: preConditions[path][method][statusCode]?.examples[example]
+                    };
+
               excelData[path][method][statusCode][index] = {
                 apiName,
                 testCaseName: testCaseNames[path][method][statusCode][index],
                 description: descriptions[path][method][statusCode]?.data,
-                preCondition: {
-                  [example]: preConditions[path][method][statusCode]?.examples[example]
-                },
+                preCondition: singlePreCondition,
                 assignedTo: 'Z415515',
                 stepName: 'Step 1',
                 type: 'MANUAL',
@@ -55,78 +62,31 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
                 testProvider: 'Hitss',
                 approvalFlow: 'Novo'
               };
+              index++;
             } else {
-              excelData[path][method][statusCode][index] = {
-                apiName,
-                testCaseName: testCaseNames[path][method][statusCode][index],
-                description: descriptions[path][method][statusCode]?.data,
-                preCondition: '',
-                assignedTo: 'Z415515',
-                stepName: 'Step 1',
-                type: 'MANUAL',
-                version: '1',
-                testProvider: 'Hitss',
-                approvalFlow: 'Novo'
-              };
+              for (const key in preConditions[path][method][statusCode]?.examples[example]) {
+                const singlePreCondition =
+                  Object.values(parameters[path][method]).length > 0
+                    ? preConditions[path][method][statusCode]?.examples[example]
+                    : preConditions[path][method][statusCode]?.examples[example][key];
+
+                excelData[path][method][statusCode][index] = {
+                  apiName,
+                  testCaseName: testCaseNames[path][method][statusCode][key],
+                  description: descriptions[path][method][statusCode]?.data,
+                  preCondition: singlePreCondition,
+                  assignedTo: 'Z415515',
+                  stepName: 'Step 1',
+                  type: 'MANUAL',
+                  version: '1',
+                  testProvider: 'Hitss',
+                  approvalFlow: 'Novo'
+                };
+
+                index++;
+              }
             }
-
-            index++;
           }
-
-          // for (const key in testCaseNames[path][method][statusCode]) {
-          //   for (const example in preConditions[path][method][statusCode]?.examples) {
-          //     if (statusCode === '200') {
-          //       excelData[path][method][statusCode][index] = {
-          //         apiName,
-          //         testCaseName: testCaseNames[path][method][statusCode][key],
-          //         description: descriptions[path][method][statusCode]?.data,
-          //         preCondition: {
-          //           [example]: preConditions[path][method][statusCode]?.examples[example]
-          //         },
-          //         assignedTo: 'Z415515',
-          //         stepName: 'Step 1',
-          //         type: 'MANUAL',
-          //         version: '1',
-          //         testProvider: 'Hitss',
-          //         approvalFlow: 'Novo'
-          //       };
-          //     }
-
-          //     index++;
-          //   }
-
-          //   // const singlePreCondition = Object.keys(
-          //   //   preConditions[path][method][statusCode]?.examples
-          //   // );
-
-          //   // const singlePreConditionIndex = statusCode === '200' ? singlePreCondition[Number(key) - 1] : ;
-
-          //   // // const singlePreConditionIndex =
-          //   // //   singlePreCondition[0] === key
-          //   // //     ? singlePreCondition[Number(key)]
-          //   // //     : singlePreCondition[Number(key) - 1];
-
-          //   // excelData[path][method][statusCode][index] = {
-          //   //   apiName,
-          //   //   testCaseName: testCaseNames[path][method][statusCode][key],
-          //   //   description: descriptions[path][method][statusCode]?.data,
-          //   //   preCondition:
-          //   //     statusCode === '200'
-          //   //       ? {
-          //   //           [singlePreConditionIndex]:
-          //   //             preConditions[path][method][statusCode]?.examples[singlePreConditionIndex]
-          //   //         }
-          //   //       : '',
-          //   //   assignedTo: 'Z415515',
-          //   //   stepName: 'Step 1',
-          //   //   type: 'MANUAL',
-          //   //   version: '1',
-          //   //   testProvider: 'Hitss',
-          //   //   approvalFlow: 'Novo'
-          //   // };
-
-          //   // index++;
-          // }
         }
       }
     }
