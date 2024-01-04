@@ -1,10 +1,9 @@
+import ExcelJS from 'exceljs';
 import { ExcelData2, SwaggerFile } from '../Types/types';
 import { createDescriptionColumn2 } from './newDescriptions';
 import { createPreCondition2 } from './newPreCondition';
-import { getPathsParameters2 } from './newSwagger';
 import { createTestCaseName2 } from './newTestCaseName';
 import { getAPIName } from './swagger';
-import ExcelJS from 'exceljs';
 
 export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
   const preConditions = await createPreCondition2(swaggerFile);
@@ -13,7 +12,6 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
   const apiName = await getAPIName();
   const testCaseNames = await createTestCaseName2(swaggerFile);
   const descriptions = await createDescriptionColumn2(swaggerFile);
-  const parameters = await getPathsParameters2(swaggerFile);
 
   for (const path in preConditions) {
     if (!excelData[path]) excelData[path] = {};
@@ -48,48 +46,44 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
           index++;
         } else {
           for (const example in preConditions[path][method][statusCode]?.examples) {
-            if (statusCode === '200') {
-              const singleDescription = Number(example)
-                ? descriptions[path][method][statusCode][example]?.data
-                : descriptions[path][method][statusCode]?.data;
+            const singlePreCondition = preConditions[path][method][statusCode]?.examples[example];
 
-              const singlePreCondition = Number(example)
-                ? preConditions[path][method][statusCode]?.examples[example]
-                : {
-                    [example]: preConditions[path][method][statusCode]?.examples[example]
-                  };
+            const singleDescription = Number(example)
+              ? descriptions[path][method][statusCode][example]?.data
+              : descriptions[path][method][statusCode]?.data;
 
+            if (Number(example)) {
               excelData[path][method][statusCode][index] = {
                 ...data,
-                testCaseName: testCaseNames[path][method][statusCode][index],
+                testCaseName: testCaseNames[path][method][statusCode][example],
                 description: singleDescription,
                 preCondition: singlePreCondition
               };
+            } else {
+              if (statusCode === '200') {
+                excelData[path][method][statusCode][index] = {
+                  ...data,
+                  testCaseName: testCaseNames[path][method][statusCode][index],
+                  description: singleDescription,
+                  preCondition: {
+                    [example]: singlePreCondition
+                  }
+                };
+              } else {
+                for (const key in singlePreCondition) {
+                  excelData[path][method][statusCode][index] = {
+                    ...data,
+                    testCaseName: testCaseNames[path][method][statusCode][key],
+                    description: singleDescription,
+                    preCondition: singlePreCondition[key]
+                  };
 
-              index++;
+                  index++;
+                }
+              }
             }
 
-            // } else {
-            //   for (const key in preConditions[path][method][statusCode]?.examples[example]) {
-            //     const singleTestCaseName =
-            //       Object.values(parameters[path][method]).length > 0
-            //         ? testCaseNames[path][method][statusCode][example]
-            //         : testCaseNames[path][method][statusCode][key];
-
-            //     const singlePreCondition =
-            //       Object.values(parameters[path][method]).length > 0
-            //         ? preConditions[path][method][statusCode]?.examples[example]
-            //         : preConditions[path][method][statusCode]?.examples[example][key];
-
-            //     excelData[path][method][statusCode][index] = {
-            //       ...data,
-            //       testCaseName: singleTestCaseName,
-            //       preCondition: singlePreCondition
-            //     };
-
-            //     index++;
-            //   }
-            // }
+            index++;
           }
         }
       }

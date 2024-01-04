@@ -15,9 +15,10 @@ export const createDescriptionColumn2 = async (swaggerFile: SwaggerFile) => {
 
     for (const method in preConditions[path]) {
       if (!descriptionColumn[path][method]) descriptionColumn[path][method] = {};
-      let index = 1;
 
       for (const statusCode in preConditions[path][method]) {
+        let index = 1;
+
         switch (statusCode) {
           case '200':
           case '400':
