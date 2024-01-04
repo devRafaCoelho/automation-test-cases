@@ -112,6 +112,16 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
     'Fluxo de Aprovação'
   ];
 
+  const headerColumnTitlesAlign = [
+    'Subject',
+    'Atribuído à',
+    'Step Name (Design Steps)',
+    'Type',
+    'Versão',
+    'Fornecedor de Testes',
+    'Fluxo de Aprovação'
+  ];
+
   let index = 1;
   for (const path in excelData) {
     const workbook = new ExcelJS.Workbook();
@@ -130,15 +140,26 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
 
       worksheet.columns = arrayColumns;
 
+      worksheet.getRow(1).eachCell((cell) => {
+        (cell.style = {
+          font: { bold: true },
+          alignment: { vertical: 'middle', horizontal: 'center' }
+        }),
+          (cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: '78766e' }
+          });
+      });
+
       for (const statusCode in excelData[path][method]) {
         for (const key in excelData[path][method][statusCode]) {
           const statusCodeData = excelData[path][method][statusCode][key];
           const data = [
             statusCodeData.apiName,
             statusCodeData.testCaseName,
-            // statusCodeData.description.join('\n'),
-            statusCodeData.description,
-            statusCodeData.preCondition,
+            statusCodeData.description.join('\n'),
+            JSON.stringify(statusCodeData.preCondition, null, 2),
             statusCodeData.assignedTo,
             statusCodeData.stepName,
             statusCodeData.type,
@@ -150,6 +171,34 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
           worksheet.addRow(data);
         }
       }
+
+      headerColumnTitles.forEach((headerName) => {
+        let maxLength = headerName.length;
+
+        worksheet.getColumn(headerName).eachCell((cell, cellNumber) => {
+          const cellLength = cell.value ? cell.value.toString().length : 0;
+
+          if (cellLength > maxLength && cellLength <= 100) {
+            maxLength = cellLength;
+          } else if (cellLength > 100) {
+            maxLength = 100;
+          }
+
+          if (cellNumber > 1) {
+            headerColumnTitlesAlign.includes(headerName)
+              ? (cell.alignment = { vertical: 'middle', horizontal: 'center' })
+              : (cell.alignment = { vertical: 'top', horizontal: 'left' });
+          }
+        });
+
+        worksheet.getColumn(headerName).width = maxLength + 2;
+      });
+
+      worksheet.eachRow((row, rowNumber) => {
+        if (rowNumber > 1) {
+          row.height = 50;
+        }
+      });
     }
 
     if (Object.keys(excelData).length > 1) {
