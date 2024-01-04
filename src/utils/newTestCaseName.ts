@@ -21,7 +21,7 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
           testCaseName[path][method][
             statusCode
           ] = `CT${testCaseIndex}${index} - ${requestText} - ${preConditions[path][method][statusCode]?.description} - COD ${statusCode}`;
-          index++;
+          // index++;
         };
 
         switch (statusCode) {
@@ -39,6 +39,7 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
             } else {
               name();
             }
+            index++;
             break;
           case '400':
           case '422':
@@ -63,12 +64,14 @@ export const createTestCaseName2 = async (swaggerFile: SwaggerFile) => {
             } else {
               name();
             }
+            index++;
             break;
 
           default:
             if (preConditions[path][method][statusCode].example) {
               name();
             }
+            index++;
             break;
         }
       }

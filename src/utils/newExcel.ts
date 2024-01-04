@@ -36,9 +36,98 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
             testProvider: 'Hitss',
             approvalFlow: 'Novo'
           };
-        }
 
-        index++;
+          index++;
+        } else {
+          for (const example in preConditions[path][method][statusCode]?.examples) {
+            if (statusCode === '200') {
+              excelData[path][method][statusCode][index] = {
+                apiName,
+                testCaseName: testCaseNames[path][method][statusCode][index],
+                description: descriptions[path][method][statusCode]?.data,
+                preCondition: {
+                  [example]: preConditions[path][method][statusCode]?.examples[example]
+                },
+                assignedTo: 'Z415515',
+                stepName: 'Step 1',
+                type: 'MANUAL',
+                version: '1',
+                testProvider: 'Hitss',
+                approvalFlow: 'Novo'
+              };
+            } else {
+              excelData[path][method][statusCode][index] = {
+                apiName,
+                testCaseName: testCaseNames[path][method][statusCode][index],
+                description: descriptions[path][method][statusCode]?.data,
+                preCondition: '',
+                assignedTo: 'Z415515',
+                stepName: 'Step 1',
+                type: 'MANUAL',
+                version: '1',
+                testProvider: 'Hitss',
+                approvalFlow: 'Novo'
+              };
+            }
+
+            index++;
+          }
+
+          // for (const key in testCaseNames[path][method][statusCode]) {
+          //   for (const example in preConditions[path][method][statusCode]?.examples) {
+          //     if (statusCode === '200') {
+          //       excelData[path][method][statusCode][index] = {
+          //         apiName,
+          //         testCaseName: testCaseNames[path][method][statusCode][key],
+          //         description: descriptions[path][method][statusCode]?.data,
+          //         preCondition: {
+          //           [example]: preConditions[path][method][statusCode]?.examples[example]
+          //         },
+          //         assignedTo: 'Z415515',
+          //         stepName: 'Step 1',
+          //         type: 'MANUAL',
+          //         version: '1',
+          //         testProvider: 'Hitss',
+          //         approvalFlow: 'Novo'
+          //       };
+          //     }
+
+          //     index++;
+          //   }
+
+          //   // const singlePreCondition = Object.keys(
+          //   //   preConditions[path][method][statusCode]?.examples
+          //   // );
+
+          //   // const singlePreConditionIndex = statusCode === '200' ? singlePreCondition[Number(key) - 1] : ;
+
+          //   // // const singlePreConditionIndex =
+          //   // //   singlePreCondition[0] === key
+          //   // //     ? singlePreCondition[Number(key)]
+          //   // //     : singlePreCondition[Number(key) - 1];
+
+          //   // excelData[path][method][statusCode][index] = {
+          //   //   apiName,
+          //   //   testCaseName: testCaseNames[path][method][statusCode][key],
+          //   //   description: descriptions[path][method][statusCode]?.data,
+          //   //   preCondition:
+          //   //     statusCode === '200'
+          //   //       ? {
+          //   //           [singlePreConditionIndex]:
+          //   //             preConditions[path][method][statusCode]?.examples[singlePreConditionIndex]
+          //   //         }
+          //   //       : '',
+          //   //   assignedTo: 'Z415515',
+          //   //   stepName: 'Step 1',
+          //   //   type: 'MANUAL',
+          //   //   version: '1',
+          //   //   testProvider: 'Hitss',
+          //   //   approvalFlow: 'Novo'
+          //   // };
+
+          //   // index++;
+          // }
+        }
       }
     }
   }
@@ -89,7 +178,8 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
           const data = [
             statusCodeData.apiName,
             statusCodeData.testCaseName,
-            statusCodeData.description.join('\n'),
+            // statusCodeData.description.join('\n'),
+            statusCodeData.description,
             statusCodeData.preCondition,
             statusCodeData.assignedTo,
             statusCodeData.stepName,
