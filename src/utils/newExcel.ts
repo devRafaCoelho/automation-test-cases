@@ -25,18 +25,24 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
       for (const statusCode in preConditions[path][method]) {
         if (!excelData[path][method][statusCode]) excelData[path][method][statusCode] = {};
 
+        const obj = {
+          apiName,
+          testCaseName: '',
+          description: descriptions[path][method][statusCode]?.data,
+          preCondition: '',
+          assignedTo: 'Z415515',
+          stepName: 'Step 1',
+          type: 'MANUAL',
+          version: '1',
+          testProvider: 'Hitss',
+          approvalFlow: 'Novo'
+        };
+
         if (preConditions[path][method][statusCode]?.example) {
           excelData[path][method][statusCode][index] = {
-            apiName,
+            ...obj,
             testCaseName: testCaseNames[path][method][statusCode],
-            description: descriptions[path][method][statusCode]?.data,
-            preCondition: preConditions[path][method][statusCode]?.example,
-            assignedTo: 'Z415515',
-            stepName: 'Step 1',
-            type: 'MANUAL',
-            version: '1',
-            testProvider: 'Hitss',
-            approvalFlow: 'Novo'
+            preCondition: preConditions[path][method][statusCode]?.example
           };
 
           index++;
@@ -51,17 +57,11 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
                     };
 
               excelData[path][method][statusCode][index] = {
-                apiName,
+                ...obj,
                 testCaseName: testCaseNames[path][method][statusCode][index],
-                description: descriptions[path][method][statusCode]?.data,
-                preCondition: singlePreCondition,
-                assignedTo: 'Z415515',
-                stepName: 'Step 1',
-                type: 'MANUAL',
-                version: '1',
-                testProvider: 'Hitss',
-                approvalFlow: 'Novo'
+                preCondition: singlePreCondition
               };
+
               index++;
             } else {
               for (const key in preConditions[path][method][statusCode]?.examples[example]) {
@@ -71,16 +71,9 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
                     : preConditions[path][method][statusCode]?.examples[example][key];
 
                 excelData[path][method][statusCode][index] = {
-                  apiName,
+                  ...obj,
                   testCaseName: testCaseNames[path][method][statusCode][key],
-                  description: descriptions[path][method][statusCode]?.data,
-                  preCondition: singlePreCondition,
-                  assignedTo: 'Z415515',
-                  stepName: 'Step 1',
-                  type: 'MANUAL',
-                  version: '1',
-                  testProvider: 'Hitss',
-                  approvalFlow: 'Novo'
+                  preCondition: singlePreCondition
                 };
 
                 index++;
