@@ -3,8 +3,9 @@ import {
   PathParameter,
   PathRequestBody,
   PathResponse,
-  SwaggerFile,
-} from "../Types/types";
+  SwaggerFile
+} from '../Types/types';
+import { getObjectsByKey } from './helpers';
 
 export const getAPIMethodsDescription2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
@@ -25,18 +26,7 @@ export const getResponses2 = async (swaggerFile: SwaggerFile) => {
   const pathsValues = swaggerFile.paths;
   const responses: PathResponse = {};
 
-  const useStatusCodeList = [
-    "200",
-    "400",
-    "401",
-    "403",
-    "404",
-    "405",
-    "406",
-    "415",
-    "422",
-    "429",
-  ];
+  const useStatusCodeList = ['200', '400', '401', '403', '404', '405', '406', '415', '422', '429'];
 
   for (const path in pathsValues) {
     if (!responses[path]) responses[path] = {};
@@ -47,44 +37,32 @@ export const getResponses2 = async (swaggerFile: SwaggerFile) => {
       const methodResponses = pathsValues[path][method].responses;
 
       for (const statusCode in methodResponses) {
-        if (
-          !responses[path][method][statusCode] &&
-          useStatusCodeList.includes(statusCode)
-        ) {
-          if (methodResponses[statusCode]["$ref"]) {
-            const responseName = methodResponses[statusCode]["$ref"]
-              .split("/")
-              .pop();
+        if (!responses[path][method][statusCode] && useStatusCodeList.includes(statusCode)) {
+          if (methodResponses[statusCode]['$ref']) {
+            const responseName = methodResponses[statusCode]['$ref'].split('/').pop();
 
-            const componentsResponse =
-              swaggerFile.components?.responses?.[responseName];
+            const componentsResponse = swaggerFile.components?.responses?.[responseName];
 
+            const applicationJSON = getObjectsByKey(componentsResponse.content, 'application/json');
             const contentType =
-              Object.values(componentsResponse.content).length === 1
-                ? componentsResponse.content
-                : Object.values(
-                    componentsResponse.content["application/json"]
-                  ) || Object.values(componentsResponse.content)[0];
+              applicationJSON.length > 0
+                ? applicationJSON[0]
+                : Object.values(componentsResponse.content)[0];
 
             responses[path][method][statusCode] = {
-              description:
-                statusCode === "200" ? "Ok" : componentsResponse.description,
-              content: contentType,
+              description: statusCode === '200' ? 'Ok' : componentsResponse.description,
+              content: contentType
             };
           } else {
             const contentType =
               Object.values(methodResponses[statusCode]?.content).length === 1
                 ? methodResponses[statusCode]?.content
-                : Object.values(
-                    methodResponses[statusCode]?.content["application/json"]
-                  ) || Object.values(methodResponses[statusCode]?.content)[0];
+                : Object.values(methodResponses[statusCode]?.content['application/json']) ||
+                  Object.values(methodResponses[statusCode]?.content)[0];
 
             responses[path][method][statusCode] = {
-              description:
-                statusCode === "200"
-                  ? "Ok"
-                  : methodResponses[statusCode]?.description,
-              content: contentType,
+              description: statusCode === '200' ? 'Ok' : methodResponses[statusCode]?.description,
+              content: contentType
             };
           }
         }
@@ -111,7 +89,7 @@ export const getRequestBody2 = async (swaggerFile: SwaggerFile) => {
         const contentType =
           Object.values(methodRequestBody.content).length === 1
             ? methodRequestBody.content
-            : Object.values(methodRequestBody.content["application/json"]) ||
+            : Object.values(methodRequestBody.content['application/json']) ||
               Object.values(methodRequestBody.content)[0];
 
         requestBody[path][method] = contentType;
@@ -140,9 +118,7 @@ export const getPathsParameters2 = async (swaggerFile: SwaggerFile) => {
         });
 
         parameters[path][method] =
-          requiredParameters.length !== 0
-            ? requiredParameters
-            : methodParameters;
+          requiredParameters.length !== 0 ? requiredParameters : methodParameters;
       }
     }
   }
