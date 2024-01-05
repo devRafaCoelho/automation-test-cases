@@ -4,6 +4,7 @@ import { createDescriptionColumn2 } from './newDescriptions';
 import { createPreCondition2 } from './newPreCondition';
 import { createTestCaseName2 } from './newTestCaseName';
 import { getAPIName } from './swagger';
+import { createExpectedResultDesignSteps2 } from './newExpectedResultDesignSteps';
 
 export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
   const preConditions = await createPreCondition2(swaggerFile);
@@ -12,6 +13,7 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
   const apiName = await getAPIName();
   const testCaseNames = await createTestCaseName2(swaggerFile);
   const descriptions = await createDescriptionColumn2(swaggerFile);
+  const expectedResultDesignSteps = await createExpectedResultDesignSteps2(swaggerFile);
 
   for (const path in preConditions) {
     if (!excelData[path]) excelData[path] = {};
@@ -30,6 +32,7 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
           preCondition: '',
           assignedTo: 'Z415515',
           stepName: 'Step 1',
+          expectedResultDesignSteps: '',
           type: 'MANUAL',
           version: '1',
           testProvider: 'Hitss',
@@ -40,7 +43,8 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
           excelData[path][method][statusCode][index] = {
             ...data,
             testCaseName: testCaseNames[path][method][statusCode],
-            preCondition: preConditions[path][method][statusCode]?.example
+            preCondition: preConditions[path][method][statusCode]?.example,
+            expectedResultDesignSteps: expectedResultDesignSteps[path][method][statusCode]
           };
 
           index++;
@@ -110,7 +114,7 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
     'Atribuído à',
     'Step Name (Design Steps)',
     // "Description (Design Steps)",
-    // "Expected Result (Design Steps)",
+    'Expected Result (Design Steps)',
     'Type',
     'Versão',
     'Fornecedor de Testes',
@@ -168,6 +172,7 @@ export const createExcelFile2 = async (swaggerFile: SwaggerFile) => {
             JSON.stringify(statusCodeData.preCondition, null, 2),
             statusCodeData.assignedTo,
             statusCodeData.stepName,
+            statusCodeData.expectedResultDesignSteps.join('\n'),
             statusCodeData.type,
             statusCodeData.version,
             statusCodeData.testProvider,

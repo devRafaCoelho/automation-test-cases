@@ -264,6 +264,21 @@ export type DescriptionColumn = {
   };
 };
 
+export type DescriptionDesignSteps2 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+export type ExpectedResultDesignSteps2 = {
+  [path: string]: {
+    [method: string]: {
+      [key: string]: any;
+    };
+  };
+};
+
 export type ExcelData2 = {
   [path: string]: {
     [method: string]: {

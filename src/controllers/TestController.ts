@@ -1,23 +1,22 @@
 import { Request, Response } from 'express';
 
+import { createDescriptionColumn2 } from '../utils/newDescriptions';
 import { createExcelData2, createExcelFile2 } from '../utils/newExcel';
+import { createExpectedResultDesignSteps2 } from '../utils/newExpectedResultDesignSteps';
 import { createPreCondition2 } from '../utils/newPreCondition';
 import { getPathsParameters2, getRequestBody2, getResponses2 } from '../utils/newSwagger';
 import { createTestCaseName2 } from '../utils/newTestCaseName';
 import { deleteAllFiles, getFirstFile, listFiles } from '../utils/storage';
-import { createDescriptionColumn2 } from '../utils/newDescriptions';
 
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    // const excelData = await createExcelData2(swaggerFile);
-    await createExcelFile2(swaggerFile);
+    const descriptionDegisnSteps = await createExpectedResultDesignSteps2(swaggerFile);
 
-    // if (!excelData)
-    //   return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
+    if (!descriptionDegisnSteps)
+      return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
-    // return res.status(200).json({ excelData });
-    return res.status(200).json({ message: 'File created!' });
+    return res.status(200).json({ descriptionDegisnSteps });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal server error.' });
