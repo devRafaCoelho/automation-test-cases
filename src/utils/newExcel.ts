@@ -66,7 +66,9 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
                 ...data,
                 testCaseName: singleTestCaseName,
                 description: singleDescription,
-                preCondition: singlePreCondition
+                preCondition: singlePreCondition,
+                expectedResultDesignSteps:
+                  expectedResultDesignSteps[path][method][statusCode][example]
               };
             } else {
               if (statusCode === '200') {
@@ -76,7 +78,9 @@ export const createExcelData2 = async (swaggerFile: SwaggerFile) => {
                   description: singleDescription,
                   preCondition: {
                     [example]: singlePreCondition
-                  }
+                  },
+                  expectedResultDesignSteps:
+                    expectedResultDesignSteps[path][method][statusCode][example]
                 };
               } else {
                 for (const key in singlePreCondition) {

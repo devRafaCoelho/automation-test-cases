@@ -13,7 +13,6 @@ export const createExpectedResultDesignSteps2 = async (swaggerFile: SwaggerFile)
 
     for (const method in preConditions[path]) {
       if (!expectedResultDesignSteps[path][method]) expectedResultDesignSteps[path][method] = {};
-      // let index = 1;
 
       for (const statusCode in preConditions[path][method]) {
         if (!expectedResultDesignSteps[path][method][statusCode])
@@ -33,13 +32,16 @@ export const createExpectedResultDesignSteps2 = async (swaggerFile: SwaggerFile)
 
           expectedResultDesignSteps[path][method][statusCode] = expectedResultData;
         } else {
-          for (const example in preConditions[path][method][statusCode]?.examples) {
+          const examplesPreCondition = preConditions[path][method][statusCode]?.examples;
+
+          for (const example in examplesPreCondition) {
+            let index = 1;
             const expectedResultData = [
               `1 - ${message}`,
               '2 - Response retorna os seguintes valores:'
             ];
 
-            if (Number(example)) {
+            if (statusCode === '200') {
               const singleResponse = getObjectsByKey(
                 responses[path][method][statusCode],
                 'example'
@@ -49,16 +51,29 @@ export const createExpectedResultDesignSteps2 = async (swaggerFile: SwaggerFile)
                 responses[path][method][statusCode],
                 'examples'
               );
-              // console.log(examplesResponse);
 
-              // expectedResultData.push(
-              //   typeof exampleResponse[0] === 'string'
-              //     ? exampleResponse[0]
-              //     : JSON.stringify(exampleResponse[0], null, 2),
-              //   `APIGEE = ${statusCode}`
-              // );
+              if (singleResponse.length > 0) {
+                expectedResultData.push(
+                  JSON.stringify(singleResponse[0], null, 2),
+                  `APIGEE = ${statusCode}`
+                );
+              } else if (examplesResponse.length > 0) {
+                const examplesResponseLength = Object.keys(examplesResponse[0]).length;
+                const preConditionsLength = Object.keys(examplesPreCondition).length;
 
-              expectedResultData.push('{}', `APIGEE = ${statusCode}`);
+                if (examplesResponseLength === preConditionsLength) {
+                  const especificResponsesponse = Object.values(examplesResponse[0])[index];
+
+                  expectedResultData.push(
+                    JSON.stringify(especificResponsesponse, null, 2),
+                    `APIGEE = ${statusCode}`
+                  );
+                  index++;
+                } else {
+                  expectedResultData.push('{}', `APIGEE = ${statusCode}`);
+                }
+              }
+
               expectedResultDesignSteps[path][method][statusCode][example] = expectedResultData;
             }
           }

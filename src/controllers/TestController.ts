@@ -11,12 +11,12 @@ import { deleteAllFiles, getFirstFile, listFiles } from '../utils/storage';
 export const test = async (req: Request, res: Response) => {
   try {
     const swaggerFile = await getFirstFile();
-    const descriptionDegisnSteps = await createExpectedResultDesignSteps2(swaggerFile);
+    const expectedResultDesignSteps = await createExpectedResultDesignSteps2(swaggerFile);
 
-    if (!descriptionDegisnSteps)
+    if (!expectedResultDesignSteps)
       return res.status(422).json({ error: { type: 'file', message: 'No files found.' } });
 
-    return res.status(200).json({ descriptionDegisnSteps });
+    return res.status(200).json({ expectedResultDesignSteps });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Internal server error.' });
